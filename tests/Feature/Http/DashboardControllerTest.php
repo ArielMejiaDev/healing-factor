@@ -36,7 +36,7 @@ function createUser(): Authenticatable
     ]);
 }
 
-function setAuthGate(\Closure $callback): void
+function setAuthGate(Closure $callback): void
 {
     app(XFactor::class)->auth($callback);
 }

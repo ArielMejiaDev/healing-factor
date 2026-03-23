@@ -42,7 +42,7 @@ class XFactorLogger
             'warning' => "\033[33m[X-FACTOR WARN]\033[0m",
             'info' => "\033[36m[X-FACTOR]\033[0m",
             'debug' => "\033[90m[X-FACTOR DEBUG]\033[0m",
-            default => "[X-FACTOR]",
+            default => '[X-FACTOR]',
         };
 
         $line = "{$tag} {$message}";

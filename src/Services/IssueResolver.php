@@ -50,7 +50,7 @@ class IssueResolver
             return false;
         }
 
-        XFactorLogger::info("Status: pending -> resolving", [
+        XFactorLogger::info('Status: pending -> resolving', [
             'issue_id' => $issue->id,
             'title' => $issue->title,
         ]);
@@ -62,7 +62,7 @@ class IssueResolver
         $category = $this->detectCategory($issue);
         $issue->update(['category' => $category]);
 
-        XFactorLogger::info("Category detected: " . ($category ?? 'none (using failover defaults)'), [
+        XFactorLogger::info('Category detected: '.($category ?? 'none (using failover defaults)'), [
             'issue_id' => $issue->id,
         ]);
 
@@ -135,7 +135,7 @@ class IssueResolver
         $prUrl = $this->extractPrUrl($result->output) ?? $this->extractPrUrl($result->errorOutput);
         $issue->markResolved($prUrl);
 
-        XFactorLogger::info("Status: resolving -> resolved", ['issue_id' => $issue->id]);
+        XFactorLogger::info('Status: resolving -> resolved', ['issue_id' => $issue->id]);
         event(new IssueResolved($issue));
 
         return true;
@@ -150,7 +150,7 @@ class IssueResolver
         ]);
         $issue->markFailed($reason);
 
-        XFactorLogger::error("Status: resolving -> failed", [
+        XFactorLogger::error('Status: resolving -> failed', [
             'issue_id' => $issue->id,
             'error_output' => mb_substr($result->errorOutput, 0, 500),
             'exit_code' => $result->exitCode,

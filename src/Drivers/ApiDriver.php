@@ -195,7 +195,7 @@ class ApiDriver implements DriverContract
     /**
      * Serialize content blocks for the conversation history.
      *
-     * @param list<object> $blocks
+     * @param  list<object>  $blocks
      * @return list<array<string, mixed>>
      */
     protected function serializeContentBlocks(array $blocks): array

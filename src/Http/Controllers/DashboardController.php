@@ -2,7 +2,6 @@
 
 namespace ArielMejiaDev\XFactor\Http\Controllers;
 
-use ArielMejiaDev\XFactor\Enums\IssueStatus;
 use ArielMejiaDev\XFactor\Jobs\ResolveIssue;
 use ArielMejiaDev\XFactor\Models\Issue;
 use Illuminate\Http\Request;

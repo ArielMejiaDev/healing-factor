@@ -92,11 +92,11 @@ class XFactorBanner
         for ($line = 0; $line < 6; $line++) {
             $row = '';
             foreach ($text as $char) {
-                $row .= self::$letters[$char][$line] . ' ';
+                $row .= self::$letters[$char][$line].' ';
             }
 
             $color = $colors[$line];
-            $output[] = "\e[38;5;{$color}m" . rtrim($row) . "\e[0m";
+            $output[] = "\e[38;5;{$color}m".rtrim($row)."\e[0m";
         }
 
         return $output;

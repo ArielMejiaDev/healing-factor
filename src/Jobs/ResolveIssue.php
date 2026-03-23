@@ -2,7 +2,6 @@
 
 namespace ArielMejiaDev\XFactor\Jobs;
 
-use ArielMejiaDev\XFactor\Enums\IssueStatus;
 use ArielMejiaDev\XFactor\Events\IssueResolutionFailed;
 use ArielMejiaDev\XFactor\Models\Issue;
 use ArielMejiaDev\XFactor\Services\IssueResolver;
@@ -55,7 +54,7 @@ class ResolveIssue implements ShouldBeUnique, ShouldQueue
 
         if ($this->issue->isResolving()) {
             $this->issue->markFailed($reason);
-            XFactorLogger::error("Status: resolving -> failed (job exception)", [
+            XFactorLogger::error('Status: resolving -> failed (job exception)', [
                 'issue_id' => $this->issue->id,
                 'exception' => get_class($exception),
                 'message' => mb_substr($exception->getMessage(), 0, 500),

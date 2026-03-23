@@ -36,7 +36,7 @@ class RunCommandTool implements ToolContract
         $command = $input['command'] ?? '';
 
         if (! $this->isAllowed($command)) {
-            return "Error: Command not allowed. Only these commands are permitted: ".implode(', ', $this->allowedCommands());
+            return 'Error: Command not allowed. Only these commands are permitted: '.implode(', ', $this->allowedCommands());
         }
 
         $result = Process::path($this->worktreePath)
