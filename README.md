@@ -1,60 +1,226 @@
-# Adds Self Healing Super Powers To Your App
+# X-Factor
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/ariel-mejia-dev/x-factor.svg?style=flat-square)](https://packagist.org/packages/ariel-mejia-dev/x-factor)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/ariel-mejia-dev/x-factor/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/ariel-mejia-dev/x-factor/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/ariel-mejia-dev/x-factor/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/ariel-mejia-dev/x-factor/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/ariel-mejia-dev/x-factor.svg?style=flat-square)](https://packagist.org/packages/ariel-mejia-dev/x-factor)
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+A self-healing Laravel package that catches exceptions and automatically creates pull requests with fixes using AI. When an error occurs in your app, X-Factor captures it, spins up an AI agent in an isolated git worktree, and opens a draft PR with the fix — all without touching your production code.
 
-## Support us
+## How It Works
 
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/x-factor.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/x-factor)
+1. An exception occurs in your Laravel app
+2. X-Factor captures it via a **webhook** (Nightwatch/Bugsnag) or the built-in **exception listener**
+3. The exception is fingerprinted, debounced, and deduplicated
+4. A queued job creates an **isolated git worktree** on a new branch
+5. An AI agent (Claude Code, OpenCode, or the Anthropic API) analyzes the code and writes a fix
+6. The fix is committed, pushed, and a **draft pull request** is opened
+7. The worktree is automatically cleaned up
+8. You review the PR and merge
 
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
+## Requirements
 
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
+- PHP 8.4+
+- Laravel 11 or 12
+- [GitHub CLI (`gh`)](https://cli.github.com/) installed and authenticated
+- A queue worker running
+
+**Plus one of:**
+
+| Driver | Requires |
+|--------|----------|
+| `cli`  | [Claude Code](https://docs.anthropic.com/en/docs/claude-code) or [OpenCode](https://github.com/opencode-ai/opencode) installed on the server |
+| `api`  | Only an `ANTHROPIC_API_KEY` (no CLI installation needed) |
 
 ## Installation
-
-You can install the package via composer:
 
 ```bash
 composer require ariel-mejia-dev/x-factor
 ```
 
-You can publish and run the migrations with:
-
 ```bash
-php artisan vendor:publish --tag="x-factor-migrations"
-php artisan migrate
+php artisan x-factor:install
 ```
 
-You can publish the config file with:
+This publishes the config, runs the migration, and verifies your setup.
 
-```bash
-php artisan vendor:publish --tag="x-factor-config"
+## Quick Start
+
+Pick the setup that matches your environment:
+
+### Option A: CLI Driver + Exception Listener (simplest)
+
+No external monitor needed. X-Factor listens to Laravel errors directly.
+
+```dotenv
+APP_ENV=staging
+X_FACTOR_DRIVER=cli
+X_FACTOR_CLI_TOOL=claude
+X_FACTOR_MONITOR=exception_listener
 ```
 
-This is the contents of the published config file:
+### Option B: CLI Driver + Nightwatch Webhook
+
+```dotenv
+APP_ENV=staging
+X_FACTOR_DRIVER=cli
+X_FACTOR_CLI_TOOL=claude
+X_FACTOR_MONITOR=nightwatch
+X_FACTOR_WEBHOOK_SECRET=your-strong-random-secret
+```
+
+### Option C: API Driver (no CLI installation needed)
+
+Ideal for staging/production servers (DigitalOcean, Laravel Cloud, AWS) where you can't install CLI tools.
+
+```dotenv
+APP_ENV=staging
+X_FACTOR_DRIVER=api
+X_FACTOR_MONITOR=exception_listener
+ANTHROPIC_API_KEY=sk-ant-...
+X_FACTOR_GITHUB_PAT=github_pat_...
+```
+
+Then start a queue worker:
+
+```bash
+php artisan queue:work --timeout=3700
+```
+
+> **Why `APP_ENV=staging`?** X-Factor only runs in `production` and `staging` by default. In `local`, errors are expected during development. You can change this in `config/x-factor.php` under `environments`.
+
+> **Why no `ANTHROPIC_API_KEY` for CLI?** Claude Code handles its own authentication. The API driver calls the Anthropic API directly, so it needs the key.
+
+## Verify Your Setup
+
+```bash
+php artisan x-factor:test
+```
+
+This creates a test issue and dispatches it for resolution. Add `--sync` to skip the queue.
+
+## Dashboard
+
+X-Factor includes a web dashboard at `/x-factor` to browse issues, view stacktraces, see PR links, and retry failed resolutions.
+
+By default it's only accessible in `local`. To allow access in other environments, register an auth gate in your `AppServiceProvider`:
 
 ```php
-return [
-];
+use ArielMejiaDev\XFactor\Facades\XFactor;
+
+public function boot(): void
+{
+    XFactor::auth(function ($user) {
+        return in_array($user->email, [
+            'admin@example.com',
+        ]);
+    });
+}
 ```
 
-Optionally, you can publish the views using
+## Artisan Commands
 
-```bash
-php artisan vendor:publish --tag="x-factor-views"
-```
+| Command | Description |
+|---------|-------------|
+| `x-factor:install` | Publish config, run migration, verify setup |
+| `x-factor:test` | Create a test issue to verify the pipeline |
+| `x-factor:status` | Show all issues with summary statistics |
+| `x-factor:retry {id}` | Retry a failed issue |
+| `x-factor:prune` | Delete old resolved/failed issues |
+| `x-factor:recover-stale` | Mark stuck `resolving` issues as `failed` |
 
-## Usage
+### Recommended Schedule
 
 ```php
-$xFactor = new ArielMejiaDev\XFactor();
-echo $xFactor->echoPhrase('Hello, ArielMejiaDev!');
+// routes/console.php
+use Illuminate\Support\Facades\Schedule;
+
+Schedule::command('x-factor:recover-stale')->hourly();
+Schedule::command('x-factor:prune')->daily();
 ```
+
+## Configuration Highlights
+
+All config lives in `config/x-factor.php`. Key options:
+
+| Option | Env Variable | Default | Description |
+|--------|-------------|---------|-------------|
+| Master switch | `X_FACTOR_ENABLED` | `true` | Disable all processing |
+| Dry run | `X_FACTOR_DRY_RUN` | `false` | Log actions without executing |
+| Driver | `X_FACTOR_DRIVER` | `cli` | `cli` or `api` |
+| CLI tool | `X_FACTOR_CLI_TOOL` | `claude` | `claude` or `opencode` |
+| Monitor | `X_FACTOR_MONITOR` | `nightwatch` | `nightwatch`, `bugsnag`, or `exception_listener` |
+| Timeout | `X_FACTOR_PROCESS_TIMEOUT` | `3600` | Max seconds for CLI process |
+| Debounce | `X_FACTOR_DEBOUNCE_MINUTES` | `5` | Min minutes between same exception |
+
+### Exception Categories
+
+Customize AI behavior per exception type — each category can override `cli_tool`, `model`, `timeout`, `max_turns`, and `prompt`:
+
+```php
+'categories' => [
+    'quick_fixes' => [
+        'timeout' => 1800,
+        'max_turns' => 15,
+        'exceptions' => [ErrorException::class, TypeError::class, ...],
+    ],
+    'complex_fixes' => [
+        'timeout' => 3600,
+        'max_turns' => 30,
+        'exceptions' => [LogicException::class, RuntimeException::class, ...],
+    ],
+],
+```
+
+### Ignored Exceptions
+
+Exceptions that should never be processed (infrastructure issues, unfixable errors):
+
+```php
+'ignored_exceptions' => [
+    \OutOfMemoryError::class,
+    \Illuminate\Http\Exceptions\ThrottleRequestsException::class,
+    \Symfony\Component\HttpKernel\Exception\HttpException::class,
+    \Illuminate\Session\TokenMismatchException::class,
+],
+```
+
+## Events
+
+| Event | Fired When |
+|-------|-----------|
+| `IssueCreated` | Issue created from webhook or exception |
+| `IssueResolving` | Resolution starts |
+| `IssueResolved` | Resolution succeeds |
+| `IssueResolutionFailed` | Resolution fails |
+
+```php
+use ArielMejiaDev\XFactor\Events\IssueResolved;
+
+Event::listen(IssueResolved::class, function (IssueResolved $event) {
+    // Send Slack notification, update status page, etc.
+});
+```
+
+## What X-Factor Can Fix
+
+Any runtime exception that occurs while the app is still running:
+
+- Undefined variables/properties, type errors, bad method calls
+- Missing models, query errors, validation logic errors
+- Authorization/authentication bugs, route and controller errors
+- Logic errors (RuntimeException, DomainException, off-by-one mistakes)
+
+## What It Cannot Fix
+
+- PHP syntax errors (app can't boot)
+- Fatal errors that kill the process (OOM, segfaults)
+- Infrastructure failures (DB down, Redis unreachable)
+- Environment/configuration issues
+- Issues requiring human judgment (business logic, UX, architecture)
+
+## Documentation
+
+See [docs/documentation.md](docs/documentation.md) for the full reference including webhook setup, signature verification, API driver details, custom prompts, security model, theming, and troubleshooting.
 
 ## Testing
 
@@ -65,14 +231,6 @@ composer test
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
-
-## Contributing
-
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
-
-## Security Vulnerabilities
-
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
 
 ## Credits
 
