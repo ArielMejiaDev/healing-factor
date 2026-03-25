@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X-Factor — Self-Healing Laravel Package</title>
+    <meta name="description" content="X-Factor catches exceptions in your Laravel app and automatically creates pull requests with fixes using AI. Open source.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #0B0F1A;
+            --bg-card: #111827;
+            --bg-card-hover: #1a2236;
+            --border: #1E293B;
+            --text: #F1F5F9;
+            --text-muted: #94A3B8;
+            --primary: #A78BFA;
+            --primary-glow: rgba(167, 139, 250, 0.15);
+            --cta: #22C55E;
+            --cta-hover: #16A34A;
+            --accent-blue: #60A5FA;
+            --accent-amber: #FBBF24;
+            --font-sans: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* ---------- NAV ---------- */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            backdrop-filter: blur(16px) saturate(1.8);
+            -webkit-backdrop-filter: blur(16px) saturate(1.8);
+            background: rgba(11, 15, 26, 0.8);
+            border-bottom: 1px solid var(--border);
+            transition: background 0.3s;
+        }
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .nav-brand {
+            font-family: var(--font-mono);
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-brand span { color: var(--primary); }
+        .nav-links { display: flex; gap: 32px; align-items: center; }
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--text); }
+        .nav-gh {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text) !important;
+            font-family: var(--font-mono);
+            font-size: 0.8125rem;
+            transition: border-color 0.2s, background 0.2s;
+            cursor: pointer;
+        }
+        .nav-gh:hover { border-color: var(--text-muted); background: var(--bg-card); }
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        /* ---------- HERO ---------- */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 120px 24px 80px;
+            overflow: hidden;
+        }
+        .hero-glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(140px);
+            opacity: 0.15;
+            pointer-events: none;
+        }
+        .hero-glow--purple { background: var(--primary); top: -200px; right: -100px; }
+        .hero-glow--green { background: var(--cta); bottom: -200px; left: -100px; opacity: 0.08; }
+        .hero-content {
+            position: relative;
+            max-width: 840px;
+            text-align: center;
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            background: var(--primary-glow);
+            border: 1px solid rgba(167, 139, 250, 0.25);
+            border-radius: 999px;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: var(--primary);
+            margin-bottom: 32px;
+        }
+        .hero-badge svg { width: 16px; height: 16px; }
+        h1 {
+            font-family: var(--font-sans);
+            font-weight: 700;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            margin-bottom: 24px;
+        }
+        h1 .gradient {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent-blue) 50%, var(--cta) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-sub {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 40px;
+            line-height: 1.7;
+        }
+        .hero-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+            border: none;
+        }
+        .btn:active { transform: scale(0.97); }
+        .btn-primary {
+            background: var(--cta);
+            color: #fff;
+            box-shadow: 0 0 24px rgba(34, 197, 94, 0.25);
+        }
+        .btn-primary:hover { background: var(--cta-hover); box-shadow: 0 0 32px rgba(34, 197, 94, 0.35); }
+        .btn-outline {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        .btn-outline:hover { border-color: var(--text-muted); background: var(--bg-card); }
+        .btn svg { width: 18px; height: 18px; }
+        .hero-install {
+            margin-top: 48px;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px 24px;
+            font-family: var(--font-mono);
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .hero-install:hover { border-color: var(--text-muted); }
+        .hero-install code { color: var(--cta); }
+        .hero-install .copy-icon { color: var(--text-muted); transition: color 0.2s; }
+        .hero-install:hover .copy-icon { color: var(--text); }
+        @media (prefers-reduced-motion: no-preference) {
+            .hero-install { animation: float 3s ease-in-out infinite; }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        /* ---------- SECTIONS ---------- */
+        section { padding: 100px 24px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .section-label {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--primary);
+            margin-bottom: 16px;
+        }
+        .section-title {
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+        }
+        .section-desc {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            line-height: 1.7;
+        }
+
+        /* ---------- FEATURES ---------- */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 56px;
+        }
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 32px;
+            transition: border-color 0.25s, background 0.25s, transform 0.25s;
+        }
+        .feature-card:hover {
+            border-color: rgba(167, 139, 250, 0.3);
+            background: var(--bg-card-hover);
+            transform: translateY(-2px);
+        }
+        .feature-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .feature-icon svg { width: 22px; height: 22px; }
+        .feature-icon--purple { background: rgba(167, 139, 250, 0.12); color: var(--primary); }
+        .feature-icon--green { background: rgba(34, 197, 94, 0.12); color: var(--cta); }
+        .feature-icon--blue { background: rgba(96, 165, 250, 0.12); color: var(--accent-blue); }
+        .feature-icon--amber { background: rgba(251, 191, 36, 0.12); color: var(--accent-amber); }
+        .feature-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .feature-card p {
+            font-size: 0.9375rem;
+            color: var(--text-muted);
+            line-height: 1.65;
+        }
+
+        /* ---------- HOW IT WORKS ---------- */
+        .how-section { background: linear-gradient(180deg, var(--bg) 0%, #0d1220 100%); }
+        .pipeline {
+            margin-top: 56px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+        .step {
+            position: relative;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 28px 24px;
+            transition: border-color 0.25s, transform 0.25s;
+        }
+        .step:hover { border-color: rgba(167, 139, 250, 0.3); transform: translateY(-2px); }
+        .step-num {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 12px;
+            display: block;
+        }
+        .step h4 {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .step p {
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* ---------- SCREENSHOTS ---------- */
+        .screenshots-section { overflow: hidden; }
+        .screenshots-grid {
+            margin-top: 56px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        .screenshot-card {
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            background: var(--bg-card);
+            transition: border-color 0.25s, transform 0.25s;
+        }
+        .screenshot-card:hover { border-color: rgba(167, 139, 250, 0.3); transform: translateY(-2px); }
+        .screenshot-card--wide { grid-column: 1 / -1; }
+        .screenshot-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .screenshot-info {
+            padding: 20px 24px;
+        }
+        .screenshot-info h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .screenshot-info p {
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+        }
+
+        /* ---------- INTEGRATIONS ---------- */
+        .integrations-grid {
+            margin-top: 56px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        .integration-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 32px;
+            text-align: center;
+            transition: border-color 0.25s, transform 0.25s;
+        }
+        .integration-card:hover { border-color: rgba(167, 139, 250, 0.3); transform: translateY(-2px); }
+        .integration-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            margin-top: 16px;
+        }
+        .integration-card p {
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+        .integration-logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .integration-logo svg { width: 28px; height: 28px; }
+        .integration-logo--claude { background: rgba(217, 119, 87, 0.12); color: #D97757; }
+        .integration-logo--opencode { background: rgba(96, 165, 250, 0.12); color: var(--accent-blue); }
+        .integration-logo--nightwatch { background: rgba(167, 139, 250, 0.12); color: var(--primary); }
+
+        /* ---------- QUICKSTART ---------- */
+        .quickstart-section { background: linear-gradient(180deg, #0d1220 0%, var(--bg) 100%); }
+        .quickstart-inner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .quickstart-inner .section-desc { margin-left: auto; margin-right: auto; }
+        .code-block {
+            margin-top: 40px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            max-width: 720px;
+            width: 100%;
+            text-align: left;
+        }
+        .code-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border);
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        .code-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        .code-dot--red { background: #EF4444; }
+        .code-dot--yellow { background: #FBBF24; }
+        .code-dot--green { background: #22C55E; }
+        .code-block pre {
+            padding: 24px;
+            overflow-x: auto;
+            font-family: var(--font-mono);
+            font-size: 0.875rem;
+            line-height: 1.7;
+            color: var(--text-muted);
+        }
+        .code-block pre .cmd { color: var(--cta); }
+        .code-block pre .flag { color: var(--primary); }
+        .code-block pre .comment { color: #475569; }
+        .code-block pre .string { color: var(--accent-amber); }
+        .env-grid {
+            margin-top: 32px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            max-width: 720px;
+        }
+        .env-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+        }
+        .env-card h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .env-card p {
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+        .env-card code {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--cta);
+            background: rgba(34, 197, 94, 0.08);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        /* ---------- CTA BANNER ---------- */
+        .cta-section { text-align: center; }
+        .cta-box {
+            background: linear-gradient(135deg, rgba(167, 139, 250, 0.08) 0%, rgba(34, 197, 94, 0.05) 100%);
+            border: 1px solid rgba(167, 139, 250, 0.15);
+            border-radius: 20px;
+            padding: 64px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        .cta-box::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 50% 0%, rgba(167, 139, 250, 0.06) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .cta-box h2 {
+            font-size: clamp(1.5rem, 3.5vw, 2.25rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .cta-box p {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            margin-bottom: 32px;
+            position: relative;
+        }
+        .cta-box .hero-actions { position: relative; }
+
+        /* ---------- FOOTER ---------- */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 40px 24px;
+        }
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .footer-left {
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+        }
+        .footer-left a { color: var(--primary); text-decoration: none; }
+        .footer-left a:hover { text-decoration: underline; }
+        .footer-links { display: flex; gap: 24px; }
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.8125rem;
+            transition: color 0.2s;
+        }
+        .footer-links a:hover { color: var(--text); }
+
+        /* ---------- ANIMATIONS ---------- */
+        @media (prefers-reduced-motion: no-preference) {
+            .fade-up {
+                opacity: 0;
+                transform: translateY(24px);
+                transition: opacity 0.6s ease, transform 0.6s ease;
+            }
+            .fade-up.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .fade-up { opacity: 1; transform: none; }
+        }
+
+        /* ---------- RESPONSIVE ---------- */
+        @media (max-width: 1024px) {
+            .features-grid, .integrations-grid { grid-template-columns: repeat(2, 1fr); }
+            .pipeline { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hamburger { display: block; }
+            .nav-links.open {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 64px;
+                left: 0;
+                right: 0;
+                background: rgba(11, 15, 26, 0.95);
+                backdrop-filter: blur(16px);
+                padding: 24px;
+                gap: 16px;
+                border-bottom: 1px solid var(--border);
+            }
+            .features-grid, .integrations-grid { grid-template-columns: 1fr; }
+            .pipeline { grid-template-columns: 1fr; }
+            .screenshots-grid { grid-template-columns: 1fr; }
+            .env-grid { grid-template-columns: 1fr; }
+            section { padding: 64px 20px; }
+            .hero { padding: 100px 20px 60px; }
+            .cta-box { padding: 40px 24px; }
+            .footer-inner { flex-direction: column; gap: 16px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+    <div class="nav-inner">
+        <a href="#" class="nav-brand"><span>X</span>-Factor</a>
+        <div class="nav-links" id="navLinks">
+            <a href="#features">Features</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#screenshots">Dashboard</a>
+            <a href="#quickstart">Quick Start</a>
+            <a href="docs.html">Docs</a>
+            <a href="https://github.com/ArielMejiaDev/x-factor" target="_blank" rel="noopener" class="nav-gh">
+                <svg viewBox="0 0 16 16" fill="currentColor" width="16" height="16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+                GitHub
+            </a>
+        </div>
+        <button class="hamburger" id="hamburger" aria-label="Toggle navigation">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+    </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+    <div class="hero-glow hero-glow--purple"></div>
+    <div class="hero-glow hero-glow--green"></div>
+    <div class="hero-content fade-up">
+        <div class="hero-badge">
+            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+            Open Source &middot; MIT License
+        </div>
+        <h1>Your Laravel App<br><span class="gradient">Fixes Itself</span></h1>
+        <p class="hero-sub">X-Factor catches production exceptions and automatically creates pull requests with AI-generated fixes. Install, configure, and let your app self-heal.</p>
+        <div class="hero-actions">
+            <a href="#quickstart" class="btn btn-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                Get Started
+            </a>
+            <a href="https://github.com/ArielMejiaDev/x-factor" target="_blank" rel="noopener" class="btn btn-outline">
+                <svg viewBox="0 0 16 16" fill="currentColor" width="18" height="18"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+                View on GitHub
+            </a>
+        </div>
+        <div class="hero-install" onclick="copyInstall()" title="Click to copy">
+            <span>$</span>
+            <code>composer require arielmejiadev/x-factor</code>
+            <svg class="copy-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        </div>
+    </div>
+</section>
+
+<!-- Features -->
+<section id="features">
+    <div class="container">
+        <div class="fade-up">
+            <span class="section-label">Features</span>
+            <h2 class="section-title">Everything you need for self-healing apps</h2>
+            <p class="section-desc">X-Factor is a drop-in Laravel package that transforms exceptions into actionable pull requests, powered by AI.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card fade-up">
+                <div class="feature-icon feature-icon--green">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M9 12l2 2 4-4"/></svg>
+                </div>
+                <h3>Automatic PR Creation</h3>
+                <p>When an exception fires, X-Factor spins up an isolated git worktree, runs AI to fix the code, and opens a draft PR on your repo.</p>
+            </div>
+            <div class="feature-card fade-up">
+                <div class="feature-icon feature-icon--purple">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0022 16z"/><polyline points="7.5 4.21 12 6.81 16.5 4.21"/><polyline points="7.5 19.79 7.5 14.6 3 12"/><polyline points="21 12 16.5 14.6 16.5 19.79"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                </div>
+                <h3>Multiple AI Drivers</h3>
+                <p>Use Claude Code or OpenCode as CLI drivers, or the Anthropic API driver directly. Full flexibility to match your stack.</p>
+            </div>
+            <div class="feature-card fade-up">
+                <div class="feature-icon feature-icon--blue">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+                </div>
+                <h3>Smart Deduplication</h3>
+                <p>3-layer dedup with fingerprinting, cache debounce, and database checks. The same exception never triggers duplicate work.</p>
+            </div>
+            <div class="feature-card fade-up">
+                <div class="feature-icon feature-icon--amber">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <h3>Secure by Design</h3>
+                <p>HMAC webhook verification, git worktree isolation, environment whitelisting, and no shell injection vectors.</p>
+            </div>
+            <div class="feature-card fade-up">
+                <div class="feature-icon feature-icon--green">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                </div>
+                <h3>Built-in Dashboard</h3>
+                <p>Dark-themed web dashboard with search, status filters, PR links, retry actions, and real-time polling at <code>/x-factor</code>.</p>
+            </div>
+            <div class="feature-card fade-up">
+                <div class="feature-icon feature-icon--purple">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                </div>
+                <h3>Exception Categories</h3>
+                <p>Customize AI behavior per exception type — different prompts, timeouts, models, and tools for quick fixes vs. complex bugs.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section id="how-it-works" class="how-section">
+    <div class="container">
+        <div class="fade-up">
+            <span class="section-label">Pipeline</span>
+            <h2 class="section-title">How it works</h2>
+            <p class="section-desc">From exception to pull request in 8 automated steps. No human intervention required.</p>
+        </div>
+        <div class="pipeline">
+            <div class="step fade-up">
+                <span class="step-num">01</span>
+                <h4>Exception Caught</h4>
+                <p>Your app throws an exception. X-Factor's listener or Nightwatch webhook captures it instantly.</p>
+            </div>
+            <div class="step fade-up">
+                <span class="step-num">02</span>
+                <h4>Fingerprinting</h4>
+                <p>A unique fingerprint is generated from the exception class, message, file, and line number.</p>
+            </div>
+            <div class="step fade-up">
+                <span class="step-num">03</span>
+                <h4>Deduplication</h4>
+                <p>3-layer check — cache debounce, database lookup, and status validation prevent duplicate work.</p>
+            </div>
+            <div class="step fade-up">
+                <span class="step-num">04</span>
+                <h4>Issue Created</h4>
+                <p>A new issue record is stored with full exception details, stack trace, and metadata.</p>
+            </div>
+            <div class="step fade-up">
+                <span class="step-num">05</span>
+                <h4>Job Dispatched</h4>
+                <p>A queued <code>ResolveIssue</code> job picks up the work asynchronously on your queue worker.</p>
+            </div>
+            <div class="step fade-up">
+                <span class="step-num">06</span>
+                <h4>Git Worktree</h4>
+                <p>An isolated git worktree is created so AI operates on a clean copy — never touching production code.</p>
+            </div>
+            <div class="step fade-up">
+                <span class="step-num">07</span>
+                <h4>AI Generates Fix</h4>
+                <p>Claude Code or OpenCode analyzes the exception and writes a targeted fix with full context.</p>
+            </div>
+            <div class="step fade-up">
+                <span class="step-num">08</span>
+                <h4>PR Opened</h4>
+                <p>A draft pull request is created on GitHub with the fix, ready for your team to review and merge.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Screenshots -->
+<section id="screenshots" class="screenshots-section">
+    <div class="container">
+        <div class="fade-up">
+            <span class="section-label">Dashboard</span>
+            <h2 class="section-title">See it in action</h2>
+            <p class="section-desc">A dark-themed dashboard to monitor, search, and retry every issue X-Factor processes.</p>
+        </div>
+        <div class="screenshots-grid">
+            <div class="screenshot-card screenshot-card--wide fade-up">
+                <img src="images/dashboard.png" alt="X-Factor dashboard showing a list of resolved issues with status, source, attempts, and PR links" loading="lazy">
+                <div class="screenshot-info">
+                    <h3>Issues Dashboard</h3>
+                    <p>Search, filter by status, view sources and PR links — all in one place.</p>
+                </div>
+            </div>
+            <div class="screenshot-card fade-up">
+                <img src="images/issue-detail.png" alt="X-Factor issue detail page showing exception overview, diagnostics, and stack trace" loading="lazy">
+                <div class="screenshot-info">
+                    <h3>Issue Detail</h3>
+                    <p>Full exception overview, diagnostics, and stack trace for every captured issue.</p>
+                </div>
+            </div>
+            <div class="screenshot-card fade-up">
+                <img src="images/github-pr.png" alt="GitHub pull request automatically created by X-Factor with problem description and fix" loading="lazy">
+                <div class="screenshot-info">
+                    <h3>Auto-Generated PR</h3>
+                    <p>AI writes the fix, opens a draft PR with a clear description, ready for review.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Integrations -->
+<section id="integrations">
+    <div class="container">
+        <div class="fade-up">
+            <span class="section-label">Integrations</span>
+            <h2 class="section-title">Works with your tools</h2>
+            <p class="section-desc">Plug X-Factor into your existing monitoring and AI setup. No lock-in.</p>
+        </div>
+        <div class="integrations-grid">
+            <div class="integration-card fade-up">
+                <div class="integration-logo integration-logo--claude">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.709 15.955l4.72-2.756.08-.046 2.91-1.707c.132-.076.132-.2-.002-.278l-2.903-1.681-.08-.046-4.725-2.733c-.135-.078-.245-.022-.245.128v1.19c0 .149.086.32.222.397l3.2 1.849-.002.003-3.2 1.852a.48.48 0 00-.22.396v1.188c0 .152.109.209.245.131z"/><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 1.5a8.5 8.5 0 110 17 8.5 8.5 0 010-17z"/></svg>
+                </div>
+                <h3>Claude Code</h3>
+                <p>Use Anthropic's Claude Code CLI as the AI driver to analyze exceptions and generate fixes.</p>
+            </div>
+            <div class="integration-card fade-up">
+                <div class="integration-logo integration-logo--opencode">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                </div>
+                <h3>OpenCode</h3>
+                <p>Prefer OpenCode? Swap the CLI driver in your config and X-Factor handles the rest.</p>
+            </div>
+            <div class="integration-card fade-up">
+                <div class="integration-logo integration-logo--nightwatch">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+                </div>
+                <h3>Nightwatch</h3>
+                <p>Connect via HMAC-signed webhooks. Nightwatch fires, X-Factor fixes. Zero effort.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Start -->
+<section id="quickstart" class="quickstart-section">
+    <div class="container quickstart-inner">
+        <div class="fade-up">
+            <span class="section-label">Quick Start</span>
+            <h2 class="section-title">Up and running in minutes</h2>
+            <p class="section-desc">Install the package, run the setup command, configure your <code>.env</code>, and you're done.</p>
+        </div>
+        <div class="code-block fade-up">
+            <div class="code-header">
+                <span class="code-dot code-dot--red"></span>
+                <span class="code-dot code-dot--yellow"></span>
+                <span class="code-dot code-dot--green"></span>
+                Terminal
+            </div>
+            <pre><span class="comment"># Install the package</span>
+<span class="cmd">composer require</span> arielmejiadev/x-factor
+
+<span class="comment"># Run the installer (publishes config, migration, and dashboard)</span>
+<span class="cmd">php artisan</span> x-factor:install
+
+<span class="comment"># Run migrations</span>
+<span class="cmd">php artisan</span> migrate
+
+<span class="comment"># Verify everything is configured</span>
+<span class="cmd">php artisan</span> x-factor:status</pre>
+        </div>
+        <div class="env-grid fade-up">
+            <div class="env-card">
+                <h4>Option A: Exception Listener</h4>
+                <p>Catches all unhandled exceptions automatically.</p>
+                <code>X_FACTOR_MONITOR=exception_listener</code>
+            </div>
+            <div class="env-card">
+                <h4>Option B: Nightwatch Webhook</h4>
+                <p>Receives exceptions via Nightwatch's webhook.</p>
+                <code>X_FACTOR_MONITOR=nightwatch</code>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-box fade-up">
+            <h2>Let your app fix itself</h2>
+            <p>X-Factor is free, open source, and ready for production Laravel apps.</p>
+            <div class="hero-actions">
+                <a href="https://github.com/ArielMejiaDev/x-factor" target="_blank" rel="noopener" class="btn btn-primary">
+                    <svg viewBox="0 0 16 16" fill="currentColor" width="18" height="18"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+                    Star on GitHub
+                </a>
+                <a href="docs.html" class="btn btn-outline">Read the Docs</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="footer-inner">
+        <div class="footer-left">
+            Built by <a href="https://github.com/ArielMejiaDev" target="_blank" rel="noopener">ArielMejiaDev</a> &middot; MIT License
+        </div>
+        <div class="footer-links">
+            <a href="https://github.com/ArielMejiaDev/x-factor" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://github.com/ArielMejiaDev/x-factor/issues" target="_blank" rel="noopener">Issues</a>
+            <a href="https://packagist.org/packages/arielmejiadev/x-factor" target="_blank" rel="noopener">Packagist</a>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Mobile nav toggle
+    document.getElementById('hamburger').addEventListener('click', function() {
+        document.getElementById('navLinks').classList.toggle('open');
+    });
+
+    // Copy install command
+    function copyInstall() {
+        navigator.clipboard.writeText('composer require arielmejiadev/x-factor').then(function() {
+            var el = document.querySelector('.hero-install code');
+            var original = el.textContent;
+            el.textContent = 'Copied!';
+            el.style.color = '#A78BFA';
+            setTimeout(function() {
+                el.textContent = original;
+                el.style.color = '';
+            }, 1500);
+        });
+    }
+
+    // Intersection Observer for fade-up animations
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+        document.querySelectorAll('.fade-up').forEach(function(el) {
+            observer.observe(el);
+        });
+    }
+</script>
+</body>
+</html>

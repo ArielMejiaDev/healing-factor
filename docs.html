@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation — X-Factor</title>
+    <meta name="description" content="Full documentation for X-Factor, the self-healing Laravel package.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #0B0F1A;
+            --bg-card: #111827;
+            --bg-card-hover: #1a2236;
+            --border: #1E293B;
+            --text: #F1F5F9;
+            --text-muted: #94A3B8;
+            --primary: #A78BFA;
+            --primary-glow: rgba(167, 139, 250, 0.15);
+            --cta: #22C55E;
+            --cta-hover: #16A34A;
+            --accent-blue: #60A5FA;
+            --accent-amber: #FBBF24;
+            --font-sans: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* ---------- NAV ---------- */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            backdrop-filter: blur(16px) saturate(1.8);
+            -webkit-backdrop-filter: blur(16px) saturate(1.8);
+            background: rgba(11, 15, 26, 0.8);
+            border-bottom: 1px solid var(--border);
+        }
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .nav-brand {
+            font-family: var(--font-mono);
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-brand span { color: var(--primary); }
+        .nav-links { display: flex; gap: 24px; align-items: center; }
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--text); }
+        .nav-gh {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text) !important;
+            font-family: var(--font-mono);
+            font-size: 0.8125rem;
+            transition: border-color 0.2s, background 0.2s;
+            cursor: pointer;
+        }
+        .nav-gh:hover { border-color: var(--text-muted); background: var(--bg-card); }
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        /* ---------- LAYOUT ---------- */
+        .docs-layout {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 88px 24px 80px;
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 48px;
+        }
+
+        /* ---------- SIDEBAR ---------- */
+        .sidebar {
+            position: sticky;
+            top: 88px;
+            height: fit-content;
+            max-height: calc(100vh - 112px);
+            overflow-y: auto;
+            padding-right: 16px;
+        }
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-track { background: transparent; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        .sidebar-group { margin-bottom: 24px; }
+        .sidebar-label {
+            font-family: var(--font-mono);
+            font-size: 0.6875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            display: block;
+        }
+        .sidebar a {
+            display: block;
+            padding: 5px 12px;
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 6px;
+            transition: color 0.2s, background 0.2s;
+        }
+        .sidebar a:hover { color: var(--text); background: rgba(167, 139, 250, 0.06); }
+        .sidebar a.active { color: var(--primary); background: var(--primary-glow); }
+
+        /* ---------- CONTENT ---------- */
+        .doc-content { min-width: 0; }
+
+        .doc-content h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 8px;
+        }
+        .doc-content > .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 48px;
+            line-height: 1.7;
+        }
+
+        .doc-content h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-top: 64px;
+            margin-bottom: 16px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            scroll-margin-top: 88px;
+        }
+        .doc-content h2:first-of-type { margin-top: 0; border-top: none; padding-top: 0; }
+
+        .doc-content h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-top: 32px;
+            margin-bottom: 12px;
+            scroll-margin-top: 88px;
+        }
+
+        .doc-content h4 {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            margin-top: 24px;
+            margin-bottom: 8px;
+        }
+
+        .doc-content p {
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            line-height: 1.75;
+        }
+
+        .doc-content a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .doc-content a:hover { text-decoration: underline; }
+
+        .doc-content strong { color: var(--text); font-weight: 600; }
+
+        .doc-content ul, .doc-content ol {
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            padding-left: 24px;
+            line-height: 1.75;
+        }
+        .doc-content li { margin-bottom: 4px; }
+        .doc-content li code { color: var(--cta); }
+
+        .doc-content code {
+            font-family: var(--font-mono);
+            font-size: 0.8125rem;
+            background: rgba(167, 139, 250, 0.08);
+            color: var(--primary);
+            padding: 2px 7px;
+            border-radius: 4px;
+        }
+
+        .doc-content pre {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px 24px;
+            overflow-x: auto;
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+        .doc-content pre code {
+            background: none;
+            padding: 0;
+            color: var(--text-muted);
+            font-size: 0.8125rem;
+        }
+
+        .doc-content blockquote {
+            border-left: 3px solid var(--primary);
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            background: var(--primary-glow);
+            border-radius: 0 8px 8px 0;
+        }
+        .doc-content blockquote p { margin-bottom: 0; color: var(--text-muted); }
+        .doc-content blockquote strong { color: var(--text); }
+
+        .doc-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 0.875rem;
+        }
+        .doc-content th {
+            text-align: left;
+            padding: 10px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            font-weight: 600;
+            color: var(--text);
+            font-size: 0.8125rem;
+        }
+        .doc-content td {
+            padding: 10px 16px;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+        }
+        .doc-content td code {
+            font-size: 0.75rem;
+        }
+
+        .doc-content hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 48px 0;
+        }
+
+        .numbered-list {
+            counter-reset: steps;
+            list-style: none;
+            padding-left: 0;
+        }
+        .numbered-list li {
+            counter-increment: steps;
+            padding-left: 36px;
+            position: relative;
+            margin-bottom: 12px;
+        }
+        .numbered-list li::before {
+            content: counter(steps);
+            position: absolute;
+            left: 0;
+            top: 1px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary-glow);
+            border: 1px solid rgba(167, 139, 250, 0.25);
+            color: var(--primary);
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ---------- FOOTER ---------- */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 40px 24px;
+        }
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .footer-left {
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+        }
+        .footer-left a { color: var(--primary); text-decoration: none; }
+        .footer-left a:hover { text-decoration: underline; }
+        .footer-links { display: flex; gap: 24px; }
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.8125rem;
+            transition: color 0.2s;
+        }
+        .footer-links a:hover { color: var(--text); }
+
+        /* ---------- MOBILE SIDEBAR ---------- */
+        .mobile-toc-btn {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 40;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(167, 139, 250, 0.35);
+            align-items: center;
+            justify-content: center;
+        }
+        .mobile-toc-btn svg { width: 20px; height: 20px; }
+
+        @media (max-width: 860px) {
+            .docs-layout {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+            .sidebar {
+                display: none;
+                position: fixed;
+                inset: 0;
+                z-index: 45;
+                background: rgba(11, 15, 26, 0.95);
+                backdrop-filter: blur(16px);
+                padding: 80px 24px 24px;
+                max-height: 100vh;
+                overflow-y: auto;
+            }
+            .sidebar.open { display: block; }
+            .mobile-toc-btn { display: flex; }
+            .nav-links { display: none; }
+            .hamburger { display: block; }
+            .nav-links.open {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 64px;
+                left: 0;
+                right: 0;
+                background: rgba(11, 15, 26, 0.95);
+                backdrop-filter: blur(16px);
+                padding: 24px;
+                gap: 16px;
+                border-bottom: 1px solid var(--border);
+            }
+            .footer-inner { flex-direction: column; gap: 16px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+    <div class="nav-inner">
+        <a href="index.html" class="nav-brand"><span>X</span>-Factor</a>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html">Home</a>
+            <a href="index.html#features">Features</a>
+            <a href="index.html#how-it-works">How It Works</a>
+            <a href="https://github.com/ArielMejiaDev/x-factor" target="_blank" rel="noopener" class="nav-gh">
+                <svg viewBox="0 0 16 16" fill="currentColor" width="16" height="16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+                GitHub
+            </a>
+        </div>
+        <button class="hamburger" id="hamburger" aria-label="Toggle navigation">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+    </div>
+</nav>
+
+<div class="docs-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-group">
+            <span class="sidebar-label">Getting Started</span>
+            <a href="#requirements">Requirements</a>
+            <a href="#installation">Installation</a>
+            <a href="#quick-start">Quick Start Guide</a>
+            <a href="#how-it-works">How It Works</a>
+        </div>
+        <div class="sidebar-group">
+            <span class="sidebar-label">Configuration</span>
+            <a href="#configuration">Configuration</a>
+            <a href="#monitor-strategy">Monitor Strategy</a>
+            <a href="#webhook-setup">Webhook Setup</a>
+            <a href="#exception-categories">Exception Categories</a>
+            <a href="#ignored-exceptions">Ignored Exceptions</a>
+            <a href="#deduplication">Deduplication</a>
+        </div>
+        <div class="sidebar-group">
+            <span class="sidebar-label">Usage</span>
+            <a href="#artisan-commands">Artisan Commands</a>
+            <a href="#events">Events</a>
+            <a href="#issue-model">Issue Model</a>
+            <a href="#facade">Facade</a>
+        </div>
+        <div class="sidebar-group">
+            <span class="sidebar-label">Dashboard</span>
+            <a href="#logging">Logging</a>
+            <a href="#dashboard">Dashboard</a>
+        </div>
+        <div class="sidebar-group">
+            <span class="sidebar-label">Advanced</span>
+            <a href="#security">Security</a>
+            <a href="#api-driver">API Driver</a>
+            <a href="#can-fix">What It Can Fix</a>
+            <a href="#setup-examples">Setup Examples</a>
+            <a href="#troubleshooting">Troubleshooting</a>
+        </div>
+    </aside>
+
+    <!-- Content -->
+    <main class="doc-content">
+
+        <h1>X-Factor Documentation</h1>
+        <p class="subtitle">A self-healing Laravel package that catches exceptions and automatically creates pull requests with fixes using AI CLI tools (Claude Code, OpenCode).</p>
+
+        <!-- Requirements -->
+        <h2 id="requirements">Requirements</h2>
+        <ul>
+            <li>PHP 8.4+</li>
+            <li>Laravel 11 or 12</li>
+            <li><strong>CLI driver:</strong> <a href="https://docs.anthropic.com/en/docs/claude-code" target="_blank" rel="noopener">Claude Code</a> or <a href="https://github.com/opencode-ai/opencode" target="_blank" rel="noopener">OpenCode</a> CLI installed on the server</li>
+            <li><strong>API driver:</strong> Only an <code>ANTHROPIC_API_KEY</code> (no CLI installation needed)</li>
+            <li><a href="https://cli.github.com/" target="_blank" rel="noopener">GitHub CLI (<code>gh</code>)</a> installed and authenticated (for PR creation)</li>
+            <li>A queue worker running (recommended for production)</li>
+        </ul>
+
+        <!-- Installation -->
+        <h2 id="installation">Installation</h2>
+
+        <h3>1. Install via Composer</h3>
+        <pre><code>composer require arielmejiadev/x-factor</code></pre>
+
+        <h3>2. Run the install command</h3>
+        <pre><code>php artisan x-factor:install</code></pre>
+        <p>This will:</p>
+        <ul>
+            <li>Publish the config file (<code>config/x-factor.php</code>)</li>
+            <li>Publish the migration</li>
+            <li>Run the migration (with confirmation)</li>
+            <li>Verify that the CLI tool (<code>claude</code> or <code>opencode</code>) is available</li>
+            <li>Check that <code>ANTHROPIC_API_KEY</code> is set</li>
+        </ul>
+
+        <h3>3. Add environment variables to <code>.env</code></h3>
+        <pre><code># Required
+ANTHROPIC_API_KEY=sk-ant-...
+
+# Optional — all have sensible defaults
+X_FACTOR_ENABLED=true
+X_FACTOR_DRY_RUN=false
+X_FACTOR_DRIVER=cli
+X_FACTOR_CLI_TOOL=claude
+X_FACTOR_MODEL=
+X_FACTOR_MONITOR=nightwatch
+X_FACTOR_WEBHOOK_PATH=x-factor/webhook
+X_FACTOR_WEBHOOK_SECRET=your-webhook-secret
+X_FACTOR_PROCESS_TIMEOUT=3600
+X_FACTOR_MAX_TURNS=25
+X_FACTOR_DEBOUNCE_MINUTES=5
+X_FACTOR_RETENTION_DAYS=30
+X_FACTOR_LOG_CHANNEL=x-factor
+X_FACTOR_QUEUE_CONNECTION=
+X_FACTOR_QUEUE_NAME=
+X_FACTOR_GITHUB_PAT=</code></pre>
+
+        <h3>4. Start the queue worker</h3>
+        <pre><code>php artisan queue:work --timeout=3700</code></pre>
+        <p>The timeout should exceed the configured process timeout (default 3600s) to avoid the worker killing jobs prematurely.</p>
+
+        <!-- Quick Start -->
+        <h2 id="quick-start">Quick Start Guide</h2>
+        <p>Choose the setup that matches your environment. Only the variables shown are required — everything else has sensible defaults.</p>
+
+        <h3>CLI Driver (requires Claude Code or OpenCode installed)</h3>
+        <table>
+            <thead>
+                <tr><th>Variable</th><th>Exception Listener</th><th>Nightwatch</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>APP_ENV</code></td><td><code>staging</code></td><td><code>staging</code></td></tr>
+                <tr><td><code>X_FACTOR_DRIVER</code></td><td><code>cli</code></td><td><code>cli</code></td></tr>
+                <tr><td><code>X_FACTOR_CLI_TOOL</code></td><td><code>claude</code></td><td><code>claude</code></td></tr>
+                <tr><td><code>X_FACTOR_MONITOR</code></td><td><code>exception_listener</code></td><td><code>nightwatch</code></td></tr>
+                <tr><td><code>X_FACTOR_WEBHOOK_SECRET</code></td><td>—</td><td><code>your-secret</code></td></tr>
+            </tbody>
+        </table>
+
+        <h3>API Driver (no CLI installation needed)</h3>
+        <table>
+            <thead>
+                <tr><th>Variable</th><th>Exception Listener</th><th>Nightwatch</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>APP_ENV</code></td><td><code>staging</code></td><td><code>staging</code></td></tr>
+                <tr><td><code>X_FACTOR_DRIVER</code></td><td><code>api</code></td><td><code>api</code></td></tr>
+                <tr><td><code>X_FACTOR_MONITOR</code></td><td><code>exception_listener</code></td><td><code>nightwatch</code></td></tr>
+                <tr><td><code>X_FACTOR_WEBHOOK_SECRET</code></td><td>—</td><td><code>your-secret</code></td></tr>
+                <tr><td><code>ANTHROPIC_API_KEY</code></td><td><code>sk-ant-...</code></td><td><code>sk-ant-...</code></td></tr>
+                <tr><td><code>X_FACTOR_GITHUB_PAT</code></td><td><code>github_pat_...</code></td><td><code>github_pat_...</code></td></tr>
+            </tbody>
+        </table>
+
+        <blockquote>
+            <p><strong>Why <code>APP_ENV=staging</code>?</strong> X-Factor only runs in <code>production</code> and <code>staging</code> by default. In <code>local</code>, errors are expected during active development — X-Factor is designed for bugs that slip through to staging or production.</p>
+        </blockquote>
+        <blockquote>
+            <p><strong>Why no <code>ANTHROPIC_API_KEY</code> for CLI?</strong> Claude Code handles its own authentication. The API driver calls the Anthropic API directly, so it needs the key.</p>
+        </blockquote>
+
+        <!-- How It Works -->
+        <h2 id="how-it-works">How It Works</h2>
+        <ol class="numbered-list">
+            <li>An exception occurs in your Laravel app.</li>
+            <li>X-Factor captures it via a <strong>webhook</strong> (from Nightwatch or Bugsnag) or the built-in <strong>exception listener</strong>.</li>
+            <li>The exception is fingerprinted, debounced, and deduplicated.</li>
+            <li>A queued job creates an <strong>isolated git worktree</strong> on a new branch — your production working directory is never touched.</li>
+            <li>The CLI tool (Claude Code or OpenCode) runs inside the worktree with a prompt describing the issue.</li>
+            <li>The AI analyzes the code, writes a fix, commits, pushes, and opens a <strong>draft pull request</strong>.</li>
+            <li>The worktree is automatically cleaned up (even if the CLI fails).</li>
+            <li>You review the PR and merge.</li>
+        </ol>
+
+        <!-- Configuration -->
+        <h2 id="configuration">Configuration</h2>
+        <p>All configuration lives in <code>config/x-factor.php</code>. Every key can be overridden via environment variables.</p>
+
+        <h3>Master Switch</h3>
+        <pre><code>'enabled' => env('X_FACTOR_ENABLED', true),</code></pre>
+        <p>Set to <code>false</code> to disable all processing. Webhooks will still return 200 but won't create issues.</p>
+
+        <h3>Environment Whitelist</h3>
+        <pre><code>'environments' => ['production', 'staging'],</code></pre>
+        <p>X-Factor only processes exceptions in these environments. Set to an empty array <code>[]</code> to allow all environments.</p>
+
+        <h3>Dry Run</h3>
+        <pre><code>'dry_run' => env('X_FACTOR_DRY_RUN', false),</code></pre>
+        <p>When enabled, X-Factor logs what it would do but never executes the CLI tool. Useful for testing your setup.</p>
+
+        <h3>Driver</h3>
+        <pre><code>'driver' => env('X_FACTOR_DRIVER', 'cli'),</code></pre>
+        <ul>
+            <li><code>cli</code> — Runs Claude Code or OpenCode as a subprocess. Requires the CLI tool installed on the server.</li>
+            <li><code>api</code> — Calls the Anthropic Messages API directly with <code>tool_use</code>. No CLI installation required — ideal for staging/production servers (DigitalOcean, Laravel Cloud, AWS).</li>
+        </ul>
+
+        <h3>CLI Tool</h3>
+        <pre><code>'cli_tool' => env('X_FACTOR_CLI_TOOL', 'claude'),</code></pre>
+        <ul>
+            <li><code>claude</code> — Uses <a href="https://docs.anthropic.com/en/docs/claude-code" target="_blank" rel="noopener">Claude Code</a> (<code>claude -p ...</code>).</li>
+            <li><code>opencode</code> — Uses <a href="https://github.com/opencode-ai/opencode" target="_blank" rel="noopener">OpenCode</a> (<code>opencode run ...</code>).</li>
+        </ul>
+
+        <h3>AI Model</h3>
+        <pre><code>'model' => env('X_FACTOR_MODEL', null),</code></pre>
+        <p>Override the default model. When <code>null</code>, the CLI tool picks its own default.</p>
+
+        <h3>Process Settings</h3>
+        <pre><code>'process' => [
+    'timeout' => (int) env('X_FACTOR_PROCESS_TIMEOUT', 3600),
+    'max_turns' => (int) env('X_FACTOR_MAX_TURNS', 25),
+    'working_directory' => null,
+],</code></pre>
+        <ul>
+            <li><code>timeout</code> — Maximum seconds the CLI process can run (default: 1 hour).</li>
+            <li><code>max_turns</code> — Maximum AI conversation turns (Claude Code only).</li>
+            <li><code>working_directory</code> — Base git repository path. <code>null</code> defaults to <code>base_path()</code>. The git worktree is created from this directory.</li>
+        </ul>
+        <blockquote>
+            <p><strong>Git Worktree Isolation:</strong> When resolving an issue, X-Factor creates a temporary git worktree on a dedicated branch. The CLI tool runs exclusively inside this worktree, so your production working directory is never modified. The worktree is automatically removed after the CLI finishes — even if the process fails.</p>
+        </blockquote>
+
+        <h3>Pull Request Settings</h3>
+        <pre><code>'pr' => [
+    'draft' => true,
+    'labels' => ['x-factor', 'auto-fix'],
+    'reviewers' => [],
+    'branch_prefix' => 'x-factor/fix',
+],</code></pre>
+        <ul>
+            <li><code>draft</code> — Create PRs as drafts (recommended for safety).</li>
+            <li><code>labels</code> — Labels applied to every PR.</li>
+            <li><code>reviewers</code> — GitHub usernames to request review from.</li>
+            <li><code>branch_prefix</code> — Branch names follow the pattern <code>{prefix}-{slug}-{random}</code>.</li>
+        </ul>
+
+        <h3>Queue</h3>
+        <pre><code>'queue' => [
+    'connection' => env('X_FACTOR_QUEUE_CONNECTION', null),
+    'name' => env('X_FACTOR_QUEUE_NAME', null),
+],</code></pre>
+        <p>Customize the queue connection and name. <code>null</code> uses your app defaults. Consider using a dedicated queue to avoid long-running resolution jobs from blocking other work.</p>
+
+        <h3>API Keys</h3>
+        <pre><code>'api_keys' => [
+    'anthropic' => env('ANTHROPIC_API_KEY'),
+    'github_pat' => env('X_FACTOR_GITHUB_PAT'),
+],</code></pre>
+        <ul>
+            <li><code>anthropic</code> — Passed to the CLI tool as <code>ANTHROPIC_API_KEY</code> environment variable.</li>
+            <li><code>github_pat</code> — Passed to the CLI tool as <code>GITHUB_TOKEN</code> so <code>gh pr create</code> works in environments without interactive <code>gh auth login</code>.</li>
+        </ul>
+
+        <h4>Generating a GitHub PAT</h4>
+        <p>Go to <a href="https://github.com/settings/tokens?type=beta" target="_blank" rel="noopener">GitHub &rarr; Settings &rarr; Developer settings &rarr; Fine-grained tokens</a> and create a token with these permissions:</p>
+        <table>
+            <thead><tr><th>Permission</th><th>Access</th></tr></thead>
+            <tbody>
+                <tr><td><strong>Contents</strong></td><td>Read and write</td></tr>
+                <tr><td><strong>Pull requests</strong></td><td>Read and write</td></tr>
+                <tr><td><strong>Metadata</strong></td><td>Read (auto-selected)</td></tr>
+            </tbody>
+        </table>
+        <blockquote><p><strong>Never commit API keys to version control.</strong></p></blockquote>
+
+        <!-- Monitor Strategy -->
+        <h2 id="monitor-strategy">Monitor Strategy</h2>
+        <p>X-Factor supports one active monitor at a time.</p>
+        <pre><code>'monitor' => env('X_FACTOR_MONITOR', 'nightwatch'),</code></pre>
+
+        <h3>Nightwatch</h3>
+        <p>Set <code>X_FACTOR_MONITOR=nightwatch</code>.</p>
+        <p>Configure your <a href="https://nightwatch.laravel.com/" target="_blank" rel="noopener">Laravel Nightwatch</a> project to send webhooks to your X-Factor endpoint. X-Factor processes <code>issue.opened</code> and <code>issue.reopened</code> events.</p>
+        <h4>Expected webhook payload</h4>
+        <pre><code>{
+    "event": "issue.opened",
+    "payload": {
+        "organization_id": "org-123",
+        "application_id": "app-456",
+        "environment": { "id": "env-789" },
+        "issue": {
+            "title": "ErrorException: Undefined variable $foo",
+            "exception_class": "ErrorException",
+            "message": "Undefined variable $foo",
+            "stacktrace": "#0 /app/Http/Controllers/..."
+        }
+    }
+}</code></pre>
+        <p><strong>Signature verification:</strong> HMAC-SHA256 over the raw request body. The computed hash is compared against the <code>X-Nightwatch-Signature</code> or <code>X-Webhook-Signature</code> header.</p>
+
+        <h3>Bugsnag</h3>
+        <p>Set <code>X_FACTOR_MONITOR=bugsnag</code>.</p>
+        <p>Configure a <a href="https://docs.bugsnag.com/product/integrations/data-forwarding/webhook/" target="_blank" rel="noopener">Bugsnag webhook</a> pointing to your X-Factor endpoint. X-Factor processes <code>exception</code> and <code>firstException</code> triggers.</p>
+        <h4>Expected webhook payload</h4>
+        <pre><code>{
+    "trigger": "exception",
+    "error": {
+        "exceptionClass": "RuntimeException",
+        "message": "Something went wrong",
+        "stackTrace": "..."
+    }
+}</code></pre>
+        <p><strong>Signature verification:</strong> Bearer token in the <code>Authorization</code> header, compared against the configured secret.</p>
+
+        <h3>Exception Listener</h3>
+        <p>Set <code>X_FACTOR_MONITOR=exception_listener</code>.</p>
+        <p>No webhook needed. X-Factor listens to Laravel's <code>MessageLogged</code> (error/critical level) and <code>JobExceptionOccurred</code> events directly. Every unhandled exception is captured.</p>
+        <p>The exception listener includes a recursion guard to prevent infinite loops if X-Factor's own operations trigger exceptions.</p>
+
+        <!-- Webhook Setup -->
+        <h2 id="webhook-setup">Webhook Setup</h2>
+
+        <h3>Endpoint</h3>
+        <pre><code>POST /x-factor/webhook</code></pre>
+        <p>The path is configurable:</p>
+        <pre><code>'webhook' => [
+    'path' => env('X_FACTOR_WEBHOOK_PATH', 'x-factor/webhook'),
+    'secret' => env('X_FACTOR_WEBHOOK_SECRET'),
+    'middleware' => [],
+],</code></pre>
+
+        <h3>Signature Verification</h3>
+        <p>Set <code>X_FACTOR_WEBHOOK_SECRET</code> to a strong random string. Share this secret with your monitor service.</p>
+        <ul>
+            <li><strong>Nightwatch:</strong> HMAC-SHA256 of the request body compared against the <code>X-Nightwatch-Signature</code> header.</li>
+            <li><strong>Bugsnag:</strong> <code>Authorization: Bearer {token}</code> header compared against the secret.</li>
+        </ul>
+        <p>If <code>X_FACTOR_WEBHOOK_SECRET</code> is not set, signature verification is skipped (a warning is logged).</p>
+
+        <h3>Additional Middleware</h3>
+        <pre><code>'webhook' => [
+    'middleware' => [\App\Http\Middleware\CustomMiddleware::class],
+],</code></pre>
+        <p>CSRF verification is automatically excluded from the webhook route.</p>
+
+        <!-- Exception Categories -->
+        <h2 id="exception-categories">Exception Categories</h2>
+        <p>Categories let you customize AI behavior per exception type:</p>
+        <pre><code>'categories' => [
+    'quick_fixes' => [
+        'cli_tool' => 'claude',
+        'model' => null,
+        'timeout' => 1800,     // 30 minutes
+        'max_turns' => 15,
+        'prompt' => null,       // null = use default prompt
+        'exceptions' => [
+            \ErrorException::class,
+            \TypeError::class,
+        ],
+    ],
+    'complex_fixes' => [
+        'cli_tool' => 'claude',
+        'model' => null,
+        'timeout' => 3600,     // 1 hour
+        'max_turns' => 30,
+        'prompt' => null,
+        'exceptions' => [
+            \LogicException::class,
+            \RuntimeException::class,
+        ],
+    ],
+],</code></pre>
+        <p>Each category can override: <code>cli_tool</code>, <code>model</code>, <code>timeout</code>, <code>max_turns</code>, and <code>prompt</code>. Exceptions not matching any category use the top-level defaults.</p>
+
+        <h3>Custom Prompts</h3>
+        <pre><code>// Per category
+'categories' => [
+    'quick_fixes' => [
+        'prompt' => 'Fix this {exception_class} in the Laravel app: {exception_message}. Branch: {branch_name}',
+    ],
+],
+
+// Global fallback
+'prompt' => 'You are debugging a Laravel app. Fix: {title}',</code></pre>
+
+        <h4>Available placeholders</h4>
+        <table>
+            <thead><tr><th>Placeholder</th><th>Description</th></tr></thead>
+            <tbody>
+                <tr><td><code>{title}</code></td><td>Issue title</td></tr>
+                <tr><td><code>{exception_class}</code></td><td>PHP exception class name</td></tr>
+                <tr><td><code>{exception_message}</code></td><td>Exception message</td></tr>
+                <tr><td><code>{stacktrace}</code></td><td>Stack trace</td></tr>
+                <tr><td><code>{branch_name}</code></td><td>Generated branch name</td></tr>
+                <tr><td><code>{organization_id}</code></td><td>Nightwatch organization ID</td></tr>
+                <tr><td><code>{application_id}</code></td><td>Nightwatch application ID</td></tr>
+                <tr><td><code>{environment_id}</code></td><td>Nightwatch environment ID</td></tr>
+                <tr><td><code>{source}</code></td><td>Issue source (nightwatch, bugsnag, exception_listener)</td></tr>
+            </tbody>
+        </table>
+
+        <!-- Ignored Exceptions -->
+        <h2 id="ignored-exceptions">Ignored Exceptions</h2>
+        <p>Exceptions that should never be processed (infrastructure issues, unfixable errors):</p>
+        <pre><code>'ignored_exceptions' => [
+    \OutOfMemoryError::class,
+    \Illuminate\Http\Exceptions\ThrottleRequestsException::class,
+    \Symfony\Component\HttpKernel\Exception\HttpException::class,
+    \Illuminate\Session\TokenMismatchException::class,
+],</code></pre>
+        <p>Add your own exception classes to this array.</p>
+
+        <!-- Deduplication -->
+        <h2 id="deduplication">Deduplication</h2>
+        <p>X-Factor uses three layers of deduplication to prevent processing the same exception multiple times:</p>
+        <ol>
+            <li><strong>Cache Debounce</strong> — Same fingerprint is rejected within the debounce window (default: 5 minutes).</li>
+            <li><strong>Database Check</strong> — If an issue with the same fingerprint is already <code>pending</code> or <code>resolving</code>, the new one is skipped.</li>
+            <li><strong>Unique Constraint</strong> — The <code>(fingerprint, status)</code> database constraint prevents duplicates at the DB level.</li>
+        </ol>
+        <pre><code>'debounce_minutes' => (int) env('X_FACTOR_DEBOUNCE_MINUTES', 5),</code></pre>
+
+        <!-- Artisan Commands -->
+        <h2 id="artisan-commands">Artisan Commands</h2>
+
+        <h3><code>x-factor:install</code></h3>
+        <p>Publishes config and migration, runs migration, verifies setup.</p>
+        <pre><code>php artisan x-factor:install</code></pre>
+
+        <h3><code>x-factor:status</code></h3>
+        <p>Displays a table of issues with summary statistics.</p>
+        <pre><code>php artisan x-factor:status
+php artisan x-factor:status --limit=50</code></pre>
+
+        <h3><code>x-factor:retry {id}</code></h3>
+        <p>Retries a failed issue by resetting it to <code>pending</code> and dispatching it again.</p>
+        <pre><code>php artisan x-factor:retry 42</code></pre>
+
+        <h3><code>x-factor:prune</code></h3>
+        <p>Deletes resolved and failed issues older than the retention period. Also recovers any issues stuck in <code>resolving</code> status beyond the process timeout.</p>
+        <pre><code>php artisan x-factor:prune
+php artisan x-factor:prune --days=7</code></pre>
+
+        <h3><code>x-factor:recover-stale</code></h3>
+        <p>Finds issues stuck in <code>resolving</code> status beyond the configured process timeout and marks them as <code>failed</code>. Failed issues can then be retried from the dashboard or via <code>x-factor:retry</code>.</p>
+        <pre><code>php artisan x-factor:recover-stale
+php artisan x-factor:recover-stale --minutes=90</code></pre>
+
+        <h3>Recommended Schedule</h3>
+        <p>Add both commands to your <code>routes/console.php</code> to keep the issues table healthy:</p>
+        <pre><code>use Illuminate\Support\Facades\Schedule;
+
+// Recover stuck resolving issues every hour
+Schedule::command('x-factor:recover-stale')->hourly();
+
+// Prune old resolved/failed issues daily
+Schedule::command('x-factor:prune')->daily();</code></pre>
+        <p><code>recover-stale</code> runs hourly to catch stuck issues quickly. <code>prune</code> runs daily for general cleanup. Both are idempotent and safe to run at any frequency.</p>
+
+        <h3><code>x-factor:test</code></h3>
+        <p>Creates a test issue and dispatches it for resolution. Useful for verifying your setup.</p>
+        <pre><code>php artisan x-factor:test
+php artisan x-factor:test --exception=RuntimeException
+php artisan x-factor:test --sync   # Run synchronously (no queue)</code></pre>
+
+        <!-- Events -->
+        <h2 id="events">Events</h2>
+        <p>X-Factor fires events at each stage of the resolution lifecycle:</p>
+        <table>
+            <thead><tr><th>Event</th><th>Fired When</th><th>Properties</th></tr></thead>
+            <tbody>
+                <tr><td><code>IssueCreated</code></td><td>Issue is created from webhook or exception</td><td><code>Issue $issue</code></td></tr>
+                <tr><td><code>IssueResolving</code></td><td>Resolution starts (status &rarr; resolving)</td><td><code>Issue $issue</code></td></tr>
+                <tr><td><code>IssueResolved</code></td><td>Resolution succeeds (status &rarr; resolved)</td><td><code>Issue $issue</code></td></tr>
+                <tr><td><code>IssueResolutionFailed</code></td><td>Resolution fails (status &rarr; failed)</td><td><code>Issue $issue</code>, <code>string $reason</code></td></tr>
+            </tbody>
+        </table>
+
+        <h4>Example: Send a Slack notification on resolution</h4>
+        <pre><code>use ArielMejiaDev\XFactor\Events\IssueResolved;
+
+Event::listen(IssueResolved::class, function (IssueResolved $event) {
+    Notification::route('slack', config('services.slack.webhook'))
+        ->notify(new IssueFixedNotification($event->issue));
+});</code></pre>
+
+        <!-- Issue Model -->
+        <h2 id="issue-model">Issue Model</h2>
+        <p>The <code>Issue</code> model (<code>ArielMejiaDev\XFactor\Models\Issue</code>) is stored in the <code>x_factor_issues</code> table.</p>
+
+        <h3>Key Fields</h3>
+        <table>
+            <thead><tr><th>Field</th><th>Description</th></tr></thead>
+            <tbody>
+                <tr><td><code>fingerprint</code></td><td>SHA-256 hash uniquely identifying the exception</td></tr>
+                <tr><td><code>source</code></td><td>Origin: nightwatch, bugsnag, exception_listener, or test</td></tr>
+                <tr><td><code>title</code></td><td>Human-readable issue title</td></tr>
+                <tr><td><code>exception_class</code></td><td>PHP exception class name</td></tr>
+                <tr><td><code>exception_message</code></td><td>Exception message</td></tr>
+                <tr><td><code>stacktrace</code></td><td>Stack trace text</td></tr>
+                <tr><td><code>status</code></td><td>pending, resolving, resolved, or failed</td></tr>
+                <tr><td><code>category</code></td><td>Matched category name (e.g., quick_fixes)</td></tr>
+                <tr><td><code>cli_tool</code></td><td>CLI tool used (claude or opencode)</td></tr>
+                <tr><td><code>branch_name</code></td><td>Generated Git branch name</td></tr>
+                <tr><td><code>pr_url</code></td><td>URL of the created pull request</td></tr>
+                <tr><td><code>failure_reason</code></td><td>Reason for failure (if failed)</td></tr>
+                <tr><td><code>attempts</code></td><td>Number of resolution attempts</td></tr>
+                <tr><td><code>payload</code></td><td>Full webhook payload (JSON)</td></tr>
+            </tbody>
+        </table>
+
+        <h3>Query Scopes</h3>
+        <pre><code>use ArielMejiaDev\XFactor\Models\Issue;
+
+Issue::pending()->get();
+Issue::resolving()->get();
+Issue::resolved()->get();
+Issue::failed()->get();
+Issue::stale(30)->get(); // Resolved/failed older than 30 days</code></pre>
+
+        <!-- Logging -->
+        <h2 id="logging">Logging</h2>
+        <pre><code>'log_channel' => env('X_FACTOR_LOG_CHANNEL', 'x-factor'),</code></pre>
+        <p>If the channel doesn't exist in <code>config/logging.php</code>, X-Factor auto-configures it:</p>
+        <ul>
+            <li><strong>Driver:</strong> <code>daily</code></li>
+            <li><strong>Path:</strong> <code>storage/logs/x-factor.log</code></li>
+            <li><strong>Retention:</strong> 14 days</li>
+            <li><strong>Level:</strong> <code>debug</code></li>
+        </ul>
+        <p>You can override by defining the channel in <code>config/logging.php</code>:</p>
+        <pre><code>'channels' => [
+    'x-factor' => [
+        'driver' => 'single',
+        'path' => storage_path('logs/x-factor.log'),
+        'level' => 'info',
+    ],
+],</code></pre>
+
+        <!-- Dashboard -->
+        <h2 id="dashboard">Dashboard</h2>
+        <p>X-Factor includes a read-only web dashboard to browse issues. Visit <code>/{dashboard_path}</code> (default: <code>/x-factor</code>) to access it.</p>
+
+        <h3>Configuration</h3>
+        <pre><code>'dashboard' => [
+    'enabled' => env('X_FACTOR_DASHBOARD_ENABLED', true),
+    'path' => env('X_FACTOR_DASHBOARD_PATH', 'x-factor'),
+    'middleware' => ['web', 'auth'],
+],</code></pre>
+        <ul>
+            <li><code>enabled</code> — Set to <code>false</code> to disable the dashboard entirely.</li>
+            <li><code>path</code> — URL prefix for the dashboard routes.</li>
+            <li><code>middleware</code> — Middleware applied to dashboard routes.</li>
+        </ul>
+
+        <h3>Authorization</h3>
+        <p>By default, the dashboard is only accessible when <code>APP_ENV=local</code>. To allow access in other environments, register an auth gate in your <code>AppServiceProvider</code>:</p>
+        <pre><code>use ArielMejiaDev\XFactor\Facades\XFactor;
+
+public function boot(): void
+{
+    XFactor::auth(function ($user) {
+        return in_array($user->email, [
+            'arielmejiadev@gmail.com',
+        ]);
+    });
+}</code></pre>
+
+        <h3>Features</h3>
+        <ul>
+            <li><strong>Search</strong> — Filter issues by title, exception class, or exception message.</li>
+            <li><strong>Status filters</strong> — Filter by status (Pending, Resolving, Resolved, Failed) with count badges.</li>
+            <li><strong>Issue detail</strong> — View full exception details, stacktrace, CLI output, and PR links.</li>
+            <li><strong>Retry failed issues</strong> — Pick a model and max turns, then re-queue with one click.</li>
+            <li><strong>Resolution progress</strong> — Blue callout with spinner for pending/resolving issues.</li>
+            <li><strong>Auto-refresh</strong> — Polling toggle reloads the page every 60 seconds.</li>
+            <li><strong>Dark/light theme</strong> — Toggle persisted in <code>localStorage</code>.</li>
+            <li><strong>No build step</strong> — Uses Tailwind CSS via CDN.</li>
+        </ul>
+
+        <h3>Customizing the Theme</h3>
+        <p>The dashboard uses the same CSS custom properties as Laravel's starter kits (React, Vue, Livewire with shadcn/ui).</p>
+
+        <h4>Option 1: Reuse Your App's Existing Theme</h4>
+        <pre><code>php artisan vendor:publish --tag=x-factor-views</code></pre>
+        <p>Edit <code>resources/views/vendor/x-factor/dashboard/layout.blade.php</code>: replace the <code>&lt;style&gt;</code> block with your app's compiled CSS:</p>
+        <pre><code>{{-- Remove the &lt;style&gt;...&lt;/style&gt; block --}}
+
+{{-- Add your app's compiled stylesheet --}}
+@vite(['resources/css/app.css'])</code></pre>
+
+        <h4>Option 2: Customize the Built-in Theme</h4>
+        <p>Publish the views and edit the CSS variables directly. Each variable takes three OKLCH values: <code>lightness chroma hue</code>.</p>
+
+        <h4>CSS Variable Reference</h4>
+        <table>
+            <thead><tr><th>Variable</th><th>Usage</th></tr></thead>
+            <tbody>
+                <tr><td><code>--background</code></td><td>Page body background</td></tr>
+                <tr><td><code>--foreground</code></td><td>Default text color</td></tr>
+                <tr><td><code>--card</code> / <code>--card-foreground</code></td><td>Card sections background and text</td></tr>
+                <tr><td><code>--primary</code> / <code>--primary-foreground</code></td><td>Primary buttons, active tabs</td></tr>
+                <tr><td><code>--secondary</code> / <code>--secondary-foreground</code></td><td>Secondary buttons</td></tr>
+                <tr><td><code>--accent</code> / <code>--accent-foreground</code></td><td>Hover state backgrounds</td></tr>
+                <tr><td><code>--muted</code> / <code>--muted-foreground</code></td><td>Table headers, code blocks, placeholders</td></tr>
+                <tr><td><code>--ring</code></td><td>Focus ring on inputs and buttons</td></tr>
+                <tr><td><code>--border</code></td><td>Table/card borders, dividers</td></tr>
+                <tr><td><code>--input</code></td><td>Input field borders</td></tr>
+            </tbody>
+        </table>
+
+        <!-- Security -->
+        <h2 id="security">Security Considerations</h2>
+        <ul>
+            <li><strong>HMAC Verification</strong> — Webhook payloads are verified using HMAC-SHA256 (Nightwatch) or Bearer tokens (Bugsnag). Always set <code>X_FACTOR_WEBHOOK_SECRET</code> in production.</li>
+            <li><strong>No Shell Injection</strong> — CLI commands are built as arrays and passed to Laravel's <code>Process</code> facade.</li>
+            <li><strong>Environment Whitelist</strong> — By default, X-Factor only runs in <code>production</code> and <code>staging</code>.</li>
+            <li><strong>Git Worktree Isolation</strong> — The AI never runs in your production working directory.</li>
+            <li><strong>Draft PRs</strong> — PRs are created as drafts by default, requiring human review before merge.</li>
+            <li><strong>API Keys</strong> — Never stored in config files. Always loaded from environment variables.</li>
+            <li><strong>Autonomous Permissions</strong> — Claude Code runs with <code>--dangerously-skip-permissions</code> for unattended operation. Always review generated PRs before merging.</li>
+            <li><strong>Recursion Guard</strong> — The exception listener prevents infinite loops if X-Factor's own operations trigger exceptions.</li>
+        </ul>
+
+        <!-- Facade -->
+        <h2 id="facade">Facade</h2>
+        <pre><code>use ArielMejiaDev\XFactor\Facades\XFactor;
+
+XFactor::isEnabled();  // bool
+XFactor::isDryRun();   // bool
+XFactor::manager();    // XFactorManager instance</code></pre>
+
+        <!-- API Driver -->
+        <h2 id="api-driver">API Driver</h2>
+        <p>The API driver calls the Anthropic Messages API directly, giving Claude a curated set of tools to read, edit, search files, and run git commands — all orchestrated from PHP. No CLI tool installation required on the server.</p>
+
+        <h3>When to Use API vs CLI</h3>
+        <table>
+            <thead><tr><th></th><th>CLI Driver</th><th>API Driver</th></tr></thead>
+            <tbody>
+                <tr><td><strong>Best for</strong></td><td>Local/dev, servers with Claude Code installed</td><td>Staging/production servers without CLI tools</td></tr>
+                <tr><td><strong>Requires</strong></td><td><code>claude</code> or <code>opencode</code> CLI binary</td><td>Only <code>ANTHROPIC_API_KEY</code></td></tr>
+                <tr><td><strong>How it works</strong></td><td>Spawns a CLI subprocess</td><td>Calls Anthropic Messages API with <code>tool_use</code></td></tr>
+                <tr><td><strong>Tool access</strong></td><td>Full CLI tool capabilities</td><td>6 curated tools</td></tr>
+                <tr><td><strong>Command safety</strong></td><td>CLI tool's own safety model</td><td>Explicit command allowlist</td></tr>
+            </tbody>
+        </table>
+
+        <h3>Configuration</h3>
+        <pre><code>X_FACTOR_DRIVER=api
+X_FACTOR_MONITOR=exception_listener
+ANTHROPIC_API_KEY=sk-ant-...
+X_FACTOR_GITHUB_PAT=github_pat_...</code></pre>
+
+        <h4>Optional settings</h4>
+        <pre><code>X_FACTOR_API_MODEL=claude-sonnet-4-6
+X_FACTOR_API_MAX_TOKENS=8192
+X_FACTOR_API_MAX_TURNS=25</code></pre>
+
+        <h3>Security Model</h3>
+        <ul>
+            <li><strong>Curated tools</strong> — Claude can only use 6 tools: <code>read_file</code>, <code>write_file</code>, <code>edit_file</code>, <code>list_directory</code>, <code>search_files</code>, and <code>run_command</code>.</li>
+            <li><strong>Path traversal protection</strong> — Every file operation validates that the resolved path stays within the git worktree.</li>
+            <li><strong>Command allowlist</strong> — The <code>run_command</code> tool only allows configured commands.</li>
+            <li><strong>Worktree isolation</strong> — Same as the CLI driver.</li>
+            <li><strong>Max turns</strong> — The agentic loop is bounded by <code>max_turns</code>.</li>
+        </ul>
+
+        <h3>Available Tools</h3>
+        <table>
+            <thead><tr><th>Tool</th><th>Description</th></tr></thead>
+            <tbody>
+                <tr><td><code>read_file</code></td><td>Read a file's contents</td></tr>
+                <tr><td><code>write_file</code></td><td>Write content to a file (creates parent directories)</td></tr>
+                <tr><td><code>edit_file</code></td><td>Replace an exact string match in a file</td></tr>
+                <tr><td><code>list_directory</code></td><td>List files and subdirectories</td></tr>
+                <tr><td><code>search_files</code></td><td>Search for patterns with grep</td></tr>
+                <tr><td><code>run_command</code></td><td>Run an allowlisted shell command</td></tr>
+            </tbody>
+        </table>
+
+        <h3>Customizing Allowed Commands</h3>
+        <pre><code>'api' => [
+    'allowed_commands' => [
+        'git',
+        'php artisan test',
+        './vendor/bin/pest',
+        './vendor/bin/phpunit',
+        'composer dump-autoload',
+        'gh pr create',
+        'php artisan migrate:status',  // Add your own
+    ],
+],</code></pre>
+        <p>A command is allowed if it exactly matches an entry, or starts with an entry followed by a space (e.g., <code>git</code> allows <code>git status</code>, <code>git commit</code>, etc.).</p>
+
+        <!-- What It Can Fix -->
+        <h2 id="can-fix">What X-Factor Can and Cannot Fix</h2>
+        <p>X-Factor requires a <strong>healthy, running Laravel application</strong> to function. The queue worker must be alive, the database must be reachable, and Laravel must be able to boot.</p>
+
+        <h3>What it CAN fix</h3>
+        <p>Any exception that occurs while the app is still running and the queue worker can process jobs:</p>
+        <ul>
+            <li><strong>Undefined variables / properties</strong> — <code>ErrorException: Undefined variable $foo</code></li>
+            <li><strong>Type errors</strong> — <code>TypeError: Argument #1 must be of type string, null given</code></li>
+            <li><strong>Bad method calls</strong> — <code>BadMethodCallException: Method does not exist</code></li>
+            <li><strong>Missing models</strong> — <code>ModelNotFoundException: No query results for model</code></li>
+            <li><strong>Query errors</strong> — <code>QueryException: Column not found</code></li>
+            <li><strong>Validation logic errors</strong> — incorrect rules, missing fields</li>
+            <li><strong>Authorization / authentication bugs</strong> — misconfigured gates, policies, guards</li>
+            <li><strong>Route and controller errors</strong> — wrong HTTP methods, missing parameters</li>
+            <li><strong>Logic errors</strong> — <code>RuntimeException</code>, <code>DomainException</code>, off-by-one mistakes</li>
+        </ul>
+
+        <h3>What it CANNOT fix</h3>
+        <ul>
+            <li><strong>PHP syntax errors (<code>ParseError</code>)</strong> — Broken syntax prevents Laravel from booting.</li>
+            <li><strong>Fatal errors that kill the process</strong> — <code>OutOfMemoryError</code>, segmentation faults.</li>
+            <li><strong>Infrastructure failures</strong> — Database is down, Redis is unreachable, disk is full.</li>
+            <li><strong>Errors in X-Factor itself</strong> — The package cannot fix its own bugs.</li>
+            <li><strong>Environment / configuration issues</strong> — Missing <code>.env</code> values, wrong file permissions.</li>
+            <li><strong>Issues requiring human judgment</strong> — Business logic, UX decisions, performance tuning.</li>
+        </ul>
+
+        <blockquote><p><strong>The key insight:</strong> X-Factor self-heals the same category of bugs a developer would fix after seeing an alert: a typo, a missing null check, a wrong query. The app is running, the error is logged, and the fix is a small code change. That's the sweet spot.</p></blockquote>
+
+        <!-- Setup Examples -->
+        <h2 id="setup-examples">Setup Examples</h2>
+
+        <h3>Local Development with Claude Code</h3>
+        <blockquote><p><strong>Why <code>APP_ENV=staging</code> instead of <code>local</code>?</strong> By default, X-Factor only processes exceptions in <code>production</code> and <code>staging</code> environments. Setting <code>APP_ENV=staging</code> lets you test the full pipeline locally.</p></blockquote>
+        <pre><code># Required
+APP_ENV=staging
+X_FACTOR_ENABLED=true
+X_FACTOR_DRIVER=cli
+X_FACTOR_CLI_TOOL=claude
+X_FACTOR_MONITOR=exception_listener
+X_FACTOR_DASHBOARD_ENABLED=true</code></pre>
+        <pre><code>php artisan queue:work --timeout=3700</code></pre>
+
+        <h3>Server Side: Nightwatch Webhook</h3>
+        <pre><code>APP_ENV=staging
+ANTHROPIC_API_KEY=sk-ant-...
+X_FACTOR_ENABLED=true
+X_FACTOR_DRIVER=cli
+X_FACTOR_CLI_TOOL=claude
+X_FACTOR_WEBHOOK_SECRET=a-strong-random-secret
+X_FACTOR_MONITOR=nightwatch
+X_FACTOR_DASHBOARD_ENABLED=true</code></pre>
+
+        <h3>Server Side: Exception Listener</h3>
+        <pre><code>APP_ENV=staging
+ANTHROPIC_API_KEY=sk-ant-...
+X_FACTOR_ENABLED=true
+X_FACTOR_DRIVER=cli
+X_FACTOR_CLI_TOOL=claude
+X_FACTOR_MONITOR=exception_listener
+X_FACTOR_DASHBOARD_ENABLED=true</code></pre>
+
+        <!-- Troubleshooting -->
+        <h2 id="troubleshooting">Troubleshooting</h2>
+
+        <h3>CLI tool not found</h3>
+        <p>Make sure <code>claude</code> or <code>opencode</code> is in the <code>PATH</code> of the user running the queue worker. Run <code>which claude</code> to verify.</p>
+
+        <h3>Jobs timing out</h3>
+        <p>Increase <code>X_FACTOR_PROCESS_TIMEOUT</code> and ensure your queue worker's <code>--timeout</code> flag is set higher than the process timeout.</p>
+
+        <h3>Duplicate PRs</h3>
+        <p>Check your debounce window (<code>X_FACTOR_DEBOUNCE_MINUTES</code>) and verify the fingerprint constraint is working. Run <code>php artisan x-factor:status</code> to see active issues.</p>
+
+        <h3>Webhook returning 403</h3>
+        <p>Your webhook secret doesn't match. Verify <code>X_FACTOR_WEBHOOK_SECRET</code> matches the secret configured in your monitor service.</p>
+
+        <h3>Dry run mode</h3>
+        <p>Enable dry run to test without executing the AI:</p>
+        <pre><code>X_FACTOR_DRY_RUN=true</code></pre>
+        <p>Check <code>storage/logs/x-factor.log</code> for output.</p>
+
+        <h3>Issues stuck in "resolving" status</h3>
+        <p>Run <code>x-factor:recover-stale</code> to mark them as failed, then retry from the dashboard:</p>
+        <pre><code>php artisan x-factor:recover-stale</code></pre>
+        <p>Schedule the command hourly to prevent build-up (see <a href="#artisan-commands">Recommended Schedule</a>).</p>
+
+        <h3>Infinite loop with exception listener</h3>
+        <p>The recursion guard should prevent this. Check that you're not running X-Factor in an environment where database operations consistently fail. Run <code>php artisan x-factor:status</code> to inspect the state.</p>
+
+    </main>
+</div>
+
+<!-- Footer -->
+<footer>
+    <div class="footer-inner">
+        <div class="footer-left">
+            Built by <a href="https://github.com/ArielMejiaDev" target="_blank" rel="noopener">ArielMejiaDev</a> &middot; MIT License
+        </div>
+        <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="https://github.com/ArielMejiaDev/x-factor" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://github.com/ArielMejiaDev/x-factor/issues" target="_blank" rel="noopener">Issues</a>
+        </div>
+    </div>
+</footer>
+
+<!-- Mobile TOC button -->
+<button class="mobile-toc-btn" id="mobileTocBtn" aria-label="Table of contents">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="18" y2="18"/></svg>
+</button>
+
+<script>
+    // Mobile nav toggle
+    document.getElementById('hamburger').addEventListener('click', function() {
+        document.getElementById('navLinks').classList.toggle('open');
+    });
+
+    // Mobile TOC toggle
+    document.getElementById('mobileTocBtn').addEventListener('click', function() {
+        document.getElementById('sidebar').classList.toggle('open');
+    });
+
+    // Close sidebar when clicking a link (mobile)
+    document.querySelectorAll('.sidebar a').forEach(function(link) {
+        link.addEventListener('click', function() {
+            document.getElementById('sidebar').classList.remove('open');
+        });
+    });
+
+    // Active sidebar link tracking
+    var sections = document.querySelectorAll('.doc-content h2[id]');
+    var sidebarLinks = document.querySelectorAll('.sidebar a');
+
+    var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                sidebarLinks.forEach(function(link) { link.classList.remove('active'); });
+                var activeLink = document.querySelector('.sidebar a[href="#' + entry.target.id + '"]');
+                if (activeLink) activeLink.classList.add('active');
+            }
+        });
+    }, { rootMargin: '-88px 0px -60% 0px', threshold: 0 });
+
+    sections.forEach(function(section) { observer.observe(section); });
+</script>
+</body>
+</html>
