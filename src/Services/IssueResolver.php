@@ -8,10 +8,10 @@ use ArielMejiaDev\HealingFactor\Events\IssueResolutionFailed;
 use ArielMejiaDev\HealingFactor\Events\IssueResolved;
 use ArielMejiaDev\HealingFactor\Events\IssueResolving;
 use ArielMejiaDev\HealingFactor\Facades\HealingFactor;
+use ArielMejiaDev\HealingFactor\HealingFactorManager;
 use ArielMejiaDev\HealingFactor\Models\Issue;
 use ArielMejiaDev\HealingFactor\Prompts\PromptBuilder;
 use ArielMejiaDev\HealingFactor\Support\HealingFactorLogger;
-use ArielMejiaDev\HealingFactor\HealingFactorManager;
 
 class IssueResolver
 {

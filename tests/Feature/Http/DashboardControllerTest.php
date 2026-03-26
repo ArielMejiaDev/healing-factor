@@ -1,7 +1,7 @@
 <?php
 
-use ArielMejiaDev\HealingFactor\Models\Issue;
 use ArielMejiaDev\HealingFactor\HealingFactor;
+use ArielMejiaDev\HealingFactor\Models\Issue;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Schema;
 
