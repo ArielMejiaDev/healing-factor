@@ -1,6 +1,6 @@
 <?php
 
-use ArielMejiaDev\XFactor\Enums\CliTool;
+use ArielMejiaDev\HealingFactor\Enums\CliTool;
 
 it('has the correct cases', function () {
     expect(CliTool::cases())->toHaveCount(2);

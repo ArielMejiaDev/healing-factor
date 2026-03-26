@@ -1,6 +1,6 @@
 <?php
 
-use ArielMejiaDev\XFactor\Monitors\BugsnagMonitor;
+use ArielMejiaDev\HealingFactor\Monitors\BugsnagMonitor;
 use Illuminate\Http\Request;
 
 beforeEach(function () {

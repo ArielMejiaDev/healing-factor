@@ -1,28 +1,28 @@
 <?php
 
-use ArielMejiaDev\XFactor\Drivers\ApiDriver;
-use ArielMejiaDev\XFactor\Drivers\CLIDriver;
-use ArielMejiaDev\XFactor\XFactorManager;
+use ArielMejiaDev\HealingFactor\Drivers\ApiDriver;
+use ArielMejiaDev\HealingFactor\Drivers\CLIDriver;
+use ArielMejiaDev\HealingFactor\HealingFactorManager;
 
 it('returns CLI driver by default', function () {
-    $manager = app(XFactorManager::class);
+    $manager = app(HealingFactorManager::class);
 
     expect($manager->driver())->toBeInstanceOf(CLIDriver::class);
 });
 
 it('returns API driver when configured', function () {
-    config()->set('x-factor.driver', 'api');
+    config()->set('healing-factor.driver', 'api');
 
-    $manager = app(XFactorManager::class);
+    $manager = app(HealingFactorManager::class);
 
     expect($manager->driver())->toBeInstanceOf(ApiDriver::class);
 });
 
 it('returns a category-specific driver', function () {
-    config()->set('x-factor.categories.quick_fixes.cli_tool', 'claude');
-    config()->set('x-factor.categories.quick_fixes.timeout', 1800);
+    config()->set('healing-factor.categories.quick_fixes.cli_tool', 'claude');
+    config()->set('healing-factor.categories.quick_fixes.timeout', 1800);
 
-    $manager = app(XFactorManager::class);
+    $manager = app(HealingFactorManager::class);
 
     $driver = $manager->driverForCategory('quick_fixes');
 
@@ -30,7 +30,7 @@ it('returns a category-specific driver', function () {
 });
 
 it('returns the default driver when category is null', function () {
-    $manager = app(XFactorManager::class);
+    $manager = app(HealingFactorManager::class);
 
     $driver = $manager->driverForCategory(null);
 

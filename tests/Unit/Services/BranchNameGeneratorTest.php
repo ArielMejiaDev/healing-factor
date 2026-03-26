@@ -1,6 +1,6 @@
 <?php
 
-use ArielMejiaDev\XFactor\Services\BranchNameGenerator;
+use ArielMejiaDev\HealingFactor\Services\BranchNameGenerator;
 
 beforeEach(function () {
     $this->generator = new BranchNameGenerator;
@@ -9,7 +9,7 @@ beforeEach(function () {
 it('generates a branch name with the configured prefix', function () {
     $branch = $this->generator->generate('Fix login error');
 
-    expect($branch)->toStartWith('x-factor/fix-');
+    expect($branch)->toStartWith('healing-factor/fix-');
 });
 
 it('includes a slugified title', function () {
@@ -35,7 +35,7 @@ it('appends a random suffix', function () {
 });
 
 it('uses custom branch prefix from config', function () {
-    config()->set('x-factor.pr.branch_prefix', 'auto/fix');
+    config()->set('healing-factor.pr.branch_prefix', 'auto/fix');
 
     $branch = $this->generator->generate('Some error');
 

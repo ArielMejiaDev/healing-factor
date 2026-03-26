@@ -1,8 +1,8 @@
 <?php
 
-namespace ArielMejiaDev\XFactor\Contracts;
+namespace ArielMejiaDev\HealingFactor\Contracts;
 
-use ArielMejiaDev\XFactor\Models\Issue;
+use ArielMejiaDev\HealingFactor\Models\Issue;
 
 interface DriverContract
 {

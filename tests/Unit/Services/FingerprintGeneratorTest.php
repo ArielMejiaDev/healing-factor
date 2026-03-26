@@ -1,6 +1,6 @@
 <?php
 
-use ArielMejiaDev\XFactor\Services\FingerprintGenerator;
+use ArielMejiaDev\HealingFactor\Services\FingerprintGenerator;
 
 beforeEach(function () {
     $this->generator = new FingerprintGenerator;

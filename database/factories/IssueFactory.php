@@ -1,9 +1,9 @@
 <?php
 
-namespace ArielMejiaDev\XFactor\Database\Factories;
+namespace ArielMejiaDev\HealingFactor\Database\Factories;
 
-use ArielMejiaDev\XFactor\Enums\IssueStatus;
-use ArielMejiaDev\XFactor\Models\Issue;
+use ArielMejiaDev\HealingFactor\Enums\IssueStatus;
+use ArielMejiaDev\HealingFactor\Models\Issue;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class IssueFactory extends Factory

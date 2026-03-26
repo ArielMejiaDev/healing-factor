@@ -1,11 +1,11 @@
 <?php
 
-namespace ArielMejiaDev\XFactor\Jobs;
+namespace ArielMejiaDev\HealingFactor\Jobs;
 
-use ArielMejiaDev\XFactor\Events\IssueResolutionFailed;
-use ArielMejiaDev\XFactor\Models\Issue;
-use ArielMejiaDev\XFactor\Services\IssueResolver;
-use ArielMejiaDev\XFactor\Support\XFactorLogger;
+use ArielMejiaDev\HealingFactor\Events\IssueResolutionFailed;
+use ArielMejiaDev\HealingFactor\Models\Issue;
+use ArielMejiaDev\HealingFactor\Services\IssueResolver;
+use ArielMejiaDev\HealingFactor\Support\HealingFactorLogger;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -25,8 +25,8 @@ class ResolveIssue implements ShouldBeUnique, ShouldQueue
 
     public function __construct(public Issue $issue, public array $overrides = [])
     {
-        $queue = config('x-factor.queue.name');
-        $connection = config('x-factor.queue.connection');
+        $queue = config('healing-factor.queue.name');
+        $connection = config('healing-factor.queue.connection');
 
         if ($queue) {
             $this->onQueue($queue);
@@ -38,7 +38,7 @@ class ResolveIssue implements ShouldBeUnique, ShouldQueue
 
     public function uniqueId(): string
     {
-        return 'x-factor-resolve-'.$this->issue->id;
+        return 'healing-factor-resolve-'.$this->issue->id;
     }
 
     public function handle(IssueResolver $resolver): void
@@ -54,13 +54,13 @@ class ResolveIssue implements ShouldBeUnique, ShouldQueue
 
         if ($this->issue->isResolving()) {
             $this->issue->markFailed($reason);
-            XFactorLogger::error('Status: resolving -> failed (job exception)', [
+            HealingFactorLogger::error('Status: resolving -> failed (job exception)', [
                 'issue_id' => $this->issue->id,
                 'exception' => get_class($exception),
                 'message' => mb_substr($exception->getMessage(), 0, 500),
             ]);
         } else {
-            XFactorLogger::error('ResolveIssue job failed.', [
+            HealingFactorLogger::error('ResolveIssue job failed.', [
                 'issue_id' => $this->issue->id,
                 'exception' => get_class($exception),
                 'message' => mb_substr($exception->getMessage(), 0, 500),

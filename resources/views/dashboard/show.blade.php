@@ -1,9 +1,9 @@
-@extends('x-factor::dashboard.layout')
+@extends('healing-factor::dashboard.layout')
 
 @section('content')
     <div class="space-y-6">
         {{-- Back link --}}
-        <a href="{{ route('x-factor.dashboard.index') }}" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] bg-secondary text-secondary-foreground hover:bg-secondary/80 h-9 px-4 py-2 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0">
+        <a href="{{ route('healing-factor.dashboard.index') }}" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] bg-secondary text-secondary-foreground hover:bg-secondary/80 h-9 px-4 py-2 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0">
             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
             </svg>
@@ -33,7 +33,7 @@
                 <div>
                     <dt class="text-sm text-muted-foreground">Status</dt>
                     <dd class="mt-1">
-                        @include('x-factor::dashboard.partials.status-badge', ['issue' => $issue])
+                        @include('healing-factor::dashboard.partials.status-badge', ['issue' => $issue])
                     </dd>
                 </div>
                 <div>
@@ -155,14 +155,14 @@
                 <h2 class="mb-0.5 text-base font-medium">Retry Resolution</h2>
                 <p class="text-sm text-muted-foreground">Re-queue this issue with a different model or turn limit.</p>
 
-                <form method="POST" action="{{ route('x-factor.dashboard.retry', $issue) }}" class="space-y-4">
+                <form method="POST" action="{{ route('healing-factor.dashboard.retry', $issue) }}" class="space-y-4">
                     @csrf
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label for="retry-model" class="block text-sm font-medium text-foreground mb-1">Model</label>
                             <select id="retry-model" name="model" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground shadow-sm focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring">
-                                @foreach (config('x-factor.api.models', []) as $model)
-                                    <option value="{{ $model }}" @selected($model === config('x-factor.api.model'))>{{ $model }}</option>
+                                @foreach (config('healing-factor.api.models', []) as $model)
+                                    <option value="{{ $model }}" @selected($model === config('healing-factor.api.model'))>{{ $model }}</option>
                                 @endforeach
                             </select>
                             @error('model')
@@ -171,7 +171,7 @@
                         </div>
                         <div>
                             <label for="retry-max-turns" class="block text-sm font-medium text-foreground mb-1">Max Turns</label>
-                            <input type="number" id="retry-max-turns" name="max_turns" value="{{ config('x-factor.api.max_turns', 25) }}" min="5" max="50" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground shadow-sm focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring">
+                            <input type="number" id="retry-max-turns" name="max_turns" value="{{ config('healing-factor.api.max_turns', 25) }}" min="5" max="50" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground shadow-sm focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring">
                             @error('max_turns')
                                 <p class="mt-1 text-xs text-red-600 dark:text-red-400">{{ $message }}</p>
                             @enderror

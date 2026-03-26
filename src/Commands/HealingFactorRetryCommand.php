@@ -1,17 +1,17 @@
 <?php
 
-namespace ArielMejiaDev\XFactor\Commands;
+namespace ArielMejiaDev\HealingFactor\Commands;
 
-use ArielMejiaDev\XFactor\Enums\IssueStatus;
-use ArielMejiaDev\XFactor\Jobs\ResolveIssue;
-use ArielMejiaDev\XFactor\Models\Issue;
+use ArielMejiaDev\HealingFactor\Enums\IssueStatus;
+use ArielMejiaDev\HealingFactor\Jobs\ResolveIssue;
+use ArielMejiaDev\HealingFactor\Models\Issue;
 use Illuminate\Console\Command;
 
-class XFactorRetryCommand extends Command
+class HealingFactorRetryCommand extends Command
 {
-    protected $signature = 'x-factor:retry {id : The ID of the failed issue to retry}';
+    protected $signature = 'healing-factor:retry {id : The ID of the failed issue to retry}';
 
-    protected $description = 'Retry a failed X-Factor issue resolution.';
+    protected $description = 'Retry a failed Healing-Factor issue resolution.';
 
     public function handle(): int
     {

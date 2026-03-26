@@ -1,11 +1,11 @@
 <?php
 
-use ArielMejiaDev\XFactor\Enums\IssueStatus;
-use ArielMejiaDev\XFactor\Events\IssueResolutionFailed;
-use ArielMejiaDev\XFactor\Events\IssueResolved;
-use ArielMejiaDev\XFactor\Events\IssueResolving;
-use ArielMejiaDev\XFactor\Models\Issue;
-use ArielMejiaDev\XFactor\Services\IssueResolver;
+use ArielMejiaDev\HealingFactor\Enums\IssueStatus;
+use ArielMejiaDev\HealingFactor\Events\IssueResolutionFailed;
+use ArielMejiaDev\HealingFactor\Events\IssueResolved;
+use ArielMejiaDev\HealingFactor\Events\IssueResolving;
+use ArielMejiaDev\HealingFactor\Models\Issue;
+use ArielMejiaDev\HealingFactor\Services\IssueResolver;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Process;
 
@@ -84,7 +84,7 @@ it('returns null category for unknown exception', function () {
 });
 
 it('handles dry run mode', function () {
-    config()->set('x-factor.dry_run', true);
+    config()->set('healing-factor.dry_run', true);
 
     $issue = Issue::factory()->pending()->create();
     $resolver = app(IssueResolver::class);

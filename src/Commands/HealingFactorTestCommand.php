@@ -1,15 +1,15 @@
 <?php
 
-namespace ArielMejiaDev\XFactor\Commands;
+namespace ArielMejiaDev\HealingFactor\Commands;
 
-use ArielMejiaDev\XFactor\Jobs\ResolveIssue;
-use ArielMejiaDev\XFactor\Models\Issue;
-use ArielMejiaDev\XFactor\Services\FingerprintGenerator;
+use ArielMejiaDev\HealingFactor\Jobs\ResolveIssue;
+use ArielMejiaDev\HealingFactor\Models\Issue;
+use ArielMejiaDev\HealingFactor\Services\FingerprintGenerator;
 use Illuminate\Console\Command;
 
-class XFactorTestCommand extends Command
+class HealingFactorTestCommand extends Command
 {
-    protected $signature = 'x-factor:test
+    protected $signature = 'healing-factor:test
         {--exception=ErrorException : The exception class to simulate}
         {--sync : Run the resolution synchronously instead of dispatching to the queue}';
 
@@ -20,11 +20,11 @@ class XFactorTestCommand extends Command
         $exceptionClass = $this->option('exception');
 
         $issue = Issue::create([
-            'fingerprint' => $fingerprinter->generate($exceptionClass, 'Test exception from x-factor:test'),
+            'fingerprint' => $fingerprinter->generate($exceptionClass, 'Test exception from healing-factor:test'),
             'source' => 'test',
-            'title' => "{$exceptionClass}: Test exception from x-factor:test",
+            'title' => "{$exceptionClass}: Test exception from healing-factor:test",
             'exception_class' => $exceptionClass,
-            'exception_message' => 'Test exception from x-factor:test',
+            'exception_message' => 'Test exception from healing-factor:test',
             'status' => 'pending',
         ]);
 

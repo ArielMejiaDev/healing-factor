@@ -1,15 +1,15 @@
 <?php
 
-namespace ArielMejiaDev\XFactor\Commands;
+namespace ArielMejiaDev\HealingFactor\Commands;
 
-use ArielMejiaDev\XFactor\Models\Issue;
+use ArielMejiaDev\HealingFactor\Models\Issue;
 use Illuminate\Console\Command;
 
-class XFactorStatusCommand extends Command
+class HealingFactorStatusCommand extends Command
 {
-    protected $signature = 'x-factor:status {--limit=20 : Number of issues to display}';
+    protected $signature = 'healing-factor:status {--limit=20 : Number of issues to display}';
 
-    protected $description = 'Display the status of X-Factor issues.';
+    protected $description = 'Display the status of Healing-Factor issues.';
 
     public function handle(): int
     {

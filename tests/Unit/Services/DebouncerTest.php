@@ -1,6 +1,6 @@
 <?php
 
-use ArielMejiaDev\XFactor\Services\Debouncer;
+use ArielMejiaDev\HealingFactor\Services\Debouncer;
 use Illuminate\Support\Facades\Cache;
 
 beforeEach(function () {
@@ -32,9 +32,9 @@ it('can clear a fingerprint debounce', function () {
 });
 
 it('uses the configured debounce minutes', function () {
-    config()->set('x-factor.debounce_minutes', 10);
+    config()->set('healing-factor.debounce_minutes', 10);
 
     $this->debouncer->shouldProcess('abc123');
 
-    expect(Cache::has('x-factor:debounce:abc123'))->toBeTrue();
+    expect(Cache::has('healing-factor:debounce:abc123'))->toBeTrue();
 });

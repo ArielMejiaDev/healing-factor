@@ -1,12 +1,12 @@
 <?php
 
-use ArielMejiaDev\XFactor\Drivers\ApiDriver;
-use ArielMejiaDev\XFactor\Models\Issue;
+use ArielMejiaDev\HealingFactor\Drivers\ApiDriver;
+use ArielMejiaDev\HealingFactor\Models\Issue;
 use Illuminate\Support\Facades\Process;
 
 beforeEach(function () {
-    config()->set('x-factor.api_keys.anthropic', 'sk-test-key');
-    config()->set('x-factor.api.allowed_commands', [
+    config()->set('healing-factor.api_keys.anthropic', 'sk-test-key');
+    config()->set('healing-factor.api.allowed_commands', [
         'git',
         'php artisan test',
         './vendor/bin/pest',
@@ -53,7 +53,7 @@ it('returns failure when worktree creation fails', function () {
         workingDirectory: null,
     );
 
-    $issue = Issue::factory()->create(['branch_name' => 'x-factor/fix-api-test']);
+    $issue = Issue::factory()->create(['branch_name' => 'healing-factor/fix-api-test']);
     $result = $driver->resolve($issue, 'Fix this bug');
 
     expect($result->success)->toBeFalse();
@@ -73,7 +73,7 @@ it('creates worktree and cleans up on resolve', function () {
         workingDirectory: null,
     );
 
-    $issue = Issue::factory()->create(['branch_name' => 'x-factor/fix-api-worktree']);
+    $issue = Issue::factory()->create(['branch_name' => 'healing-factor/fix-api-worktree']);
 
     // The resolve will fail because the Anthropic Client will throw
     // (no real API key / network), but worktree should still be cleaned up
@@ -110,7 +110,7 @@ it('accepts constructor parameters for model, maxTokens, maxTurns, timeout', fun
 });
 
 it('uses default model from config when null', function () {
-    config()->set('x-factor.api.model', 'claude-haiku-4-5-20251001');
+    config()->set('healing-factor.api.model', 'claude-haiku-4-5-20251001');
 
     Process::fake(fn () => Process::result(output: 'ok', exitCode: 0));
 
@@ -122,7 +122,7 @@ it('uses default model from config when null', function () {
         workingDirectory: null,
     );
 
-    $issue = Issue::factory()->create(['branch_name' => 'x-factor/fix-default-model']);
+    $issue = Issue::factory()->create(['branch_name' => 'healing-factor/fix-default-model']);
     $result = $driver->resolve($issue, 'Fix this');
 
     // Will fail with API error since no real API, but confirms config fallback is used

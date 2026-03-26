@@ -1,9 +1,9 @@
 <?php
 
-namespace ArielMejiaDev\XFactor\Http\Controllers;
+namespace ArielMejiaDev\HealingFactor\Http\Controllers;
 
-use ArielMejiaDev\XFactor\Jobs\ResolveIssue;
-use ArielMejiaDev\XFactor\Models\Issue;
+use ArielMejiaDev\HealingFactor\Jobs\ResolveIssue;
+use ArielMejiaDev\HealingFactor\Models\Issue;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Validation\Rule;
@@ -36,18 +36,18 @@ class DashboardController extends Controller
 
         $issues = $query->paginate(25)->appends($request->query());
 
-        return view('x-factor::dashboard.index', compact('issues', 'statusCounts'));
+        return view('healing-factor::dashboard.index', compact('issues', 'statusCounts'));
     }
 
     public function show(Issue $issue)
     {
-        return view('x-factor::dashboard.show', compact('issue'));
+        return view('healing-factor::dashboard.show', compact('issue'));
     }
 
     public function retry(Request $request, Issue $issue)
     {
         $validated = $request->validate([
-            'model' => ['required', Rule::in(config('x-factor.api.models', []))],
+            'model' => ['required', Rule::in(config('healing-factor.api.models', []))],
             'max_turns' => ['required', 'integer', 'min:5', 'max:50'],
         ]);
 
@@ -57,7 +57,7 @@ class DashboardController extends Controller
 
         ResolveIssue::dispatch($issue, $validated);
 
-        return redirect()->route('x-factor.dashboard.show', $issue)
+        return redirect()->route('healing-factor.dashboard.show', $issue)
             ->with('success', 'Issue queued for retry.');
     }
 

@@ -1,8 +1,8 @@
 <?php
 
-use ArielMejiaDev\XFactor\Events\IssueCreated;
-use ArielMejiaDev\XFactor\Jobs\ResolveIssue;
-use ArielMejiaDev\XFactor\Models\Issue;
+use ArielMejiaDev\HealingFactor\Events\IssueCreated;
+use ArielMejiaDev\HealingFactor\Jobs\ResolveIssue;
+use ArielMejiaDev\HealingFactor\Models\Issue;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Queue;
 beforeEach(function () {
     Queue::fake();
     Event::fake();
-    config()->set('x-factor.webhook.secret', null); // disable signature verification for tests
+    config()->set('healing-factor.webhook.secret', null); // disable signature verification for tests
 });
 
 it('creates an issue from a valid nightwatch webhook', function () {
@@ -33,7 +33,7 @@ it('creates an issue from a valid nightwatch webhook', function () {
         ],
     ];
 
-    $this->postJson('/x-factor/webhook', $payload)
+    $this->postJson('/healing-factor/webhook', $payload)
         ->assertStatus(201)
         ->assertJson(['message' => 'Issue created.']);
 
@@ -49,7 +49,7 @@ it('creates an issue from a valid nightwatch webhook', function () {
 });
 
 it('ignores non-processable events', function () {
-    $this->postJson('/x-factor/webhook', ['event' => 'issue.resolved'])
+    $this->postJson('/healing-factor/webhook', ['event' => 'issue.resolved'])
         ->assertStatus(200)
         ->assertJson(['message' => 'Event ignored.']);
 
@@ -57,16 +57,16 @@ it('ignores non-processable events', function () {
 });
 
 it('returns 422 when payload cannot be parsed', function () {
-    $this->postJson('/x-factor/webhook', ['event' => 'issue.opened'])
+    $this->postJson('/healing-factor/webhook', ['event' => 'issue.opened'])
         ->assertStatus(422);
 });
 
-it('returns 200 when x-factor is disabled', function () {
-    config()->set('x-factor.enabled', false);
+it('returns 200 when healing-factor is disabled', function () {
+    config()->set('healing-factor.enabled', false);
 
-    $this->postJson('/x-factor/webhook', ['event' => 'issue.opened'])
+    $this->postJson('/healing-factor/webhook', ['event' => 'issue.opened'])
         ->assertStatus(200)
-        ->assertJson(['message' => 'X-Factor is disabled.']);
+        ->assertJson(['message' => 'Healing-Factor is disabled.']);
 });
 
 it('deduplicates issues with the same fingerprint', function () {
@@ -84,13 +84,13 @@ it('deduplicates issues with the same fingerprint', function () {
     ];
 
     // First request creates the issue
-    $this->postJson('/x-factor/webhook', $payload)->assertStatus(201);
+    $this->postJson('/healing-factor/webhook', $payload)->assertStatus(201);
 
     // Clear debounce so second request isn't blocked by debounce
     Cache::flush();
 
     // Second request is deduplicated
-    $this->postJson('/x-factor/webhook', $payload)->assertStatus(200)
+    $this->postJson('/healing-factor/webhook', $payload)->assertStatus(200)
         ->assertJson(['message' => 'Issue already being processed.']);
 
     expect(Issue::count())->toBe(1);
@@ -110,7 +110,7 @@ it('ignores configured exception classes', function () {
         ],
     ];
 
-    $this->postJson('/x-factor/webhook', $payload)
+    $this->postJson('/healing-factor/webhook', $payload)
         ->assertStatus(200)
         ->assertJson(['message' => 'Exception ignored.']);
 });
@@ -129,10 +129,10 @@ it('debounces duplicate requests', function () {
         ],
     ];
 
-    $this->postJson('/x-factor/webhook', $payload)->assertStatus(201);
+    $this->postJson('/healing-factor/webhook', $payload)->assertStatus(201);
 
     // Second request within debounce window
-    $this->postJson('/x-factor/webhook', $payload)
+    $this->postJson('/healing-factor/webhook', $payload)
         ->assertStatus(200)
         ->assertJson(['message' => 'Debounced.']);
 });

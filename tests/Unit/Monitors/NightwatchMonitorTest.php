@@ -1,6 +1,6 @@
 <?php
 
-use ArielMejiaDev\XFactor\Monitors\NightwatchMonitor;
+use ArielMejiaDev\HealingFactor\Monitors\NightwatchMonitor;
 use Illuminate\Http\Request;
 
 beforeEach(function () {

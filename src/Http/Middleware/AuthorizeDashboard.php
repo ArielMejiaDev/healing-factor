@@ -1,8 +1,8 @@
 <?php
 
-namespace ArielMejiaDev\XFactor\Http\Middleware;
+namespace ArielMejiaDev\HealingFactor\Http\Middleware;
 
-use ArielMejiaDev\XFactor\XFactor;
+use ArielMejiaDev\HealingFactor\HealingFactor;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,7 +11,7 @@ class AuthorizeDashboard
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (! config('x-factor.dashboard.enabled', true)) {
+        if (! config('healing-factor.dashboard.enabled', true)) {
             abort(404);
         }
 
@@ -21,7 +21,7 @@ class AuthorizeDashboard
             abort(403);
         }
 
-        if (! XFactor::check($user)) {
+        if (! HealingFactor::check($user)) {
             abort(403);
         }
 

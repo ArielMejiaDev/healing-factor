@@ -1,14 +1,14 @@
 <?php
 
-namespace ArielMejiaDev\XFactor\Listeners;
+namespace ArielMejiaDev\HealingFactor\Listeners;
 
-use ArielMejiaDev\XFactor\Events\IssueCreated;
-use ArielMejiaDev\XFactor\Facades\XFactor;
-use ArielMejiaDev\XFactor\Jobs\ResolveIssue;
-use ArielMejiaDev\XFactor\Models\Issue;
-use ArielMejiaDev\XFactor\Services\Debouncer;
-use ArielMejiaDev\XFactor\Services\FingerprintGenerator;
-use ArielMejiaDev\XFactor\Support\XFactorLogger;
+use ArielMejiaDev\HealingFactor\Events\IssueCreated;
+use ArielMejiaDev\HealingFactor\Facades\HealingFactor;
+use ArielMejiaDev\HealingFactor\Jobs\ResolveIssue;
+use ArielMejiaDev\HealingFactor\Models\Issue;
+use ArielMejiaDev\HealingFactor\Services\Debouncer;
+use ArielMejiaDev\HealingFactor\Services\FingerprintGenerator;
+use ArielMejiaDev\HealingFactor\Support\HealingFactorLogger;
 use Illuminate\Log\Events\MessageLogged;
 use Illuminate\Queue\Events\JobExceptionOccurred;
 
@@ -42,7 +42,7 @@ class ExceptionListener
 
     protected function processException(\Throwable $exception): void
     {
-        // Guard against recursion (e.g. X-Factor's own DB errors triggering the listener)
+        // Guard against recursion (e.g. Healing-Factor's own DB errors triggering the listener)
         if (static::$processing) {
             return;
         }
@@ -58,14 +58,14 @@ class ExceptionListener
 
     protected function doProcessException(\Throwable $exception): void
     {
-        if (! XFactor::isEnabled()) {
+        if (! HealingFactor::isEnabled()) {
             return;
         }
 
         $exceptionClass = get_class($exception);
 
         // Check ignored exceptions
-        $ignored = config('x-factor.ignored_exceptions', []);
+        $ignored = config('healing-factor.ignored_exceptions', []);
         foreach ($ignored as $ignoredClass) {
             if ($exceptionClass === $ignoredClass || $exception instanceof $ignoredClass) {
                 return;
@@ -102,7 +102,7 @@ class ExceptionListener
         event(new IssueCreated($issue));
         ResolveIssue::dispatch($issue);
 
-        XFactorLogger::info("Issue #{$issue->id} created (status: pending). Job dispatched.", [
+        HealingFactorLogger::info("Issue #{$issue->id} created (status: pending). Job dispatched.", [
             'exception' => $exceptionClass,
         ]);
     }

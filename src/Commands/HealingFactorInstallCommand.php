@@ -1,37 +1,37 @@
 <?php
 
-namespace ArielMejiaDev\XFactor\Commands;
+namespace ArielMejiaDev\HealingFactor\Commands;
 
-use ArielMejiaDev\XFactor\Support\XFactorBanner;
+use ArielMejiaDev\HealingFactor\Support\HealingFactorBanner;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Process;
 
-class XFactorInstallCommand extends Command
+class HealingFactorInstallCommand extends Command
 {
-    protected $signature = 'x-factor:install';
+    protected $signature = 'healing-factor:install';
 
-    protected $description = 'Install X-Factor: publish config, run migrations, and verify setup.';
+    protected $description = 'Install Healing-Factor: publish config, run migrations, and verify setup.';
 
     public function handle(): int
     {
         $this->newLine();
-        foreach (XFactorBanner::render() as $line) {
+        foreach (HealingFactorBanner::render() as $line) {
             $this->output->writeln($line);
         }
         $this->newLine();
 
-        $this->info('Installing X-Factor...');
+        $this->info('Installing Healing-Factor...');
         $this->newLine();
 
         // 1. Publish config
         $this->call('vendor:publish', [
-            '--tag' => 'x-factor-config',
+            '--tag' => 'healing-factor-config',
         ]);
         $this->info('Config published.');
 
         // 2. Publish migration
         $this->call('vendor:publish', [
-            '--tag' => 'x-factor-migrations',
+            '--tag' => 'healing-factor-migrations',
         ]);
         $this->info('Migration published.');
 
@@ -45,24 +45,24 @@ class XFactorInstallCommand extends Command
         $this->newLine();
         $this->info('Checking setup...');
 
-        $cliTool = config('x-factor.cli_tool', 'claude');
+        $cliTool = config('healing-factor.cli_tool', 'claude');
         $result = Process::run(['which', $cliTool]);
 
         if ($result->successful()) {
             $this->info("  [OK] CLI tool '{$cliTool}' found at: ".trim($result->output()));
         } else {
-            $this->warn("  [WARN] CLI tool '{$cliTool}' not found. Install it before using X-Factor.");
+            $this->warn("  [WARN] CLI tool '{$cliTool}' not found. Install it before using Healing-Factor.");
         }
 
         // 5. Check ANTHROPIC_API_KEY
-        if (config('x-factor.api_keys.anthropic')) {
+        if (config('healing-factor.api_keys.anthropic')) {
             $this->info('  [OK] ANTHROPIC_API_KEY is set.');
         } else {
             $this->warn('  [WARN] ANTHROPIC_API_KEY is not set. Add it to your .env file.');
         }
 
         $this->newLine();
-        $this->info('X-Factor installation complete!');
+        $this->info('Healing-Factor installation complete!');
 
         return self::SUCCESS;
     }

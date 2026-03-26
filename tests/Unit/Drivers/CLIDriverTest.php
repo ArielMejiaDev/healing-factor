@@ -1,8 +1,8 @@
 <?php
 
-use ArielMejiaDev\XFactor\Drivers\CLIDriver;
-use ArielMejiaDev\XFactor\Enums\CliTool;
-use ArielMejiaDev\XFactor\Models\Issue;
+use ArielMejiaDev\HealingFactor\Drivers\CLIDriver;
+use ArielMejiaDev\HealingFactor\Enums\CliTool;
+use ArielMejiaDev\HealingFactor\Models\Issue;
 use Illuminate\Support\Facades\Process;
 
 it('resolves an issue by running a CLI process in a worktree', function () {
@@ -16,7 +16,7 @@ it('resolves an issue by running a CLI process in a worktree', function () {
         workingDirectory: null,
     );
 
-    $issue = Issue::factory()->create(['branch_name' => 'x-factor/fix-test-abc123']);
+    $issue = Issue::factory()->create(['branch_name' => 'healing-factor/fix-test-abc123']);
     $result = $driver->resolve($issue, 'Fix this bug');
 
     expect($result->success)->toBeTrue();
@@ -54,7 +54,7 @@ it('returns failure when worktree creation fails', function () {
         workingDirectory: null,
     );
 
-    $issue = Issue::factory()->create(['branch_name' => 'x-factor/fix-existing']);
+    $issue = Issue::factory()->create(['branch_name' => 'healing-factor/fix-existing']);
     $result = $driver->resolve($issue, 'Fix this bug');
 
     expect($result->success)->toBeFalse();
@@ -78,7 +78,7 @@ it('returns failure result when CLI process fails', function () {
         workingDirectory: null,
     );
 
-    $issue = Issue::factory()->create(['branch_name' => 'x-factor/fix-fail-test']);
+    $issue = Issue::factory()->create(['branch_name' => 'healing-factor/fix-fail-test']);
     $result = $driver->resolve($issue, 'Fix this bug');
 
     expect($result->success)->toBeFalse();
@@ -103,7 +103,7 @@ it('cleans up worktree even when CLI process fails', function () {
         workingDirectory: null,
     );
 
-    $issue = Issue::factory()->create(['branch_name' => 'x-factor/fix-cleanup-test']);
+    $issue = Issue::factory()->create(['branch_name' => 'healing-factor/fix-cleanup-test']);
     $result = $driver->resolve($issue, 'Fix this');
 
     expect($result->success)->toBeFalse();
@@ -148,7 +148,7 @@ it('uses opencode when configured', function () {
         workingDirectory: null,
     );
 
-    $issue = Issue::factory()->create(['branch_name' => 'x-factor/fix-opencode']);
+    $issue = Issue::factory()->create(['branch_name' => 'healing-factor/fix-opencode']);
     $result = $driver->resolve($issue, 'Fix this bug');
 
     expect($result->success)->toBeTrue();
@@ -157,7 +157,7 @@ it('uses opencode when configured', function () {
 });
 
 it('passes ANTHROPIC_API_KEY as environment variable when set', function () {
-    config()->set('x-factor.api_keys.anthropic', 'sk-test-key');
+    config()->set('healing-factor.api_keys.anthropic', 'sk-test-key');
 
     Process::fake(fn () => Process::result(output: 'ok', exitCode: 0));
 
@@ -169,7 +169,7 @@ it('passes ANTHROPIC_API_KEY as environment variable when set', function () {
         workingDirectory: null,
     );
 
-    $issue = Issue::factory()->create(['branch_name' => 'x-factor/fix-env-test']);
+    $issue = Issue::factory()->create(['branch_name' => 'healing-factor/fix-env-test']);
     $driver->resolve($issue, 'Fix this');
 
     Process::assertRan(fn ($process) => $process->command[0] === 'claude');
@@ -186,7 +186,7 @@ it('uses custom model and max turns', function () {
         workingDirectory: null,
     );
 
-    $issue = Issue::factory()->create(['branch_name' => 'x-factor/fix-model-test']);
+    $issue = Issue::factory()->create(['branch_name' => 'healing-factor/fix-model-test']);
     $driver->resolve($issue, 'Fix this');
 
     Process::assertRan(function ($process) {

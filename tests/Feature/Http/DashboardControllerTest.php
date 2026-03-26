@@ -1,7 +1,7 @@
 <?php
 
-use ArielMejiaDev\XFactor\Models\Issue;
-use ArielMejiaDev\XFactor\XFactor;
+use ArielMejiaDev\HealingFactor\Models\Issue;
+use ArielMejiaDev\HealingFactor\HealingFactor;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Schema;
 
@@ -18,8 +18,8 @@ beforeEach(function () {
         });
     }
 
-    config()->set('x-factor.dashboard.enabled', true);
-    config()->set('x-factor.dashboard.middleware', ['web']);
+    config()->set('healing-factor.dashboard.enabled', true);
+    config()->set('healing-factor.dashboard.middleware', ['web']);
 });
 
 function createUser(): Authenticatable
@@ -38,7 +38,7 @@ function createUser(): Authenticatable
 
 function setAuthGate(Closure $callback): void
 {
-    app(XFactor::class)->auth($callback);
+    app(HealingFactor::class)->auth($callback);
 }
 
 it('returns 403 when gate rejects user', function () {
@@ -47,22 +47,22 @@ it('returns 403 when gate rejects user', function () {
     setAuthGate(fn ($user) => false);
 
     $this->actingAs($user)
-        ->get('/x-factor')
+        ->get('/healing-factor')
         ->assertStatus(403);
 });
 
 it('returns 404 when dashboard is disabled', function () {
-    config()->set('x-factor.dashboard.enabled', false);
+    config()->set('healing-factor.dashboard.enabled', false);
 
     $user = createUser();
 
     $this->actingAs($user)
-        ->get('/x-factor')
+        ->get('/healing-factor')
         ->assertStatus(404);
 });
 
 it('denies access when user is not authenticated', function () {
-    $this->getJson('/x-factor')
+    $this->getJson('/healing-factor')
         ->assertUnauthorized();
 });
 
@@ -73,7 +73,7 @@ it('lists issues when authorized', function () {
     Issue::factory()->count(3)->create();
 
     $this->actingAs($user)
-        ->get('/x-factor')
+        ->get('/healing-factor')
         ->assertStatus(200)
         ->assertViewHas('issues')
         ->assertViewHas('statusCounts');
@@ -87,7 +87,7 @@ it('filters issues by status', function () {
     Issue::factory()->failed()->create();
 
     $this->actingAs($user)
-        ->get('/x-factor?status=failed')
+        ->get('/healing-factor?status=failed')
         ->assertStatus(200)
         ->assertViewHas('issues', function ($issues) {
             return $issues->count() === 1;
@@ -108,7 +108,7 @@ it('searches issues by title', function () {
     ]);
 
     $this->actingAs($user)
-        ->get('/x-factor?search=ErrorException')
+        ->get('/healing-factor?search=ErrorException')
         ->assertStatus(200)
         ->assertViewHas('issues', function ($issues) {
             return $issues->count() === 1;
@@ -126,7 +126,7 @@ it('shows issue details', function () {
     ]);
 
     $this->actingAs($user)
-        ->get("/x-factor/{$issue->id}")
+        ->get("/healing-factor/{$issue->id}")
         ->assertStatus(200)
         ->assertViewHas('issue')
         ->assertSee('ErrorException')
@@ -141,7 +141,7 @@ it('displays status count badges', function () {
     Issue::factory()->resolved()->count(2)->create();
 
     $this->actingAs($user)
-        ->get('/x-factor')
+        ->get('/healing-factor')
         ->assertStatus(200)
         ->assertViewHas('statusCounts', function ($counts) {
             return $counts->get('pending') === 3
@@ -157,11 +157,11 @@ it('shows pr link only when pr_url is set', function () {
     Issue::factory()->pending()->create(['pr_url' => null]);
 
     $this->actingAs($user)
-        ->get('/x-factor')
+        ->get('/healing-factor')
         ->assertStatus(200)
         ->assertSee('https://github.com/test/repo/pull/1');
 });
 
 afterEach(function () {
-    (new ReflectionProperty(XFactor::class, 'authUsing'))->setValue(null, null);
+    (new ReflectionProperty(HealingFactor::class, 'authUsing'))->setValue(null, null);
 });

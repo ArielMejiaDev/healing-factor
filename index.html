@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>X-Factor — Self-Healing Laravel Package</title>
-    <meta name="description" content="X-Factor catches exceptions in your Laravel app and automatically creates pull requests with fixes using AI. Open source.">
+    <title>Healing-Factor — Self-Healing Laravel Package</title>
+    <meta name="description" content="Healing-Factor catches exceptions in your Laravel app and automatically creates pull requests with fixes using AI. Open source.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -12,12 +12,13 @@
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
-            --bg: #0B0F1A;
-            --bg-card: #111827;
-            --bg-card-hover: #1a2236;
-            --border: #1E293B;
-            --text: #F1F5F9;
-            --text-muted: #94A3B8;
+            --bg: #09090B;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --bg-card-hover: rgba(255, 255, 255, 0.06);
+            --border: rgba(255, 255, 255, 0.06);
+            --border-hover: rgba(255, 255, 255, 0.12);
+            --text: #FAFAFA;
+            --text-muted: #A1A1AA;
             --primary: #A78BFA;
             --primary-glow: rgba(167, 139, 250, 0.15);
             --cta: #22C55E;
@@ -39,6 +40,69 @@
             overflow-x: hidden;
         }
 
+        /* ---------- BACKGROUND PATTERN ---------- */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background-image: radial-gradient(circle, rgba(167, 139, 250, 0.045) 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+        body > * { position: relative; z-index: 1; }
+
+        /* ---------- FLOATING ORBS ---------- */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            filter: blur(100px);
+            opacity: 0;
+            z-index: 0;
+        }
+        .orb--1 {
+            width: 500px; height: 500px;
+            background: var(--primary);
+            top: -10%; right: -5%;
+            opacity: 0.1;
+        }
+        .orb--2 {
+            width: 400px; height: 400px;
+            background: var(--cta);
+            bottom: 10%; left: -8%;
+            opacity: 0.07;
+        }
+        .orb--3 {
+            width: 350px; height: 350px;
+            background: var(--accent-blue);
+            top: 40%; right: 15%;
+            opacity: 0.06;
+        }
+        @media (prefers-reduced-motion: no-preference) {
+            .orb--1 { animation: drift1 18s ease-in-out infinite; }
+            .orb--2 { animation: drift2 22s ease-in-out infinite; }
+            .orb--3 { animation: drift3 15s ease-in-out infinite; }
+        }
+        @keyframes drift1 {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(-100px, 80px); }
+            50% { transform: translate(60px, 150px); }
+            75% { transform: translate(80px, -60px); }
+        }
+        @keyframes drift2 {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(120px, -70px); }
+            50% { transform: translate(-80px, 100px); }
+            75% { transform: translate(60px, 130px); }
+        }
+        @keyframes drift3 {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(-90px, -80px); }
+            50% { transform: translate(100px, 60px); }
+            75% { transform: translate(-60px, 110px); }
+        }
+
         /* ---------- NAV ---------- */
         nav {
             position: fixed;
@@ -48,7 +112,7 @@
             z-index: 50;
             backdrop-filter: blur(16px) saturate(1.8);
             -webkit-backdrop-filter: blur(16px) saturate(1.8);
-            background: rgba(11, 15, 26, 0.8);
+            background: rgba(9, 9, 11, 0.85);
             border-bottom: 1px solid var(--border);
             transition: background 0.3s;
         }
@@ -109,10 +173,11 @@
             position: relative;
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            padding: 120px 24px 80px;
-            overflow: hidden;
+            justify-content: flex-start;
+            padding: 140px 24px 0;
+            overflow: visible;
         }
         .hero-glow {
             position: absolute;
@@ -217,12 +282,81 @@
         .hero-install code { color: var(--cta); }
         .hero-install .copy-icon { color: var(--text-muted); transition: color 0.2s; }
         .hero-install:hover .copy-icon { color: var(--text); }
-        @media (prefers-reduced-motion: no-preference) {
-            .hero-install { animation: float 3s ease-in-out infinite; }
+
+        /* Hero Screenshot */
+        .hero-screenshot {
+            position: relative;
+            width: 100%;
+            max-width: 1100px;
+            margin-top: 64px;
         }
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-6px); }
+        .hero-screenshot-inner {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, 0.03),
+                0 8px 40px rgba(0, 0, 0, 0.5),
+                0 0 80px rgba(167, 139, 250, 0.06);
+        }
+        /* Orbiting light dot */
+        .hero-screenshot-border {
+            position: absolute;
+            inset: 0;
+            border-radius: 16px;
+            pointer-events: none;
+            z-index: 2;
+        }
+        .hero-screenshot-border::before {
+            content: '';
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 0 8px 4px rgba(255, 255, 255, 0.6), 0 0 20px 8px rgba(255, 255, 255, 0.3), 0 0 40px 16px rgba(167, 139, 250, 0.2);
+            offset-path: rect(0% 100% 100% 0% round 16px);
+            offset-distance: 0%;
+            translate: -50% -50%;
+        }
+        @media (prefers-reduced-motion: no-preference) {
+            .hero-screenshot-border::before {
+                animation: orbit 12s linear infinite;
+            }
+        }
+        @keyframes orbit {
+            0% { offset-distance: 0%; }
+            100% { offset-distance: 100%; }
+        }
+        .hero-screenshot-inner img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .hero-screenshot-fade {
+            position: absolute;
+            bottom: 1px;
+            left: 1px;
+            right: 1px;
+            height: 40%;
+            background: linear-gradient(to bottom, transparent 0%, var(--bg) 100%);
+            border-radius: 0 0 15px 15px;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .hero-screenshot-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 60%;
+            background: radial-gradient(ellipse, rgba(167, 139, 250, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
         }
 
         /* ---------- SECTIONS ---------- */
@@ -260,15 +394,18 @@
         }
         .feature-card {
             background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--border);
             border-radius: 14px;
             padding: 32px;
-            transition: border-color 0.25s, background 0.25s, transform 0.25s;
+            transition: border-color 0.25s, background 0.25s, transform 0.25s, box-shadow 0.25s;
         }
         .feature-card:hover {
-            border-color: rgba(167, 139, 250, 0.3);
+            border-color: var(--border-hover);
             background: var(--bg-card-hover);
             transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
         .feature-icon {
             width: 44px;
@@ -296,7 +433,7 @@
         }
 
         /* ---------- HOW IT WORKS ---------- */
-        .how-section { background: linear-gradient(180deg, var(--bg) 0%, #0d1220 100%); }
+        .how-section { background: linear-gradient(180deg, var(--bg) 0%, #0E0E10 100%); }
         .pipeline {
             margin-top: 56px;
             display: grid;
@@ -306,12 +443,14 @@
         .step {
             position: relative;
             background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--border);
             border-radius: 14px;
             padding: 28px 24px;
-            transition: border-color 0.25s, transform 0.25s;
+            transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
         }
-        .step:hover { border-color: rgba(167, 139, 250, 0.3); transform: translateY(-2px); }
+        .step:hover { border-color: var(--border-hover); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); }
         .step-num {
             font-family: var(--font-mono);
             font-size: 0.75rem;
@@ -331,40 +470,6 @@
             line-height: 1.6;
         }
 
-        /* ---------- SCREENSHOTS ---------- */
-        .screenshots-section { overflow: hidden; }
-        .screenshots-grid {
-            margin-top: 56px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-        }
-        .screenshot-card {
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            overflow: hidden;
-            background: var(--bg-card);
-            transition: border-color 0.25s, transform 0.25s;
-        }
-        .screenshot-card:hover { border-color: rgba(167, 139, 250, 0.3); transform: translateY(-2px); }
-        .screenshot-card--wide { grid-column: 1 / -1; }
-        .screenshot-card img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-        .screenshot-info {
-            padding: 20px 24px;
-        }
-        .screenshot-info h3 {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-        .screenshot-info p {
-            font-size: 0.8125rem;
-            color: var(--text-muted);
-        }
 
         /* ---------- INTEGRATIONS ---------- */
         .integrations-grid {
@@ -375,13 +480,15 @@
         }
         .integration-card {
             background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--border);
             border-radius: 14px;
             padding: 32px;
             text-align: center;
-            transition: border-color 0.25s, transform 0.25s;
+            transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
         }
-        .integration-card:hover { border-color: rgba(167, 139, 250, 0.3); transform: translateY(-2px); }
+        .integration-card:hover { border-color: var(--border-hover); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); }
         .integration-card h3 {
             font-size: 1rem;
             font-weight: 600;
@@ -407,7 +514,7 @@
         .integration-logo--nightwatch { background: rgba(167, 139, 250, 0.12); color: var(--primary); }
 
         /* ---------- QUICKSTART ---------- */
-        .quickstart-section { background: linear-gradient(180deg, #0d1220 0%, var(--bg) 100%); }
+        .quickstart-section { background: linear-gradient(180deg, #0E0E10 0%, var(--bg) 100%); }
         .quickstart-inner {
             display: flex;
             flex-direction: column;
@@ -418,6 +525,8 @@
         .code-block {
             margin-top: 40px;
             background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--border);
             border-radius: 14px;
             overflow: hidden;
@@ -453,7 +562,7 @@
         }
         .code-block pre .cmd { color: var(--cta); }
         .code-block pre .flag { color: var(--primary); }
-        .code-block pre .comment { color: #475569; }
+        .code-block pre .comment { color: #52525B; }
         .code-block pre .string { color: var(--accent-amber); }
         .env-grid {
             margin-top: 32px;
@@ -464,6 +573,8 @@
         }
         .env-card {
             background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--border);
             border-radius: 12px;
             padding: 24px;
@@ -487,11 +598,84 @@
             border-radius: 4px;
         }
 
+        /* ---------- NEWSLETTER ---------- */
+        .newsletter-section {
+            background: linear-gradient(180deg, var(--bg) 0%, #0E0E10 100%);
+        }
+        .newsletter-inner {
+            max-width: 640px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .newsletter-inner .section-desc {
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .newsletter-form {
+            margin-top: 40px;
+            display: flex;
+            gap: 12px;
+            max-width: 480px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .newsletter-input {
+            flex: 1;
+            padding: 14px 20px;
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-family: var(--font-sans);
+            font-size: 0.9375rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .newsletter-input::placeholder { color: #52525B; }
+        .newsletter-input:focus { border-color: var(--primary); }
+        .newsletter-submit {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 24px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-family: var(--font-sans);
+            font-size: 0.9375rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+            white-space: nowrap;
+            box-shadow: 0 0 24px rgba(167, 139, 250, 0.2);
+        }
+        .newsletter-submit:hover {
+            background: #9171f0;
+            box-shadow: 0 0 32px rgba(167, 139, 250, 0.35);
+        }
+        .newsletter-submit:active { transform: scale(0.97); }
+        .newsletter-submit svg { width: 18px; height: 18px; }
+        .newsletter-note {
+            margin-top: 16px;
+            font-size: 0.75rem;
+            color: #52525B;
+        }
+        @media (max-width: 480px) {
+            .newsletter-form {
+                flex-direction: column;
+            }
+        }
+
         /* ---------- CTA BANNER ---------- */
         .cta-section { text-align: center; }
         .cta-box {
-            background: linear-gradient(135deg, rgba(167, 139, 250, 0.08) 0%, rgba(34, 197, 94, 0.05) 100%);
-            border: 1px solid rgba(167, 139, 250, 0.15);
+            background: linear-gradient(135deg, rgba(167, 139, 250, 0.06) 0%, rgba(34, 197, 94, 0.03) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 20px;
             padding: 64px 40px;
             position: relative;
@@ -577,7 +761,7 @@
                 top: 64px;
                 left: 0;
                 right: 0;
-                background: rgba(11, 15, 26, 0.95);
+                background: rgba(9, 9, 11, 0.95);
                 backdrop-filter: blur(16px);
                 padding: 24px;
                 gap: 16px;
@@ -585,7 +769,6 @@
             }
             .features-grid, .integrations-grid { grid-template-columns: 1fr; }
             .pipeline { grid-template-columns: 1fr; }
-            .screenshots-grid { grid-template-columns: 1fr; }
             .env-grid { grid-template-columns: 1fr; }
             section { padding: 64px 20px; }
             .hero { padding: 100px 20px 60px; }
@@ -596,17 +779,22 @@
 </head>
 <body>
 
+<!-- Animated background orbs -->
+<div class="orb orb--1"></div>
+<div class="orb orb--2"></div>
+<div class="orb orb--3"></div>
+
 <!-- Nav -->
 <nav>
     <div class="nav-inner">
-        <a href="#" class="nav-brand"><span>X</span>-Factor</a>
+        <a href="#" class="nav-brand"><span>Healing</span>-Factor</a>
         <div class="nav-links" id="navLinks">
             <a href="#features">Features</a>
             <a href="#how-it-works">How It Works</a>
-            <a href="#screenshots">Dashboard</a>
+            <a href="#integrations">Integrations</a>
             <a href="#quickstart">Quick Start</a>
             <a href="docs.html">Docs</a>
-            <a href="https://github.com/ArielMejiaDev/x-factor" target="_blank" rel="noopener" class="nav-gh">
+            <a href="https://github.com/ArielMejiaDev/healing-factor" target="_blank" rel="noopener" class="nav-gh">
                 <svg viewBox="0 0 16 16" fill="currentColor" width="16" height="16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
                 GitHub
             </a>
@@ -627,22 +815,25 @@
             Open Source &middot; MIT License
         </div>
         <h1>Your Laravel App<br><span class="gradient">Fixes Itself</span></h1>
-        <p class="hero-sub">X-Factor catches production exceptions and automatically creates pull requests with AI-generated fixes. Install, configure, and let your app self-heal.</p>
+        <p class="hero-sub">Healing-Factor catches production exceptions and automatically creates pull requests with AI-generated fixes. Install, configure, and let your app self-heal.</p>
         <div class="hero-actions">
             <a href="#quickstart" class="btn btn-primary">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
                 Get Started
             </a>
-            <a href="https://github.com/ArielMejiaDev/x-factor" target="_blank" rel="noopener" class="btn btn-outline">
+            <a href="https://github.com/ArielMejiaDev/healing-factor" target="_blank" rel="noopener" class="btn btn-outline">
                 <svg viewBox="0 0 16 16" fill="currentColor" width="18" height="18"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
                 View on GitHub
             </a>
         </div>
-        <div class="hero-install" onclick="copyInstall()" title="Click to copy">
-            <span>$</span>
-            <code>composer require arielmejiadev/x-factor</code>
-            <svg class="copy-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+    </div>
+    <div class="hero-screenshot fade-up">
+        <div class="hero-screenshot-glow"></div>
+        <div class="hero-screenshot-border"></div>
+        <div class="hero-screenshot-inner">
+            <img src="images/dashboard.png" alt="Healing-Factor dashboard showing a list of resolved issues with status, source, attempts, and PR links" loading="eager">
         </div>
+        <div class="hero-screenshot-fade"></div>
     </div>
 </section>
 
@@ -652,7 +843,7 @@
         <div class="fade-up">
             <span class="section-label">Features</span>
             <h2 class="section-title">Everything you need for self-healing apps</h2>
-            <p class="section-desc">X-Factor is a drop-in Laravel package that transforms exceptions into actionable pull requests, powered by AI.</p>
+            <p class="section-desc">Healing-Factor is a drop-in Laravel package that transforms exceptions into actionable pull requests, powered by AI.</p>
         </div>
         <div class="features-grid">
             <div class="feature-card fade-up">
@@ -660,7 +851,7 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M9 12l2 2 4-4"/></svg>
                 </div>
                 <h3>Automatic PR Creation</h3>
-                <p>When an exception fires, X-Factor spins up an isolated git worktree, runs AI to fix the code, and opens a draft PR on your repo.</p>
+                <p>When an exception fires, Healing-Factor spins up an isolated git worktree, runs AI to fix the code, and opens a draft PR on your repo.</p>
             </div>
             <div class="feature-card fade-up">
                 <div class="feature-icon feature-icon--purple">
@@ -688,7 +879,7 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
                 </div>
                 <h3>Built-in Dashboard</h3>
-                <p>Dark-themed web dashboard with search, status filters, PR links, retry actions, and real-time polling at <code>/x-factor</code>.</p>
+                <p>Dark-themed web dashboard with search, status filters, PR links, retry actions, and real-time polling at <code>/healing-factor</code>.</p>
             </div>
             <div class="feature-card fade-up">
                 <div class="feature-icon feature-icon--purple">
@@ -713,7 +904,7 @@
             <div class="step fade-up">
                 <span class="step-num">01</span>
                 <h4>Exception Caught</h4>
-                <p>Your app throws an exception. X-Factor's listener or Nightwatch webhook captures it instantly.</p>
+                <p>Your app throws an exception. Healing-Factor's listener or Nightwatch webhook captures it instantly.</p>
             </div>
             <div class="step fade-up">
                 <span class="step-num">02</span>
@@ -754,39 +945,6 @@
     </div>
 </section>
 
-<!-- Screenshots -->
-<section id="screenshots" class="screenshots-section">
-    <div class="container">
-        <div class="fade-up">
-            <span class="section-label">Dashboard</span>
-            <h2 class="section-title">See it in action</h2>
-            <p class="section-desc">A dark-themed dashboard to monitor, search, and retry every issue X-Factor processes.</p>
-        </div>
-        <div class="screenshots-grid">
-            <div class="screenshot-card screenshot-card--wide fade-up">
-                <img src="images/dashboard.png" alt="X-Factor dashboard showing a list of resolved issues with status, source, attempts, and PR links" loading="lazy">
-                <div class="screenshot-info">
-                    <h3>Issues Dashboard</h3>
-                    <p>Search, filter by status, view sources and PR links — all in one place.</p>
-                </div>
-            </div>
-            <div class="screenshot-card fade-up">
-                <img src="images/issue-detail.png" alt="X-Factor issue detail page showing exception overview, diagnostics, and stack trace" loading="lazy">
-                <div class="screenshot-info">
-                    <h3>Issue Detail</h3>
-                    <p>Full exception overview, diagnostics, and stack trace for every captured issue.</p>
-                </div>
-            </div>
-            <div class="screenshot-card fade-up">
-                <img src="images/github-pr.png" alt="GitHub pull request automatically created by X-Factor with problem description and fix" loading="lazy">
-                <div class="screenshot-info">
-                    <h3>Auto-Generated PR</h3>
-                    <p>AI writes the fix, opens a draft PR with a clear description, ready for review.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 
 <!-- Integrations -->
 <section id="integrations">
@@ -794,7 +952,7 @@
         <div class="fade-up">
             <span class="section-label">Integrations</span>
             <h2 class="section-title">Works with your tools</h2>
-            <p class="section-desc">Plug X-Factor into your existing monitoring and AI setup. No lock-in.</p>
+            <p class="section-desc">Plug Healing-Factor into your existing monitoring and AI setup. No lock-in.</p>
         </div>
         <div class="integrations-grid">
             <div class="integration-card fade-up">
@@ -809,14 +967,14 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
                 </div>
                 <h3>OpenCode</h3>
-                <p>Prefer OpenCode? Swap the CLI driver in your config and X-Factor handles the rest.</p>
+                <p>Prefer OpenCode? Swap the CLI driver in your config and Healing-Factor handles the rest.</p>
             </div>
             <div class="integration-card fade-up">
                 <div class="integration-logo integration-logo--nightwatch">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
                 </div>
                 <h3>Nightwatch</h3>
-                <p>Connect via HMAC-signed webhooks. Nightwatch fires, X-Factor fixes. Zero effort.</p>
+                <p>Connect via HMAC-signed webhooks. Nightwatch fires, Healing-Factor fixes. Zero effort.</p>
             </div>
         </div>
     </div>
@@ -838,29 +996,63 @@
                 Terminal
             </div>
             <pre><span class="comment"># Install the package</span>
-<span class="cmd">composer require</span> arielmejiadev/x-factor
+<span class="cmd">composer require</span> arielmejiadev/healing-factor
 
 <span class="comment"># Run the installer (publishes config, migration, and dashboard)</span>
-<span class="cmd">php artisan</span> x-factor:install
+<span class="cmd">php artisan</span> healing-factor:install
 
 <span class="comment"># Run migrations</span>
 <span class="cmd">php artisan</span> migrate
 
 <span class="comment"># Verify everything is configured</span>
-<span class="cmd">php artisan</span> x-factor:status</pre>
+<span class="cmd">php artisan</span> healing-factor:status</pre>
         </div>
         <div class="env-grid fade-up">
             <div class="env-card">
                 <h4>Option A: Exception Listener</h4>
                 <p>Catches all unhandled exceptions automatically.</p>
-                <code>X_FACTOR_MONITOR=exception_listener</code>
+                <code>HEALING_FACTOR_MONITOR=exception_listener</code>
             </div>
             <div class="env-card">
                 <h4>Option B: Nightwatch Webhook</h4>
                 <p>Receives exceptions via Nightwatch's webhook.</p>
-                <code>X_FACTOR_MONITOR=nightwatch</code>
+                <code>HEALING_FACTOR_MONITOR=nightwatch</code>
             </div>
         </div>
+    </div>
+</section>
+
+<!-- Newsletter -->
+<section class="newsletter-section">
+    <div class="container newsletter-inner">
+        <div class="fade-up">
+            <span class="section-label">Stay in the loop</span>
+            <h2 class="section-title">AI + Laravel — what's next?</h2>
+            <p class="section-desc">Join the waitlist for early access to new releases, AI-powered Laravel tools, and packages we're building next.</p>
+        </div>
+        <!-- Mailchimp embedded form (no backend needed).
+             Replace the action URL with your own:
+             Mailchimp → Audience → Signup forms → Embedded forms → copy the action URL.
+             Replace MAILCHIMP_USER_ID, MAILCHIMP_AUDIENCE_ID, and YOUR-DC with your values. -->
+        <form
+            action="https://YOUR-DC.us21.list-manage.com/subscribe/post?u=MAILCHIMP_USER_ID&amp;id=MAILCHIMP_AUDIENCE_ID"
+            method="post"
+            target="_blank"
+            novalidate
+            class="newsletter-form fade-up"
+        >
+            <label for="mce-EMAIL" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Email address</label>
+            <input type="email" name="EMAIL" id="mce-EMAIL" required placeholder="you@example.com" class="newsletter-input" autocomplete="email">
+            <!-- Bot honeypot — do not remove -->
+            <div style="position:absolute;left:-5000px;" aria-hidden="true">
+                <input type="text" name="b_MAILCHIMP_USER_ID_MAILCHIMP_AUDIENCE_ID" tabindex="-1" value="">
+            </div>
+            <button type="submit" class="newsletter-submit">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9z"/></svg>
+                Join Waitlist
+            </button>
+        </form>
+        <p class="newsletter-note fade-up">No spam. Unsubscribe anytime.</p>
     </div>
 </section>
 
@@ -869,9 +1061,9 @@
     <div class="container">
         <div class="cta-box fade-up">
             <h2>Let your app fix itself</h2>
-            <p>X-Factor is free, open source, and ready for production Laravel apps.</p>
+            <p>Healing-Factor is free, open source, and ready for production Laravel apps.</p>
             <div class="hero-actions">
-                <a href="https://github.com/ArielMejiaDev/x-factor" target="_blank" rel="noopener" class="btn btn-primary">
+                <a href="https://github.com/ArielMejiaDev/healing-factor" target="_blank" rel="noopener" class="btn btn-primary">
                     <svg viewBox="0 0 16 16" fill="currentColor" width="18" height="18"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
                     Star on GitHub
                 </a>
@@ -888,9 +1080,9 @@
             Built by <a href="https://github.com/ArielMejiaDev" target="_blank" rel="noopener">ArielMejiaDev</a> &middot; MIT License
         </div>
         <div class="footer-links">
-            <a href="https://github.com/ArielMejiaDev/x-factor" target="_blank" rel="noopener">GitHub</a>
-            <a href="https://github.com/ArielMejiaDev/x-factor/issues" target="_blank" rel="noopener">Issues</a>
-            <a href="https://packagist.org/packages/arielmejiadev/x-factor" target="_blank" rel="noopener">Packagist</a>
+            <a href="https://github.com/ArielMejiaDev/healing-factor" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://github.com/ArielMejiaDev/healing-factor/issues" target="_blank" rel="noopener">Issues</a>
+            <a href="https://packagist.org/packages/arielmejiadev/healing-factor" target="_blank" rel="noopener">Packagist</a>
         </div>
     </div>
 </footer>
@@ -900,20 +1092,6 @@
     document.getElementById('hamburger').addEventListener('click', function() {
         document.getElementById('navLinks').classList.toggle('open');
     });
-
-    // Copy install command
-    function copyInstall() {
-        navigator.clipboard.writeText('composer require arielmejiadev/x-factor').then(function() {
-            var el = document.querySelector('.hero-install code');
-            var original = el.textContent;
-            el.textContent = 'Copied!';
-            el.style.color = '#A78BFA';
-            setTimeout(function() {
-                el.textContent = original;
-                el.style.color = '';
-            }, 1500);
-        });
-    }
 
     // Intersection Observer for fade-up animations
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {

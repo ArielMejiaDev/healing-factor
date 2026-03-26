@@ -1,13 +1,13 @@
 <?php
 
-namespace ArielMejiaDev\XFactor;
+namespace ArielMejiaDev\HealingFactor;
 
-class XFactor
+class HealingFactor
 {
     protected static ?\Closure $authUsing = null;
 
     public function __construct(
-        protected XFactorManager $manager,
+        protected HealingFactorManager $manager,
     ) {}
 
     public function auth(\Closure $callback): static
@@ -24,11 +24,11 @@ class XFactor
 
     public function isEnabled(): bool
     {
-        if (! config('x-factor.enabled', true)) {
+        if (! config('healing-factor.enabled', true)) {
             return false;
         }
 
-        $environments = config('x-factor.environments', []);
+        $environments = config('healing-factor.environments', []);
         if (! empty($environments) && ! in_array(app()->environment(), $environments, true)) {
             return false;
         }
@@ -38,10 +38,10 @@ class XFactor
 
     public function isDryRun(): bool
     {
-        return (bool) config('x-factor.dry_run', false);
+        return (bool) config('healing-factor.dry_run', false);
     }
 
-    public function manager(): XFactorManager
+    public function manager(): HealingFactorManager
     {
         return $this->manager;
     }

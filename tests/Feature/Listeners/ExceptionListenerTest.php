@@ -1,9 +1,9 @@
 <?php
 
-use ArielMejiaDev\XFactor\Events\IssueCreated;
-use ArielMejiaDev\XFactor\Jobs\ResolveIssue;
-use ArielMejiaDev\XFactor\Listeners\ExceptionListener;
-use ArielMejiaDev\XFactor\Models\Issue;
+use ArielMejiaDev\HealingFactor\Events\IssueCreated;
+use ArielMejiaDev\HealingFactor\Jobs\ResolveIssue;
+use ArielMejiaDev\HealingFactor\Listeners\ExceptionListener;
+use ArielMejiaDev\HealingFactor\Models\Issue;
 use Illuminate\Log\Events\MessageLogged;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
@@ -96,8 +96,8 @@ it('truncates the title to 255 characters for long exception messages', function
     expect(mb_strlen(Issue::first()->title))->toBeLessThanOrEqual(255);
 });
 
-it('does not process when x-factor is disabled', function () {
-    config()->set('x-factor.enabled', false);
+it('does not process when healing-factor is disabled', function () {
+    config()->set('healing-factor.enabled', false);
 
     $listener = app(ExceptionListener::class);
 

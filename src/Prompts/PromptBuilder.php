@@ -1,10 +1,10 @@
 <?php
 
-namespace ArielMejiaDev\XFactor\Prompts;
+namespace ArielMejiaDev\HealingFactor\Prompts;
 
-use ArielMejiaDev\XFactor\Contracts\PromptBuilderContract;
-use ArielMejiaDev\XFactor\Models\Issue;
-use ArielMejiaDev\XFactor\Services\BranchNameGenerator;
+use ArielMejiaDev\HealingFactor\Contracts\PromptBuilderContract;
+use ArielMejiaDev\HealingFactor\Models\Issue;
+use ArielMejiaDev\HealingFactor\Services\BranchNameGenerator;
 
 class PromptBuilder implements PromptBuilderContract
 {
@@ -16,14 +16,14 @@ class PromptBuilder implements PromptBuilderContract
     {
         // Check for category-specific custom prompt
         if ($issue->category) {
-            $customPrompt = config("x-factor.categories.{$issue->category}.prompt");
+            $customPrompt = config("healing-factor.categories.{$issue->category}.prompt");
             if ($customPrompt) {
                 return $this->interpolate($customPrompt, $issue);
             }
         }
 
         // Check for top-level custom prompt
-        $customPrompt = config('x-factor.prompt');
+        $customPrompt = config('healing-factor.prompt');
         if ($customPrompt) {
             return $this->interpolate($customPrompt, $issue);
         }
@@ -41,9 +41,9 @@ class PromptBuilder implements PromptBuilderContract
             ? "\nStacktrace:\n```\n{$issue->stacktrace}\n```\n"
             : '';
 
-        $prConfig = config('x-factor.pr', []);
+        $prConfig = config('healing-factor.pr', []);
         $draftFlag = ($prConfig['draft'] ?? true) ? ' --draft' : '';
-        $labels = implode(',', $prConfig['labels'] ?? ['x-factor', 'auto-fix']);
+        $labels = implode(',', $prConfig['labels'] ?? ['healing-factor', 'auto-fix']);
         $titleShort = mb_substr($issue->title, 0, 60);
 
         return <<<PROMPT
@@ -63,7 +63,7 @@ class PromptBuilder implements PromptBuilderContract
         - Write or update relevant tests if applicable.
         - Commit all changes with a concise message describing the fix.
         - Push the branch with "git push -u origin {$branchName}".
-        - Create a pull request using "gh pr create{$draftFlag} --title \"[X-Factor] Fix: {$titleShort}\" --body \"Auto-generated fix by X-Factor\" --label \"{$labels}\"".
+        - Create a pull request using "gh pr create{$draftFlag} --title \"[Healing-Factor] Fix: {$titleShort}\" --body \"Auto-generated fix by Healing-Factor\" --label \"{$labels}\"".
         - Print a short summary of what changed and why.
         PROMPT;
     }
@@ -97,9 +97,9 @@ class PromptBuilder implements PromptBuilderContract
             $issue->update(['branch_name' => $branchName]);
         }
 
-        $prConfig = config('x-factor.pr', []);
+        $prConfig = config('healing-factor.pr', []);
         $draftFlag = ($prConfig['draft'] ?? true) ? ' --draft' : '';
-        $labels = implode(',', $prConfig['labels'] ?? ['x-factor', 'auto-fix']);
+        $labels = implode(',', $prConfig['labels'] ?? ['healing-factor', 'auto-fix']);
         $titleShort = mb_substr($issue->title ?? 'Fix issue', 0, 60);
 
         $userPrompt = str_replace(
@@ -121,7 +121,7 @@ class PromptBuilder implements PromptBuilderContract
         After applying the fix you MUST:
         - Commit all changes with a concise message describing the fix.
         - Push the branch with "git push -u origin {$branchName}".
-        - Create a pull request using "gh pr create{$draftFlag} --title \"[X-Factor] Fix: {$titleShort}\" --body \"Auto-generated fix by X-Factor\" --label \"{$labels}\"".
+        - Create a pull request using "gh pr create{$draftFlag} --title \"[Healing-Factor] Fix: {$titleShort}\" --body \"Auto-generated fix by Healing-Factor\" --label \"{$labels}\"".
         PROMPT;
     }
 }

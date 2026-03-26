@@ -1,15 +1,15 @@
-# X-Factor
+# Healing-Factor
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/ariel-mejia-dev/x-factor.svg?style=flat-square)](https://packagist.org/packages/ariel-mejia-dev/x-factor)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/ariel-mejia-dev/x-factor/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/ariel-mejia-dev/x-factor/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/ariel-mejia-dev/x-factor.svg?style=flat-square)](https://packagist.org/packages/ariel-mejia-dev/x-factor)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/ariel-mejia-dev/healing-factor.svg?style=flat-square)](https://packagist.org/packages/ariel-mejia-dev/healing-factor)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/ariel-mejia-dev/healing-factor/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/ariel-mejia-dev/healing-factor/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![Total Downloads](https://img.shields.io/packagist/dt/ariel-mejia-dev/healing-factor.svg?style=flat-square)](https://packagist.org/packages/ariel-mejia-dev/healing-factor)
 
-A self-healing Laravel package that catches exceptions and automatically creates pull requests with fixes using AI. When an error occurs in your app, X-Factor captures it, spins up an AI agent in an isolated git worktree, and opens a draft PR with the fix — all without touching your production code.
+A self-healing Laravel package that catches exceptions and automatically creates pull requests with fixes using AI. When an error occurs in your app, Healing-Factor captures it, spins up an AI agent in an isolated git worktree, and opens a draft PR with the fix — all without touching your production code.
 
 ## How It Works
 
 1. An exception occurs in your Laravel app
-2. X-Factor captures it via a **webhook** (Nightwatch/Bugsnag) or the built-in **exception listener**
+2. Healing-Factor captures it via a **webhook** (Nightwatch/Bugsnag) or the built-in **exception listener**
 3. The exception is fingerprinted, debounced, and deduplicated
 4. A queued job creates an **isolated git worktree** on a new branch
 5. An AI agent (Claude Code, OpenCode, or the Anthropic API) analyzes the code and writes a fix
@@ -34,11 +34,11 @@ A self-healing Laravel package that catches exceptions and automatically creates
 ## Installation
 
 ```bash
-composer require ariel-mejia-dev/x-factor
+composer require ariel-mejia-dev/healing-factor
 ```
 
 ```bash
-php artisan x-factor:install
+php artisan healing-factor:install
 ```
 
 This publishes the config, runs the migration, and verifies your setup.
@@ -49,23 +49,23 @@ Pick the setup that matches your environment:
 
 ### Option A: CLI Driver + Exception Listener (simplest)
 
-No external monitor needed. X-Factor listens to Laravel errors directly.
+No external monitor needed. Healing-Factor listens to Laravel errors directly.
 
 ```dotenv
 APP_ENV=staging
-X_FACTOR_DRIVER=cli
-X_FACTOR_CLI_TOOL=claude
-X_FACTOR_MONITOR=exception_listener
+HEALING_FACTOR_DRIVER=cli
+HEALING_FACTOR_CLI_TOOL=claude
+HEALING_FACTOR_MONITOR=exception_listener
 ```
 
 ### Option B: CLI Driver + Nightwatch Webhook
 
 ```dotenv
 APP_ENV=staging
-X_FACTOR_DRIVER=cli
-X_FACTOR_CLI_TOOL=claude
-X_FACTOR_MONITOR=nightwatch
-X_FACTOR_WEBHOOK_SECRET=your-strong-random-secret
+HEALING_FACTOR_DRIVER=cli
+HEALING_FACTOR_CLI_TOOL=claude
+HEALING_FACTOR_MONITOR=nightwatch
+HEALING_FACTOR_WEBHOOK_SECRET=your-strong-random-secret
 ```
 
 ### Option C: API Driver (no CLI installation needed)
@@ -74,10 +74,10 @@ Ideal for staging/production servers (DigitalOcean, Laravel Cloud, AWS) where yo
 
 ```dotenv
 APP_ENV=staging
-X_FACTOR_DRIVER=api
-X_FACTOR_MONITOR=exception_listener
+HEALING_FACTOR_DRIVER=api
+HEALING_FACTOR_MONITOR=exception_listener
 ANTHROPIC_API_KEY=sk-ant-...
-X_FACTOR_GITHUB_PAT=github_pat_...
+HEALING_FACTOR_GITHUB_PAT=github_pat_...
 ```
 
 Then start a queue worker:
@@ -86,30 +86,30 @@ Then start a queue worker:
 php artisan queue:work --timeout=3700
 ```
 
-> **Why `APP_ENV=staging`?** X-Factor only runs in `production` and `staging` by default. In `local`, errors are expected during development. You can change this in `config/x-factor.php` under `environments`.
+> **Why `APP_ENV=staging`?** Healing-Factor only runs in `production` and `staging` by default. In `local`, errors are expected during development. You can change this in `config/healing-factor.php` under `environments`.
 
 > **Why no `ANTHROPIC_API_KEY` for CLI?** Claude Code handles its own authentication. The API driver calls the Anthropic API directly, so it needs the key.
 
 ## Verify Your Setup
 
 ```bash
-php artisan x-factor:test
+php artisan healing-factor:test
 ```
 
 This creates a test issue and dispatches it for resolution. Add `--sync` to skip the queue.
 
 ## Dashboard
 
-X-Factor includes a web dashboard at `/x-factor` to browse issues, view stacktraces, see PR links, and retry failed resolutions.
+Healing-Factor includes a web dashboard at `/healing-factor` to browse issues, view stacktraces, see PR links, and retry failed resolutions.
 
 By default it's only accessible in `local`. To allow access in other environments, register an auth gate in your `AppServiceProvider`:
 
 ```php
-use ArielMejiaDev\XFactor\Facades\XFactor;
+use ArielMejiaDev\HealingFactor\Facades\HealingFactor;
 
 public function boot(): void
 {
-    XFactor::auth(function ($user) {
+    HealingFactor::auth(function ($user) {
         return in_array($user->email, [
             'admin@example.com',
         ]);
@@ -121,12 +121,12 @@ public function boot(): void
 
 | Command | Description |
 |---------|-------------|
-| `x-factor:install` | Publish config, run migration, verify setup |
-| `x-factor:test` | Create a test issue to verify the pipeline |
-| `x-factor:status` | Show all issues with summary statistics |
-| `x-factor:retry {id}` | Retry a failed issue |
-| `x-factor:prune` | Delete old resolved/failed issues |
-| `x-factor:recover-stale` | Mark stuck `resolving` issues as `failed` |
+| `healing-factor:install` | Publish config, run migration, verify setup |
+| `healing-factor:test` | Create a test issue to verify the pipeline |
+| `healing-factor:status` | Show all issues with summary statistics |
+| `healing-factor:retry {id}` | Retry a failed issue |
+| `healing-factor:prune` | Delete old resolved/failed issues |
+| `healing-factor:recover-stale` | Mark stuck `resolving` issues as `failed` |
 
 ### Recommended Schedule
 
@@ -134,23 +134,23 @@ public function boot(): void
 // routes/console.php
 use Illuminate\Support\Facades\Schedule;
 
-Schedule::command('x-factor:recover-stale')->hourly();
-Schedule::command('x-factor:prune')->daily();
+Schedule::command('healing-factor:recover-stale')->hourly();
+Schedule::command('healing-factor:prune')->daily();
 ```
 
 ## Configuration Highlights
 
-All config lives in `config/x-factor.php`. Key options:
+All config lives in `config/healing-factor.php`. Key options:
 
 | Option | Env Variable | Default | Description |
 |--------|-------------|---------|-------------|
-| Master switch | `X_FACTOR_ENABLED` | `true` | Disable all processing |
-| Dry run | `X_FACTOR_DRY_RUN` | `false` | Log actions without executing |
-| Driver | `X_FACTOR_DRIVER` | `cli` | `cli` or `api` |
-| CLI tool | `X_FACTOR_CLI_TOOL` | `claude` | `claude` or `opencode` |
-| Monitor | `X_FACTOR_MONITOR` | `nightwatch` | `nightwatch`, `bugsnag`, or `exception_listener` |
-| Timeout | `X_FACTOR_PROCESS_TIMEOUT` | `3600` | Max seconds for CLI process |
-| Debounce | `X_FACTOR_DEBOUNCE_MINUTES` | `5` | Min minutes between same exception |
+| Master switch | `HEALING_FACTOR_ENABLED` | `true` | Disable all processing |
+| Dry run | `HEALING_FACTOR_DRY_RUN` | `false` | Log actions without executing |
+| Driver | `HEALING_FACTOR_DRIVER` | `cli` | `cli` or `api` |
+| CLI tool | `HEALING_FACTOR_CLI_TOOL` | `claude` | `claude` or `opencode` |
+| Monitor | `HEALING_FACTOR_MONITOR` | `nightwatch` | `nightwatch`, `bugsnag`, or `exception_listener` |
+| Timeout | `HEALING_FACTOR_PROCESS_TIMEOUT` | `3600` | Max seconds for CLI process |
+| Debounce | `HEALING_FACTOR_DEBOUNCE_MINUTES` | `5` | Min minutes between same exception |
 
 ### Exception Categories
 
@@ -194,14 +194,14 @@ Exceptions that should never be processed (infrastructure issues, unfixable erro
 | `IssueResolutionFailed` | Resolution fails |
 
 ```php
-use ArielMejiaDev\XFactor\Events\IssueResolved;
+use ArielMejiaDev\HealingFactor\Events\IssueResolved;
 
 Event::listen(IssueResolved::class, function (IssueResolved $event) {
     // Send Slack notification, update status page, etc.
 });
 ```
 
-## What X-Factor Can Fix
+## What Healing-Factor Can Fix
 
 Any runtime exception that occurs while the app is still running:
 

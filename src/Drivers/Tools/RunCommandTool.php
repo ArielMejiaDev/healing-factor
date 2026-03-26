@@ -1,6 +1,6 @@
 <?php
 
-namespace ArielMejiaDev\XFactor\Drivers\Tools;
+namespace ArielMejiaDev\HealingFactor\Drivers\Tools;
 
 use Illuminate\Support\Facades\Process;
 
@@ -68,7 +68,7 @@ class RunCommandTool implements ToolContract
     /** @return list<string> */
     protected function allowedCommands(): array
     {
-        return config('x-factor.api.allowed_commands', [
+        return config('healing-factor.api.allowed_commands', [
             'git',
             'php artisan test',
             './vendor/bin/pest',

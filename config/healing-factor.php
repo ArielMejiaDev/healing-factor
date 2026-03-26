@@ -18,15 +18,15 @@ return [
     |--------------------------------------------------------------------------
     | Enabled
     |--------------------------------------------------------------------------
-    | Master switch. Set to false to disable all X-Factor processing.
+    | Master switch. Set to false to disable all Healing-Factor processing.
     */
-    'enabled' => env('X_FACTOR_ENABLED', true),
+    'enabled' => env('HEALING_FACTOR_ENABLED', true),
 
     /*
     |--------------------------------------------------------------------------
     | Environments
     |--------------------------------------------------------------------------
-    | X-Factor will only process exceptions in these environments.
+    | Healing-Factor will only process exceptions in these environments.
     | Empty array = all environments allowed.
     */
     'environments' => ['production', 'staging'],
@@ -35,9 +35,9 @@ return [
     |--------------------------------------------------------------------------
     | Dry Run
     |--------------------------------------------------------------------------
-    | When true, X-Factor logs what it would do but does not execute the CLI tool.
+    | When true, Healing-Factor logs what it would do but does not execute the CLI tool.
     */
-    'dry_run' => env('X_FACTOR_DRY_RUN', false),
+    'dry_run' => env('HEALING_FACTOR_DRY_RUN', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -45,7 +45,7 @@ return [
     |--------------------------------------------------------------------------
     | Default resolution driver: 'cli' or 'api' (Anthropic API with tool_use)
     */
-    'driver' => env('X_FACTOR_DRIVER', 'cli'),
+    'driver' => env('HEALING_FACTOR_DRIVER', 'cli'),
 
     /*
     |--------------------------------------------------------------------------
@@ -53,7 +53,7 @@ return [
     |--------------------------------------------------------------------------
     | Default CLI tool: 'claude' or 'opencode'
     */
-    'cli_tool' => env('X_FACTOR_CLI_TOOL', 'claude'),
+    'cli_tool' => env('HEALING_FACTOR_CLI_TOOL', 'claude'),
 
     /*
     |--------------------------------------------------------------------------
@@ -61,7 +61,7 @@ return [
     |--------------------------------------------------------------------------
     | Default AI model to use. null = let the tool decide.
     */
-    'model' => env('X_FACTOR_MODEL', null),
+    'model' => env('HEALING_FACTOR_MODEL', null),
 
     /*
     |--------------------------------------------------------------------------
@@ -71,7 +71,7 @@ return [
     */
     'api_keys' => [
         'anthropic' => env('ANTHROPIC_API_KEY'),
-        'github_pat' => env('X_FACTOR_GITHUB_PAT'),
+        'github_pat' => env('HEALING_FACTOR_GITHUB_PAT'),
     ],
 
     /*
@@ -82,14 +82,14 @@ return [
     | with tool_use, so no CLI tool installation is required on the server.
     */
     'api' => [
-        'model' => env('X_FACTOR_API_MODEL', 'claude-sonnet-4-6'),
+        'model' => env('HEALING_FACTOR_API_MODEL', 'claude-sonnet-4-6'),
         'models' => [
             'claude-sonnet-4-6',
             'claude-opus-4-6',
             'claude-haiku-4-5',
         ],
-        'max_tokens' => (int) env('X_FACTOR_API_MAX_TOKENS', 8192),
-        'max_turns' => (int) env('X_FACTOR_API_MAX_TURNS', 25),
+        'max_tokens' => (int) env('HEALING_FACTOR_API_MAX_TOKENS', 8192),
+        'max_turns' => (int) env('HEALING_FACTOR_API_MAX_TURNS', 25),
         'allowed_commands' => [
             'git',
             'php artisan test',
@@ -106,8 +106,8 @@ return [
     |--------------------------------------------------------------------------
     */
     'queue' => [
-        'connection' => env('X_FACTOR_QUEUE_CONNECTION', null),
-        'name' => env('X_FACTOR_QUEUE_NAME', null),
+        'connection' => env('HEALING_FACTOR_QUEUE_CONNECTION', null),
+        'name' => env('HEALING_FACTOR_QUEUE_NAME', null),
     ],
 
     /*
@@ -116,8 +116,8 @@ return [
     |--------------------------------------------------------------------------
     */
     'process' => [
-        'timeout' => (int) env('X_FACTOR_PROCESS_TIMEOUT', 3600),
-        'max_turns' => (int) env('X_FACTOR_MAX_TURNS', 25),
+        'timeout' => (int) env('HEALING_FACTOR_PROCESS_TIMEOUT', 3600),
+        'max_turns' => (int) env('HEALING_FACTOR_MAX_TURNS', 25),
         'working_directory' => null, // null = base_path()
     ],
 
@@ -128,9 +128,9 @@ return [
     */
     'pr' => [
         'draft' => true,
-        'labels' => ['x-factor', 'auto-fix'],
+        'labels' => ['healing-factor', 'auto-fix'],
         'reviewers' => [],
-        'branch_prefix' => 'x-factor/fix',
+        'branch_prefix' => 'healing-factor/fix',
     ],
 
     /*
@@ -139,7 +139,7 @@ return [
     |--------------------------------------------------------------------------
     | One active at a time. Supported: 'nightwatch', 'bugsnag', 'exception_listener'
     */
-    'monitor' => env('X_FACTOR_MONITOR', 'nightwatch'),
+    'monitor' => env('HEALING_FACTOR_MONITOR', 'nightwatch'),
 
     /*
     |--------------------------------------------------------------------------
@@ -147,8 +147,8 @@ return [
     |--------------------------------------------------------------------------
     */
     'webhook' => [
-        'path' => env('X_FACTOR_WEBHOOK_PATH', 'x-factor/webhook'),
-        'secret' => env('X_FACTOR_WEBHOOK_SECRET'),
+        'path' => env('HEALING_FACTOR_WEBHOOK_PATH', 'healing-factor/webhook'),
+        'secret' => env('HEALING_FACTOR_WEBHOOK_SECRET'),
         'middleware' => [],
     ],
 
@@ -158,7 +158,7 @@ return [
     |--------------------------------------------------------------------------
     | Minimum minutes between processing the same exception fingerprint.
     */
-    'debounce_minutes' => (int) env('X_FACTOR_DEBOUNCE_MINUTES', 5),
+    'debounce_minutes' => (int) env('HEALING_FACTOR_DEBOUNCE_MINUTES', 5),
 
     /*
     |--------------------------------------------------------------------------
@@ -166,14 +166,14 @@ return [
     |--------------------------------------------------------------------------
     | Number of days to keep resolved/failed issues before pruning.
     */
-    'retention_days' => (int) env('X_FACTOR_RETENTION_DAYS', 30),
+    'retention_days' => (int) env('HEALING_FACTOR_RETENTION_DAYS', 30),
 
     /*
     |--------------------------------------------------------------------------
     | Logging
     |--------------------------------------------------------------------------
     */
-    'log_channel' => env('X_FACTOR_LOG_CHANNEL', 'x-factor'),
+    'log_channel' => env('HEALING_FACTOR_LOG_CHANNEL', 'healing-factor'),
 
     /*
     |--------------------------------------------------------------------------
@@ -181,8 +181,8 @@ return [
     |--------------------------------------------------------------------------
     */
     'dashboard' => [
-        'enabled' => env('X_FACTOR_DASHBOARD_ENABLED', true),
-        'path' => env('X_FACTOR_DASHBOARD_PATH', 'x-factor'),
+        'enabled' => env('HEALING_FACTOR_DASHBOARD_ENABLED', true),
+        'path' => env('HEALING_FACTOR_DASHBOARD_PATH', 'healing-factor'),
         'middleware' => ['web', 'auth'],
     ],
 
@@ -240,7 +240,7 @@ return [
     |--------------------------------------------------------------------------
     | Ignored Exceptions
     |--------------------------------------------------------------------------
-    | Exceptions that should NEVER be sent to X-Factor (infrastructure/unfixable).
+    | Exceptions that should NEVER be sent to Healing-Factor (infrastructure/unfixable).
     */
     'ignored_exceptions' => [
         OutOfMemoryError::class,

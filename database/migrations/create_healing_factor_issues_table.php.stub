@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('x_factor_issues', function (Blueprint $table) {
+        Schema::create('healing_factor_issues', function (Blueprint $table) {
             $table->id();
             $table->string('fingerprint', 64)->index();
             $table->string('source')->default('nightwatch');
@@ -33,12 +33,12 @@ return new class extends Migration
             $table->json('payload')->nullable();
             $table->timestamps();
 
-            $table->unique(['fingerprint', 'status'], 'x_factor_issues_fingerprint_status_unique');
+            $table->unique(['fingerprint', 'status'], 'healing_factor_issues_fingerprint_status_unique');
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('x_factor_issues');
+        Schema::dropIfExists('healing_factor_issues');
     }
 };

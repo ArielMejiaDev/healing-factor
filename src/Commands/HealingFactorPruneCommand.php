@@ -1,20 +1,20 @@
 <?php
 
-namespace ArielMejiaDev\XFactor\Commands;
+namespace ArielMejiaDev\HealingFactor\Commands;
 
-use ArielMejiaDev\XFactor\Enums\IssueStatus;
-use ArielMejiaDev\XFactor\Models\Issue;
+use ArielMejiaDev\HealingFactor\Enums\IssueStatus;
+use ArielMejiaDev\HealingFactor\Models\Issue;
 use Illuminate\Console\Command;
 
-class XFactorPruneCommand extends Command
+class HealingFactorPruneCommand extends Command
 {
-    protected $signature = 'x-factor:prune {--days= : Number of days to retain resolved/failed issues}';
+    protected $signature = 'healing-factor:prune {--days= : Number of days to retain resolved/failed issues}';
 
-    protected $description = 'Prune old resolved and failed X-Factor issues, and recover stale resolving issues.';
+    protected $description = 'Prune old resolved and failed Healing-Factor issues, and recover stale resolving issues.';
 
     public function handle(): int
     {
-        $days = (int) ($this->option('days') ?: config('x-factor.retention_days', 30));
+        $days = (int) ($this->option('days') ?: config('healing-factor.retention_days', 30));
 
         $count = Issue::stale($days)->delete();
 

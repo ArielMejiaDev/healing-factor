@@ -1,12 +1,12 @@
 <?php
 
-namespace ArielMejiaDev\XFactor\Drivers;
+namespace ArielMejiaDev\HealingFactor\Drivers;
 
-use ArielMejiaDev\XFactor\Contracts\DriverContract;
-use ArielMejiaDev\XFactor\Contracts\DriverResult;
-use ArielMejiaDev\XFactor\Drivers\Concerns\ManagesWorktrees;
-use ArielMejiaDev\XFactor\Enums\CliTool;
-use ArielMejiaDev\XFactor\Models\Issue;
+use ArielMejiaDev\HealingFactor\Contracts\DriverContract;
+use ArielMejiaDev\HealingFactor\Contracts\DriverResult;
+use ArielMejiaDev\HealingFactor\Drivers\Concerns\ManagesWorktrees;
+use ArielMejiaDev\HealingFactor\Enums\CliTool;
+use ArielMejiaDev\HealingFactor\Models\Issue;
 use Illuminate\Support\Facades\Process;
 
 class CLIDriver implements DriverContract
@@ -35,11 +35,11 @@ class CLIDriver implements DriverContract
         $command = $this->tool->buildCommand($prompt, $this->model, $this->maxTurns);
 
         $env = [];
-        $anthropicKey = config('x-factor.api_keys.anthropic');
+        $anthropicKey = config('healing-factor.api_keys.anthropic');
         if ($anthropicKey) {
             $env['ANTHROPIC_API_KEY'] = $anthropicKey;
         }
-        $githubToken = config('x-factor.api_keys.github_pat');
+        $githubToken = config('healing-factor.api_keys.github_pat');
         if ($githubToken) {
             $env['GITHUB_TOKEN'] = $githubToken;
         }

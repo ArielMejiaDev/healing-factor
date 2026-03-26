@@ -1,22 +1,22 @@
 <?php
 
-namespace ArielMejiaDev\XFactor\Services;
+namespace ArielMejiaDev\HealingFactor\Services;
 
-use ArielMejiaDev\XFactor\Contracts\DriverResult;
-use ArielMejiaDev\XFactor\Enums\IssueStatus;
-use ArielMejiaDev\XFactor\Events\IssueResolutionFailed;
-use ArielMejiaDev\XFactor\Events\IssueResolved;
-use ArielMejiaDev\XFactor\Events\IssueResolving;
-use ArielMejiaDev\XFactor\Facades\XFactor;
-use ArielMejiaDev\XFactor\Models\Issue;
-use ArielMejiaDev\XFactor\Prompts\PromptBuilder;
-use ArielMejiaDev\XFactor\Support\XFactorLogger;
-use ArielMejiaDev\XFactor\XFactorManager;
+use ArielMejiaDev\HealingFactor\Contracts\DriverResult;
+use ArielMejiaDev\HealingFactor\Enums\IssueStatus;
+use ArielMejiaDev\HealingFactor\Events\IssueResolutionFailed;
+use ArielMejiaDev\HealingFactor\Events\IssueResolved;
+use ArielMejiaDev\HealingFactor\Events\IssueResolving;
+use ArielMejiaDev\HealingFactor\Facades\HealingFactor;
+use ArielMejiaDev\HealingFactor\Models\Issue;
+use ArielMejiaDev\HealingFactor\Prompts\PromptBuilder;
+use ArielMejiaDev\HealingFactor\Support\HealingFactorLogger;
+use ArielMejiaDev\HealingFactor\HealingFactorManager;
 
 class IssueResolver
 {
     public function __construct(
-        protected XFactorManager $manager,
+        protected HealingFactorManager $manager,
         protected PromptBuilder $promptBuilder,
     ) {}
 
@@ -24,17 +24,17 @@ class IssueResolver
     {
         // 0. Apply overrides (safe: queue jobs run in isolated processes)
         if (isset($overrides['model'])) {
-            config()->set('x-factor.api.model', $overrides['model']);
-            config()->set('x-factor.model', $overrides['model']);
+            config()->set('healing-factor.api.model', $overrides['model']);
+            config()->set('healing-factor.model', $overrides['model']);
         }
         if (isset($overrides['max_turns'])) {
-            config()->set('x-factor.api.max_turns', (int) $overrides['max_turns']);
-            config()->set('x-factor.process.max_turns', (int) $overrides['max_turns']);
+            config()->set('healing-factor.api.max_turns', (int) $overrides['max_turns']);
+            config()->set('healing-factor.process.max_turns', (int) $overrides['max_turns']);
         }
 
-        // 1. Guard: check if X-Factor is enabled and in an allowed environment
-        if (! XFactor::isEnabled()) {
-            XFactorLogger::info('Issue resolution skipped: X-Factor is disabled or not in an allowed environment.', [
+        // 1. Guard: check if Healing-Factor is enabled and in an allowed environment
+        if (! HealingFactor::isEnabled()) {
+            HealingFactorLogger::info('Issue resolution skipped: Healing-Factor is disabled or not in an allowed environment.', [
                 'issue_id' => $issue->id,
             ]);
 
@@ -43,14 +43,14 @@ class IssueResolver
 
         // 1. Atomic status transition: pending -> resolving
         if (! $issue->markResolving()) {
-            XFactorLogger::info('Issue resolution skipped: already being processed or resolved.', [
+            HealingFactorLogger::info('Issue resolution skipped: already being processed or resolved.', [
                 'issue_id' => $issue->id,
             ]);
 
             return false;
         }
 
-        XFactorLogger::info('Status: pending -> resolving', [
+        HealingFactorLogger::info('Status: pending -> resolving', [
             'issue_id' => $issue->id,
             'title' => $issue->title,
         ]);
@@ -62,13 +62,13 @@ class IssueResolver
         $category = $this->detectCategory($issue);
         $issue->update(['category' => $category]);
 
-        XFactorLogger::info('Category detected: '.($category ?? 'none (using failover defaults)'), [
+        HealingFactorLogger::info('Category detected: '.($category ?? 'none (using failover defaults)'), [
             'issue_id' => $issue->id,
         ]);
 
         // 3. Check dry-run mode
-        if (config('x-factor.dry_run')) {
-            XFactorLogger::info('[DRY RUN] Would resolve issue. Resetting to pending.', ['issue_id' => $issue->id]);
+        if (config('healing-factor.dry_run')) {
+            HealingFactorLogger::info('[DRY RUN] Would resolve issue. Resetting to pending.', ['issue_id' => $issue->id]);
             Issue::query()
                 ->whereKey($issue->id)
                 ->update(['status' => IssueStatus::Pending]);
@@ -80,18 +80,18 @@ class IssueResolver
         // 4. Build prompt
         $prompt = $this->promptBuilder->build($issue);
 
-        XFactorLogger::info("Prompt built, branch created: {$issue->branch_name}", [
+        HealingFactorLogger::info("Prompt built, branch created: {$issue->branch_name}", [
             'issue_id' => $issue->id,
         ]);
 
         // 5. Get driver (possibly category-specific)
-        $driverName = config('x-factor.driver', 'cli');
+        $driverName = config('healing-factor.driver', 'cli');
         $driver = $this->manager->driverForCategory($category);
-        $issue->update(['cli_tool' => $driverName === 'api' ? 'api' : config('x-factor.cli_tool', 'claude')]);
+        $issue->update(['cli_tool' => $driverName === 'api' ? 'api' : config('healing-factor.cli_tool', 'claude')]);
 
-        XFactorLogger::info("Executing {$driverName} driver", [
+        HealingFactorLogger::info("Executing {$driverName} driver", [
             'issue_id' => $issue->id,
-            'timeout' => config('x-factor.process.timeout', 3600),
+            'timeout' => config('healing-factor.process.timeout', 3600),
         ]);
 
         // 6. Execute
@@ -112,7 +112,7 @@ class IssueResolver
             return null;
         }
 
-        $categories = config('x-factor.categories', []);
+        $categories = config('healing-factor.categories', []);
         foreach ($categories as $name => $config) {
             $exceptions = $config['exceptions'] ?? [];
             foreach ($exceptions as $exception) {
@@ -135,7 +135,7 @@ class IssueResolver
         $prUrl = $this->extractPrUrl($result->output) ?? $this->extractPrUrl($result->errorOutput);
         $issue->markResolved($prUrl);
 
-        XFactorLogger::info('Status: resolving -> resolved', ['issue_id' => $issue->id]);
+        HealingFactorLogger::info('Status: resolving -> resolved', ['issue_id' => $issue->id]);
         event(new IssueResolved($issue));
 
         return true;
@@ -150,7 +150,7 @@ class IssueResolver
         ]);
         $issue->markFailed($reason);
 
-        XFactorLogger::error('Status: resolving -> failed', [
+        HealingFactorLogger::error('Status: resolving -> failed', [
             'issue_id' => $issue->id,
             'error_output' => mb_substr($result->errorOutput, 0, 500),
             'exit_code' => $result->exitCode,

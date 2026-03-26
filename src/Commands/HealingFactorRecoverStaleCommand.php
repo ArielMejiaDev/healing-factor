@@ -1,14 +1,14 @@
 <?php
 
-namespace ArielMejiaDev\XFactor\Commands;
+namespace ArielMejiaDev\HealingFactor\Commands;
 
-use ArielMejiaDev\XFactor\Enums\IssueStatus;
-use ArielMejiaDev\XFactor\Models\Issue;
+use ArielMejiaDev\HealingFactor\Enums\IssueStatus;
+use ArielMejiaDev\HealingFactor\Models\Issue;
 use Illuminate\Console\Command;
 
-class XFactorRecoverStaleCommand extends Command
+class HealingFactorRecoverStaleCommand extends Command
 {
-    protected $signature = 'x-factor:recover-stale {--minutes= : Override the timeout threshold in minutes}';
+    protected $signature = 'healing-factor:recover-stale {--minutes= : Override the timeout threshold in minutes}';
 
     protected $description = 'Mark issues stuck in resolving status as failed so they can be retried.';
 

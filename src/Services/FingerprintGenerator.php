@@ -1,6 +1,6 @@
 <?php
 
-namespace ArielMejiaDev\XFactor\Services;
+namespace ArielMejiaDev\HealingFactor\Services;
 
 class FingerprintGenerator
 {

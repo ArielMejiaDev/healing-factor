@@ -1,8 +1,8 @@
 <?php
 
-namespace ArielMejiaDev\XFactor\Monitors;
+namespace ArielMejiaDev\HealingFactor\Monitors;
 
-use ArielMejiaDev\XFactor\Contracts\MonitorContract;
+use ArielMejiaDev\HealingFactor\Contracts\MonitorContract;
 use Illuminate\Http\Request;
 
 class BugsnagMonitor implements MonitorContract

@@ -7,9 +7,9 @@ beforeEach(function () {
 });
 
 it('allows requests when no secret is configured', function () {
-    config()->set('x-factor.webhook.secret', null);
+    config()->set('healing-factor.webhook.secret', null);
 
-    $this->postJson('/x-factor/webhook', [
+    $this->postJson('/healing-factor/webhook', [
         'event' => 'issue.opened',
         'payload' => [
             'issue' => [
@@ -22,9 +22,9 @@ it('allows requests when no secret is configured', function () {
 });
 
 it('rejects requests with invalid signature', function () {
-    config()->set('x-factor.webhook.secret', 'test-secret');
+    config()->set('healing-factor.webhook.secret', 'test-secret');
 
-    $this->postJson('/x-factor/webhook', [
+    $this->postJson('/healing-factor/webhook', [
         'event' => 'issue.opened',
         'payload' => ['issue' => ['title' => 'Test']],
     ], [
@@ -34,7 +34,7 @@ it('rejects requests with invalid signature', function () {
 
 it('accepts requests with valid HMAC signature', function () {
     $secret = 'test-secret';
-    config()->set('x-factor.webhook.secret', $secret);
+    config()->set('healing-factor.webhook.secret', $secret);
 
     $payload = json_encode([
         'event' => 'issue.opened',
@@ -48,16 +48,16 @@ it('accepts requests with valid HMAC signature', function () {
     ]);
     $signature = hash_hmac('sha256', $payload, $secret);
 
-    $this->call('POST', '/x-factor/webhook', [], [], [], [
+    $this->call('POST', '/healing-factor/webhook', [], [], [], [
         'CONTENT_TYPE' => 'application/json',
         'HTTP_X_NIGHTWATCH_SIGNATURE' => $signature,
     ], $payload)->assertStatus(201);
 });
 
 it('rejects requests with missing signature when secret is configured', function () {
-    config()->set('x-factor.webhook.secret', 'test-secret');
+    config()->set('healing-factor.webhook.secret', 'test-secret');
 
-    $this->postJson('/x-factor/webhook', [
+    $this->postJson('/healing-factor/webhook', [
         'event' => 'issue.opened',
     ])->assertStatus(403);
 });

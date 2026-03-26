@@ -1,12 +1,12 @@
 {
-    "name": "arielmejiadev/x-factor",
+    "name": "arielmejiadev/healing-factor",
     "description": "Adds Self Healing Super Powers To Your App",
     "keywords": [
         "ariel-mejia-dev",
         "laravel",
-        "x-factor"
+        "healing-factor"
     ],
-    "homepage": "https://github.com/ariel-mejia-dev/x-factor",
+    "homepage": "https://github.com/ariel-mejia-dev/healing-factor",
     "license": "MIT",
     "authors": [
         {
@@ -36,13 +36,13 @@
     },
     "autoload": {
         "psr-4": {
-            "ArielMejiaDev\\XFactor\\": "src/",
-            "ArielMejiaDev\\XFactor\\Database\\Factories\\": "database/factories/"
+            "ArielMejiaDev\\HealingFactor\\": "src/",
+            "ArielMejiaDev\\HealingFactor\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "ArielMejiaDev\\XFactor\\Tests\\": "tests/",
+            "ArielMejiaDev\\HealingFactor\\Tests\\": "tests/",
             "Workbench\\App\\": "workbench/app/"
         }
     },
@@ -64,10 +64,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "ArielMejiaDev\\XFactor\\XFactorServiceProvider"
+                "ArielMejiaDev\\HealingFactor\\HealingFactorServiceProvider"
             ],
             "aliases": {
-                "XFactor": "ArielMejiaDev\\XFactor\\Facades\\XFactor"
+                "HealingFactor": "ArielMejiaDev\\HealingFactor\\Facades\\HealingFactor"
             }
         }
     },

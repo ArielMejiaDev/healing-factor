@@ -1,6 +1,6 @@
 <?php
 
-namespace ArielMejiaDev\XFactor\Drivers\Tools;
+namespace ArielMejiaDev\HealingFactor\Drivers\Tools;
 
 class ToolRegistry
 {

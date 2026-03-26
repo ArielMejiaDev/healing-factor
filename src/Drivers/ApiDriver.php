@@ -1,15 +1,15 @@
 <?php
 
-namespace ArielMejiaDev\XFactor\Drivers;
+namespace ArielMejiaDev\HealingFactor\Drivers;
 
 use Anthropic\Client;
-use ArielMejiaDev\XFactor\Contracts\DriverContract;
-use ArielMejiaDev\XFactor\Contracts\DriverResult;
-use ArielMejiaDev\XFactor\Drivers\Concerns\ManagesWorktrees;
-use ArielMejiaDev\XFactor\Drivers\Tools\ToolExecutor;
-use ArielMejiaDev\XFactor\Drivers\Tools\ToolRegistry;
-use ArielMejiaDev\XFactor\Models\Issue;
-use ArielMejiaDev\XFactor\Support\XFactorLogger;
+use ArielMejiaDev\HealingFactor\Contracts\DriverContract;
+use ArielMejiaDev\HealingFactor\Contracts\DriverResult;
+use ArielMejiaDev\HealingFactor\Drivers\Concerns\ManagesWorktrees;
+use ArielMejiaDev\HealingFactor\Drivers\Tools\ToolExecutor;
+use ArielMejiaDev\HealingFactor\Drivers\Tools\ToolRegistry;
+use ArielMejiaDev\HealingFactor\Models\Issue;
+use ArielMejiaDev\HealingFactor\Support\HealingFactorLogger;
 
 class ApiDriver implements DriverContract
 {
@@ -55,7 +55,7 @@ class ApiDriver implements DriverContract
 
     protected function runAgenticLoop(string $worktreePath, Issue $issue, string $prompt): DriverResult
     {
-        $client = new Client(apiKey: config('x-factor.api_keys.anthropic'));
+        $client = new Client(apiKey: config('healing-factor.api_keys.anthropic'));
 
         $toolDefinitions = ToolRegistry::definitions($worktreePath);
         $executor = new ToolExecutor($worktreePath);
@@ -65,7 +65,7 @@ class ApiDriver implements DriverContract
         ];
 
         $collectedOutput = [];
-        $model = $this->model ?? config('x-factor.api.model', 'claude-sonnet-4-6');
+        $model = $this->model ?? config('healing-factor.api.model', 'claude-sonnet-4-6');
 
         for ($turn = 1; $turn <= $this->maxTurns; $turn++) {
             try {
@@ -77,7 +77,7 @@ class ApiDriver implements DriverContract
                     tools: $toolDefinitions,
                 );
             } catch (\Throwable $e) {
-                XFactorLogger::error("API driver: Anthropic API error on turn {$turn}: {$e->getMessage()}");
+                HealingFactorLogger::error("API driver: Anthropic API error on turn {$turn}: {$e->getMessage()}");
 
                 return new DriverResult(
                     success: false,
@@ -100,7 +100,7 @@ class ApiDriver implements DriverContract
                 }
             }
 
-            XFactorLogger::info("API driver: turn {$turn}/{$this->maxTurns}", [
+            HealingFactorLogger::info("API driver: turn {$turn}/{$this->maxTurns}", [
                 'stop_reason' => $response->stopReason,
                 'tools_called' => implode(', ', $toolNames) ?: 'none',
             ]);
@@ -139,7 +139,7 @@ class ApiDriver implements DriverContract
         $exhaustedTurns = isset($response) && $response->stopReason === 'tool_use';
 
         if ($exhaustedTurns) {
-            XFactorLogger::warning("API driver: exhausted all {$this->maxTurns} turns without completing.");
+            HealingFactorLogger::warning("API driver: exhausted all {$this->maxTurns} turns without completing.");
 
             return new DriverResult(
                 success: false,
@@ -160,10 +160,10 @@ class ApiDriver implements DriverContract
     protected function buildSystemPrompt(Issue $issue): string
     {
         $branchName = $issue->branch_name;
-        $prDraft = config('x-factor.pr.draft', true) ? '--draft' : '';
-        $prLabels = config('x-factor.pr.labels', []);
+        $prDraft = config('healing-factor.pr.draft', true) ? '--draft' : '';
+        $prLabels = config('healing-factor.pr.labels', []);
         $labelFlags = implode(' ', array_map(fn (string $l) => "--label \"{$l}\"", $prLabels));
-        $reviewers = config('x-factor.pr.reviewers', []);
+        $reviewers = config('healing-factor.pr.reviewers', []);
         $reviewerFlags = implode(' ', array_map(fn (string $r) => "--reviewer \"{$r}\"", $reviewers));
 
         $ghFlags = trim(implode(' ', array_filter([$prDraft, $labelFlags, $reviewerFlags])));

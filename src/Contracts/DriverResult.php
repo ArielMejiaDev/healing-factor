@@ -1,6 +1,6 @@
 <?php
 
-namespace ArielMejiaDev\XFactor\Contracts;
+namespace ArielMejiaDev\HealingFactor\Contracts;
 
 final readonly class DriverResult
 {

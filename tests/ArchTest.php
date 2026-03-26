@@ -9,17 +9,17 @@ arch('it will not use debugging functions')
     ->each->not->toBeUsed();
 
 arch('enums are backed enums')
-    ->expect('ArielMejiaDev\XFactor\Enums')
+    ->expect('ArielMejiaDev\HealingFactor\Enums')
     ->toBeEnums();
 
 arch('models extend Eloquent Model')
-    ->expect('ArielMejiaDev\XFactor\Models')
+    ->expect('ArielMejiaDev\HealingFactor\Models')
     ->toExtend(Model::class);
 
 arch('jobs implement ShouldQueue')
-    ->expect('ArielMejiaDev\XFactor\Jobs')
+    ->expect('ArielMejiaDev\HealingFactor\Jobs')
     ->toImplement(ShouldQueue::class);
 
 arch('commands extend Command')
-    ->expect('ArielMejiaDev\XFactor\Commands')
+    ->expect('ArielMejiaDev\HealingFactor\Commands')
     ->toExtend(Command::class);

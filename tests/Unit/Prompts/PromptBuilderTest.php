@@ -1,8 +1,8 @@
 <?php
 
-use ArielMejiaDev\XFactor\Models\Issue;
-use ArielMejiaDev\XFactor\Prompts\PromptBuilder;
-use ArielMejiaDev\XFactor\Services\BranchNameGenerator;
+use ArielMejiaDev\HealingFactor\Models\Issue;
+use ArielMejiaDev\HealingFactor\Prompts\PromptBuilder;
+use ArielMejiaDev\HealingFactor\Services\BranchNameGenerator;
 
 beforeEach(function () {
     $this->builder = new PromptBuilder(new BranchNameGenerator);
@@ -64,7 +64,7 @@ it('includes stacktrace when present', function () {
 });
 
 it('uses custom category prompt when configured with safety preamble', function () {
-    config()->set('x-factor.categories.quick_fixes.prompt', 'Custom prompt for {title}');
+    config()->set('healing-factor.categories.quick_fixes.prompt', 'Custom prompt for {title}');
 
     $issue = Issue::factory()->create([
         'category' => 'quick_fixes',
@@ -82,7 +82,7 @@ it('uses custom category prompt when configured with safety preamble', function 
 });
 
 it('uses top-level custom prompt as fallback with safety preamble', function () {
-    config()->set('x-factor.prompt', 'Global prompt: {exception_class}');
+    config()->set('healing-factor.prompt', 'Global prompt: {exception_class}');
 
     $issue = Issue::factory()->create([
         'exception_class' => 'ErrorException',
@@ -103,11 +103,11 @@ it('sets branch_name on the issue', function () {
 
     $issue->refresh();
     expect($issue->branch_name)->not->toBeNull()
-        ->toStartWith('x-factor/fix-');
+        ->toStartWith('healing-factor/fix-');
 });
 
 it('includes draft flag in PR command when configured', function () {
-    config()->set('x-factor.pr.draft', true);
+    config()->set('healing-factor.pr.draft', true);
 
     $issue = Issue::factory()->create();
     $prompt = $this->builder->build($issue);

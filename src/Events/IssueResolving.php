@@ -1,8 +1,8 @@
 <?php
 
-namespace ArielMejiaDev\XFactor\Events;
+namespace ArielMejiaDev\HealingFactor\Events;
 
-use ArielMejiaDev\XFactor\Models\Issue;
+use ArielMejiaDev\HealingFactor\Models\Issue;
 
 class IssueResolving
 {

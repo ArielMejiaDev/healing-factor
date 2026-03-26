@@ -1,7 +1,7 @@
 <?php
 
-use ArielMejiaDev\XFactor\Enums\IssueStatus;
-use ArielMejiaDev\XFactor\Models\Issue;
+use ArielMejiaDev\HealingFactor\Enums\IssueStatus;
+use ArielMejiaDev\HealingFactor\Models\Issue;
 use Illuminate\Support\Carbon;
 
 it('can create an issue with factory', function () {
@@ -156,8 +156,8 @@ it('checks isResolving helper', function () {
     expect($issue->isResolving())->toBeFalse();
 });
 
-it('uses the x_factor_issues table', function () {
+it('uses the healing_factor_issues table', function () {
     $issue = new Issue;
 
-    expect($issue->getTable())->toBe('x_factor_issues');
+    expect($issue->getTable())->toBe('healing_factor_issues');
 });

@@ -1,10 +1,10 @@
 <?php
 
-namespace ArielMejiaDev\XFactor\Support;
+namespace ArielMejiaDev\HealingFactor\Support;
 
 use Illuminate\Support\Facades\Log;
 
-class XFactorLogger
+class HealingFactorLogger
 {
     public static function info(string $message, array $context = []): void
     {
@@ -28,7 +28,7 @@ class XFactorLogger
 
     protected static function log(string $level, string $message, array $context = []): void
     {
-        Log::channel(config('x-factor.log_channel', 'x-factor'))->{$level}($message, $context);
+        Log::channel(config('healing-factor.log_channel', 'healing-factor'))->{$level}($message, $context);
 
         if (app()->runningInConsole()) {
             static::writeToStderr($level, $message, $context);
@@ -38,11 +38,11 @@ class XFactorLogger
     protected static function writeToStderr(string $level, string $message, array $context = []): void
     {
         $tag = match ($level) {
-            'error' => "\033[31m[X-FACTOR ERROR]\033[0m",
-            'warning' => "\033[33m[X-FACTOR WARN]\033[0m",
-            'info' => "\033[36m[X-FACTOR]\033[0m",
-            'debug' => "\033[90m[X-FACTOR DEBUG]\033[0m",
-            default => '[X-FACTOR]',
+            'error' => "\033[31m[HEALING-FACTOR ERROR]\033[0m",
+            'warning' => "\033[33m[HEALING-FACTOR WARN]\033[0m",
+            'info' => "\033[36m[HEALING-FACTOR]\033[0m",
+            'debug' => "\033[90m[HEALING-FACTOR DEBUG]\033[0m",
+            default => '[HEALING-FACTOR]',
         };
 
         $line = "{$tag} {$message}";

@@ -1,3 +1,3 @@
 # Changelog
 
-All notable changes to `x-factor` will be documented in this file.
+All notable changes to `healing-factor` will be documented in this file.

@@ -1,6 +1,6 @@
 <?php
 
-namespace ArielMejiaDev\XFactor\Services;
+namespace ArielMejiaDev\HealingFactor\Services;
 
 use Illuminate\Support\Str;
 
@@ -8,7 +8,7 @@ class BranchNameGenerator
 {
     public function generate(string $title): string
     {
-        $prefix = config('x-factor.pr.branch_prefix', 'x-factor/fix');
+        $prefix = config('healing-factor.pr.branch_prefix', 'healing-factor/fix');
         $slug = Str::slug(Str::limit($title, 40, ''), '-');
         $random = Str::random(6);
 

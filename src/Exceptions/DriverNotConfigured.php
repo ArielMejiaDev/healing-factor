@@ -1,5 +1,5 @@
 <?php
 
-namespace ArielMejiaDev\XFactor\Exceptions;
+namespace ArielMejiaDev\HealingFactor\Exceptions;
 
-class DriverNotConfigured extends XFactorException {}
+class DriverNotConfigured extends HealingFactorException {}

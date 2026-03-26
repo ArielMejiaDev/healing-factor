@@ -1,15 +1,15 @@
 <?php
 
-namespace ArielMejiaDev\XFactor\Http\Controllers;
+namespace ArielMejiaDev\HealingFactor\Http\Controllers;
 
-use ArielMejiaDev\XFactor\Contracts\MonitorContract;
-use ArielMejiaDev\XFactor\Events\IssueCreated;
-use ArielMejiaDev\XFactor\Facades\XFactor;
-use ArielMejiaDev\XFactor\Jobs\ResolveIssue;
-use ArielMejiaDev\XFactor\Models\Issue;
-use ArielMejiaDev\XFactor\Services\Debouncer;
-use ArielMejiaDev\XFactor\Services\FingerprintGenerator;
-use ArielMejiaDev\XFactor\Support\XFactorLogger;
+use ArielMejiaDev\HealingFactor\Contracts\MonitorContract;
+use ArielMejiaDev\HealingFactor\Events\IssueCreated;
+use ArielMejiaDev\HealingFactor\Facades\HealingFactor;
+use ArielMejiaDev\HealingFactor\Jobs\ResolveIssue;
+use ArielMejiaDev\HealingFactor\Models\Issue;
+use ArielMejiaDev\HealingFactor\Services\Debouncer;
+use ArielMejiaDev\HealingFactor\Services\FingerprintGenerator;
+use ArielMejiaDev\HealingFactor\Support\HealingFactorLogger;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -22,8 +22,8 @@ class WebhookController extends Controller
         Debouncer $debouncer,
         FingerprintGenerator $fingerprinter,
     ): JsonResponse {
-        if (! XFactor::isEnabled()) {
-            return response()->json(['message' => 'X-Factor is disabled.'], 200);
+        if (! HealingFactor::isEnabled()) {
+            return response()->json(['message' => 'Healing-Factor is disabled.'], 200);
         }
 
         if (! $monitor->shouldProcess($request)) {
@@ -69,7 +69,7 @@ class WebhookController extends Controller
         event(new IssueCreated($issue));
         ResolveIssue::dispatch($issue);
 
-        XFactorLogger::info("Issue #{$issue->id} created (status: pending). Job dispatched.", [
+        HealingFactorLogger::info("Issue #{$issue->id} created (status: pending). Job dispatched.", [
             'title' => $data['title'] ?? 'unknown',
         ]);
 
@@ -78,7 +78,7 @@ class WebhookController extends Controller
 
     protected function isIgnoredException(string $exceptionClass): bool
     {
-        $ignored = config('x-factor.ignored_exceptions', []);
+        $ignored = config('healing-factor.ignored_exceptions', []);
 
         foreach ($ignored as $ignoredClass) {
             if ($exceptionClass === $ignoredClass || is_subclass_of($exceptionClass, $ignoredClass)) {

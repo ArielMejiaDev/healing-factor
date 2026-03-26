@@ -1,9 +1,9 @@
 <?php
 
-namespace ArielMejiaDev\XFactor\Models;
+namespace ArielMejiaDev\HealingFactor\Models;
 
-use ArielMejiaDev\XFactor\Database\Factories\IssueFactory;
-use ArielMejiaDev\XFactor\Enums\IssueStatus;
+use ArielMejiaDev\HealingFactor\Database\Factories\IssueFactory;
+use ArielMejiaDev\HealingFactor\Enums\IssueStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\UniqueConstraintViolationException;
@@ -13,7 +13,7 @@ class Issue extends Model
 {
     use HasFactory;
 
-    protected $table = 'x_factor_issues';
+    protected $table = 'healing_factor_issues';
 
     protected $guarded = ['id'];
 
@@ -118,7 +118,7 @@ class Issue extends Model
 
     public function scopeStaleResolving($query, int $minutes = 0)
     {
-        $timeout = $minutes > 0 ? $minutes : (int) ceil(config('x-factor.process.timeout', 3600) / 60) + 10;
+        $timeout = $minutes > 0 ? $minutes : (int) ceil(config('healing-factor.process.timeout', 3600) / 60) + 10;
 
         return $query->where('status', IssueStatus::Resolving)
             ->where('updated_at', '<', now()->subMinutes($timeout));

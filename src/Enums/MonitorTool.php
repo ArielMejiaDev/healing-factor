@@ -1,6 +1,6 @@
 <?php
 
-namespace ArielMejiaDev\XFactor\Enums;
+namespace ArielMejiaDev\HealingFactor\Enums;
 
 enum MonitorTool: string
 {

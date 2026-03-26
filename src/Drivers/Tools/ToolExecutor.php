@@ -1,8 +1,8 @@
 <?php
 
-namespace ArielMejiaDev\XFactor\Drivers\Tools;
+namespace ArielMejiaDev\HealingFactor\Drivers\Tools;
 
-use ArielMejiaDev\XFactor\Support\XFactorLogger;
+use ArielMejiaDev\HealingFactor\Support\HealingFactorLogger;
 
 class ToolExecutor
 {
@@ -28,7 +28,7 @@ class ToolExecutor
 
             return new ToolResult($output, isError: false);
         } catch (\Throwable $e) {
-            XFactorLogger::error("Tool '{$toolName}' threw an exception: {$e->getMessage()}");
+            HealingFactorLogger::error("Tool '{$toolName}' threw an exception: {$e->getMessage()}");
 
             return new ToolResult("Error: {$e->getMessage()}", isError: true);
         }

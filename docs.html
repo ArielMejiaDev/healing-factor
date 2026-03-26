@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Documentation — X-Factor</title>
-    <meta name="description" content="Full documentation for X-Factor, the self-healing Laravel package.">
+    <title>Documentation — Healing-Factor</title>
+    <meta name="description" content="Full documentation for Healing-Factor, the self-healing Laravel package.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -12,12 +12,13 @@
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
-            --bg: #0B0F1A;
-            --bg-card: #111827;
-            --bg-card-hover: #1a2236;
-            --border: #1E293B;
-            --text: #F1F5F9;
-            --text-muted: #94A3B8;
+            --bg: #09090B;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --bg-card-hover: rgba(255, 255, 255, 0.06);
+            --border: rgba(255, 255, 255, 0.06);
+            --border-hover: rgba(255, 255, 255, 0.12);
+            --text: #FAFAFA;
+            --text-muted: #A1A1AA;
             --primary: #A78BFA;
             --primary-glow: rgba(167, 139, 250, 0.15);
             --cta: #22C55E;
@@ -39,6 +40,56 @@
             overflow-x: hidden;
         }
 
+        /* ---------- BACKGROUND PATTERN ---------- */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background-image: radial-gradient(circle, rgba(167, 139, 250, 0.045) 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+        body > * { position: relative; z-index: 1; }
+
+        /* ---------- FLOATING ORBS ---------- */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            filter: blur(100px);
+            opacity: 0;
+            z-index: 0;
+        }
+        .orb--1 {
+            width: 450px; height: 450px;
+            background: var(--primary);
+            top: 5%; right: -5%;
+            opacity: 0.08;
+        }
+        .orb--2 {
+            width: 350px; height: 350px;
+            background: var(--cta);
+            bottom: 15%; left: -8%;
+            opacity: 0.06;
+        }
+        @media (prefers-reduced-motion: no-preference) {
+            .orb--1 { animation: drift1 18s ease-in-out infinite; }
+            .orb--2 { animation: drift2 22s ease-in-out infinite; }
+        }
+        @keyframes drift1 {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(-100px, 80px); }
+            50% { transform: translate(60px, 150px); }
+            75% { transform: translate(80px, -60px); }
+        }
+        @keyframes drift2 {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(120px, -70px); }
+            50% { transform: translate(-80px, 100px); }
+            75% { transform: translate(60px, 130px); }
+        }
+
         /* ---------- NAV ---------- */
         nav {
             position: fixed;
@@ -48,7 +99,7 @@
             z-index: 50;
             backdrop-filter: blur(16px) saturate(1.8);
             -webkit-backdrop-filter: blur(16px) saturate(1.8);
-            background: rgba(11, 15, 26, 0.8);
+            background: rgba(9, 9, 11, 0.85);
             border-bottom: 1px solid var(--border);
         }
         .nav-inner {
@@ -225,6 +276,8 @@
 
         .doc-content pre {
             background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--border);
             border-radius: 10px;
             padding: 20px 24px;
@@ -241,6 +294,8 @@
 
         .doc-content blockquote {
             border-left: 3px solid var(--primary);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             padding: 12px 20px;
             margin-bottom: 20px;
             background: var(--primary-glow);
@@ -366,7 +421,7 @@
                 position: fixed;
                 inset: 0;
                 z-index: 45;
-                background: rgba(11, 15, 26, 0.95);
+                background: rgba(9, 9, 11, 0.95);
                 backdrop-filter: blur(16px);
                 padding: 80px 24px 24px;
                 max-height: 100vh;
@@ -383,7 +438,7 @@
                 top: 64px;
                 left: 0;
                 right: 0;
-                background: rgba(11, 15, 26, 0.95);
+                background: rgba(9, 9, 11, 0.95);
                 backdrop-filter: blur(16px);
                 padding: 24px;
                 gap: 16px;
@@ -395,15 +450,19 @@
 </head>
 <body>
 
+<!-- Animated background orbs -->
+<div class="orb orb--1"></div>
+<div class="orb orb--2"></div>
+
 <!-- Nav -->
 <nav>
     <div class="nav-inner">
-        <a href="index.html" class="nav-brand"><span>X</span>-Factor</a>
+        <a href="index.html" class="nav-brand"><span>Healing</span>-Factor</a>
         <div class="nav-links" id="navLinks">
             <a href="index.html">Home</a>
             <a href="index.html#features">Features</a>
             <a href="index.html#how-it-works">How It Works</a>
-            <a href="https://github.com/ArielMejiaDev/x-factor" target="_blank" rel="noopener" class="nav-gh">
+            <a href="https://github.com/ArielMejiaDev/healing-factor" target="_blank" rel="noopener" class="nav-gh">
                 <svg viewBox="0 0 16 16" fill="currentColor" width="16" height="16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
                 GitHub
             </a>
@@ -420,19 +479,23 @@
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-group">
             <span class="sidebar-label">Getting Started</span>
+            <a href="#what-is-healing-factor">What Is Healing-Factor?</a>
             <a href="#requirements">Requirements</a>
             <a href="#installation">Installation</a>
-            <a href="#quick-start">Quick Start Guide</a>
+            <a href="#try-it">Try It in 5 Minutes</a>
+        </div>
+        <div class="sidebar-group">
+            <span class="sidebar-label">Core Concepts</span>
             <a href="#how-it-works">How It Works</a>
+            <a href="#cli-vs-api">CLI vs API Driver</a>
+            <a href="#monitor-strategy">Monitor Strategy</a>
         </div>
         <div class="sidebar-group">
             <span class="sidebar-label">Configuration</span>
-            <a href="#configuration">Configuration</a>
-            <a href="#monitor-strategy">Monitor Strategy</a>
-            <a href="#webhook-setup">Webhook Setup</a>
-            <a href="#exception-categories">Exception Categories</a>
-            <a href="#ignored-exceptions">Ignored Exceptions</a>
-            <a href="#deduplication">Deduplication</a>
+            <a href="#essential-settings">Essential Settings</a>
+            <a href="#queue-process">Queue &amp; Process</a>
+            <a href="#pr-settings">Pull Request Settings</a>
+            <a href="#dashboard">Dashboard</a>
         </div>
         <div class="sidebar-group">
             <span class="sidebar-label">Usage</span>
@@ -442,16 +505,13 @@
             <a href="#facade">Facade</a>
         </div>
         <div class="sidebar-group">
-            <span class="sidebar-label">Dashboard</span>
-            <a href="#logging">Logging</a>
-            <a href="#dashboard">Dashboard</a>
-        </div>
-        <div class="sidebar-group">
             <span class="sidebar-label">Advanced</span>
-            <a href="#security">Security</a>
-            <a href="#api-driver">API Driver</a>
-            <a href="#can-fix">What It Can Fix</a>
-            <a href="#setup-examples">Setup Examples</a>
+            <a href="#exception-categories">Exception Categories</a>
+            <a href="#custom-prompts">Custom Prompts</a>
+            <a href="#webhook-payloads">Webhook Payload Formats</a>
+            <a href="#api-driver-deep-dive">API Driver Deep Dive</a>
+            <a href="#security">Security Considerations</a>
+            <a href="#deduplication">Deduplication Details</a>
             <a href="#troubleshooting">Troubleshooting</a>
         </div>
     </aside>
@@ -459,198 +519,224 @@
     <!-- Content -->
     <main class="doc-content">
 
-        <h1>X-Factor Documentation</h1>
-        <p class="subtitle">A self-healing Laravel package that catches exceptions and automatically creates pull requests with fixes using AI CLI tools (Claude Code, OpenCode).</p>
+        <h1>Healing-Factor Documentation</h1>
+        <p class="subtitle">A self-healing Laravel package that catches exceptions in staging and production, then automatically opens pull requests with fixes using AI.</p>
+
+        <!-- ============================================================ -->
+        <!-- GETTING STARTED                                              -->
+        <!-- ============================================================ -->
+
+        <!-- What Is Healing-Factor? -->
+        <h2 id="what-is-healing-factor">What Is Healing-Factor?</h2>
+        <p>Healing-Factor watches your Laravel application for unhandled exceptions and uses AI to write a fix and open a draft pull request -- automatically. You review the PR and merge it if the fix looks good. No AI-generated code reaches production without your approval.</p>
+
+        <h3>What it can fix</h3>
+        <p>Any bug that happens while your app is still running and the queue worker can process jobs -- the same kinds of bugs a developer would fix after receiving an alert:</p>
+        <ul>
+            <li><strong>Undefined variables and properties</strong> -- <code>ErrorException: Undefined variable $foo</code></li>
+            <li><strong>Type errors</strong> -- <code>TypeError: Argument #1 must be of type string, null given</code></li>
+            <li><strong>Bad method calls</strong> -- <code>BadMethodCallException: Method does not exist</code></li>
+            <li><strong>Query errors</strong> -- <code>QueryException: Column not found</code></li>
+            <li><strong>Authorization and routing bugs</strong> -- misconfigured gates, wrong HTTP methods, missing parameters</li>
+            <li><strong>Logic errors</strong> -- <code>RuntimeException</code>, off-by-one mistakes, incorrect validation rules</li>
+        </ul>
+
+        <h3>What it cannot fix</h3>
+        <ul>
+            <li><strong>PHP syntax errors</strong> -- A <code>ParseError</code> prevents Laravel from booting entirely.</li>
+            <li><strong>Fatal errors that kill the process</strong> -- <code>OutOfMemoryError</code>, segmentation faults.</li>
+            <li><strong>Infrastructure failures</strong> -- database down, Redis unreachable, disk full.</li>
+            <li><strong>Environment / config issues</strong> -- missing <code>.env</code> values, wrong file permissions.</li>
+            <li><strong>Issues requiring human judgment</strong> -- business logic decisions, UX choices, performance tuning.</li>
+        </ul>
+
+        <blockquote><p><strong>The sweet spot:</strong> a typo, a missing null check, a wrong query column. The app is running, the error is logged, and the fix is a small code change. That is where Healing-Factor shines.</p></blockquote>
+
+        <h3>A note about costs</h3>
+        <p>Healing-Factor uses the Anthropic API (Claude) to analyze exceptions and write fixes. Each resolution typically costs a few cents to a few dollars in API usage, depending on the complexity of the exception, the number of conversation turns, and the model you choose. You can control costs by setting <code>max_turns</code> and <code>timeout</code> limits. Check the <a href="https://www.anthropic.com/pricing" target="_blank" rel="noopener">Anthropic pricing page</a> for current rates.</p>
 
         <!-- Requirements -->
         <h2 id="requirements">Requirements</h2>
         <ul>
             <li>PHP 8.4+</li>
             <li>Laravel 11 or 12</li>
-            <li><strong>CLI driver:</strong> <a href="https://docs.anthropic.com/en/docs/claude-code" target="_blank" rel="noopener">Claude Code</a> or <a href="https://github.com/opencode-ai/opencode" target="_blank" rel="noopener">OpenCode</a> CLI installed on the server</li>
-            <li><strong>API driver:</strong> Only an <code>ANTHROPIC_API_KEY</code> (no CLI installation needed)</li>
             <li><a href="https://cli.github.com/" target="_blank" rel="noopener">GitHub CLI (<code>gh</code>)</a> installed and authenticated (for PR creation)</li>
             <li>A queue worker running (recommended for production)</li>
         </ul>
+        <p>Depending on which driver you choose (explained in <a href="#cli-vs-api">CLI vs API Driver</a>):</p>
+        <ul>
+            <li><strong>CLI driver:</strong> <a href="https://docs.anthropic.com/en/docs/claude-code" target="_blank" rel="noopener">Claude Code</a> or <a href="https://github.com/opencode-ai/opencode" target="_blank" rel="noopener">OpenCode</a> CLI installed on the server</li>
+            <li><strong>API driver:</strong> Only an <code>ANTHROPIC_API_KEY</code> -- no CLI installation needed</li>
+        </ul>
+        <blockquote><p><strong>Not sure which driver to pick?</strong> Read the <a href="#cli-vs-api">CLI vs API Driver</a> section first. If you just want to get started quickly, the API driver is the easiest -- it only needs an API key.</p></blockquote>
 
         <!-- Installation -->
         <h2 id="installation">Installation</h2>
 
         <h3>1. Install via Composer</h3>
-        <pre><code>composer require arielmejiadev/x-factor</code></pre>
+        <pre><code>composer require arielmejiadev/healing-factor</code></pre>
 
         <h3>2. Run the install command</h3>
-        <pre><code>php artisan x-factor:install</code></pre>
-        <p>This will:</p>
-        <ul>
-            <li>Publish the config file (<code>config/x-factor.php</code>)</li>
-            <li>Publish the migration</li>
-            <li>Run the migration (with confirmation)</li>
-            <li>Verify that the CLI tool (<code>claude</code> or <code>opencode</code>) is available</li>
-            <li>Check that <code>ANTHROPIC_API_KEY</code> is set</li>
-        </ul>
+        <pre><code>php artisan healing-factor:install</code></pre>
+        <p>This publishes the config file and migration, runs the migration (with confirmation), and verifies your setup.</p>
 
-        <h3>3. Add environment variables to <code>.env</code></h3>
-        <pre><code># Required
-ANTHROPIC_API_KEY=sk-ant-...
+        <h3>3. Add your API key to <code>.env</code></h3>
+        <pre><code>ANTHROPIC_API_KEY=sk-ant-...</code></pre>
+        <p>This is the only required environment variable. Everything else has sensible defaults.</p>
 
-# Optional — all have sensible defaults
-X_FACTOR_ENABLED=true
-X_FACTOR_DRY_RUN=false
-X_FACTOR_DRIVER=cli
-X_FACTOR_CLI_TOOL=claude
-X_FACTOR_MODEL=
-X_FACTOR_MONITOR=nightwatch
-X_FACTOR_WEBHOOK_PATH=x-factor/webhook
-X_FACTOR_WEBHOOK_SECRET=your-webhook-secret
-X_FACTOR_PROCESS_TIMEOUT=3600
-X_FACTOR_MAX_TURNS=25
-X_FACTOR_DEBOUNCE_MINUTES=5
-X_FACTOR_RETENTION_DAYS=30
-X_FACTOR_LOG_CHANNEL=x-factor
-X_FACTOR_QUEUE_CONNECTION=
-X_FACTOR_QUEUE_NAME=
-X_FACTOR_GITHUB_PAT=</code></pre>
+        <blockquote><p><strong>Using the API driver?</strong> You will also need a GitHub personal access token: <code>HEALING_FACTOR_GITHUB_PAT=github_pat_...</code>. See <a href="#essential-settings">Essential Settings</a> for details.</p></blockquote>
 
         <h3>4. Start the queue worker</h3>
         <pre><code>php artisan queue:work --timeout=3700</code></pre>
-        <p>The timeout should exceed the configured process timeout (default 3600s) to avoid the worker killing jobs prematurely.</p>
+        <p>The <code>--timeout</code> flag should exceed the configured process timeout (default 3600 seconds) so the worker does not kill resolution jobs prematurely.</p>
 
-        <!-- Quick Start -->
-        <h2 id="quick-start">Quick Start Guide</h2>
-        <p>Choose the setup that matches your environment. Only the variables shown are required — everything else has sensible defaults.</p>
+        <blockquote><p><strong>Why <code>APP_ENV=staging</code>?</strong> Healing-Factor only processes exceptions in <code>production</code> and <code>staging</code> by default. Errors in <code>local</code> are expected during development. To test locally, set <code>APP_ENV=staging</code>.</p></blockquote>
 
-        <h3>CLI Driver (requires Claude Code or OpenCode installed)</h3>
-        <table>
-            <thead>
-                <tr><th>Variable</th><th>Exception Listener</th><th>Nightwatch</th></tr>
-            </thead>
-            <tbody>
-                <tr><td><code>APP_ENV</code></td><td><code>staging</code></td><td><code>staging</code></td></tr>
-                <tr><td><code>X_FACTOR_DRIVER</code></td><td><code>cli</code></td><td><code>cli</code></td></tr>
-                <tr><td><code>X_FACTOR_CLI_TOOL</code></td><td><code>claude</code></td><td><code>claude</code></td></tr>
-                <tr><td><code>X_FACTOR_MONITOR</code></td><td><code>exception_listener</code></td><td><code>nightwatch</code></td></tr>
-                <tr><td><code>X_FACTOR_WEBHOOK_SECRET</code></td><td>—</td><td><code>your-secret</code></td></tr>
-            </tbody>
-        </table>
+        <!-- Try It in 5 Minutes -->
+        <h2 id="try-it">Try It in 5 Minutes</h2>
+        <p>This walkthrough lets you see Healing-Factor in action on your local machine. You will install the package, trigger a test exception, and watch it open a draft PR with a fix.</p>
 
-        <h3>API Driver (no CLI installation needed)</h3>
-        <table>
-            <thead>
-                <tr><th>Variable</th><th>Exception Listener</th><th>Nightwatch</th></tr>
-            </thead>
-            <tbody>
-                <tr><td><code>APP_ENV</code></td><td><code>staging</code></td><td><code>staging</code></td></tr>
-                <tr><td><code>X_FACTOR_DRIVER</code></td><td><code>api</code></td><td><code>api</code></td></tr>
-                <tr><td><code>X_FACTOR_MONITOR</code></td><td><code>exception_listener</code></td><td><code>nightwatch</code></td></tr>
-                <tr><td><code>X_FACTOR_WEBHOOK_SECRET</code></td><td>—</td><td><code>your-secret</code></td></tr>
-                <tr><td><code>ANTHROPIC_API_KEY</code></td><td><code>sk-ant-...</code></td><td><code>sk-ant-...</code></td></tr>
-                <tr><td><code>X_FACTOR_GITHUB_PAT</code></td><td><code>github_pat_...</code></td><td><code>github_pat_...</code></td></tr>
-            </tbody>
-        </table>
+        <ol class="numbered-list">
+            <li>
+                <strong>Install and configure.</strong> Follow the <a href="#installation">Installation</a> steps above. Make sure your <code>.env</code> has:
+                <pre><code>APP_ENV=staging
+ANTHROPIC_API_KEY=sk-ant-...
+HEALING_FACTOR_MONITOR=exception_listener</code></pre>
+                <p>If you are using the API driver, also add:</p>
+                <pre><code>HEALING_FACTOR_DRIVER=api
+HEALING_FACTOR_GITHUB_PAT=github_pat_...</code></pre>
+            </li>
+            <li>
+                <strong>Start the queue worker</strong> in a separate terminal:
+                <pre><code>php artisan queue:work --timeout=3700</code></pre>
+            </li>
+            <li>
+                <strong>Run the test command.</strong> This creates a fake exception and dispatches it for resolution:
+                <pre><code>php artisan healing-factor:test --sync</code></pre>
+                <p>The <code>--sync</code> flag runs it immediately (no queue needed for this test). You will see output as the AI analyzes the exception, writes a fix, and opens a draft PR.</p>
+            </li>
+            <li>
+                <strong>Check the result.</strong> Run the status command to see your test issue:
+                <pre><code>php artisan healing-factor:status</code></pre>
+                <p>If it succeeded, the status will show <code>resolved</code> with a link to the draft PR.</p>
+            </li>
+        </ol>
 
-        <blockquote>
-            <p><strong>Why <code>APP_ENV=staging</code>?</strong> X-Factor only runs in <code>production</code> and <code>staging</code> by default. In <code>local</code>, errors are expected during active development — X-Factor is designed for bugs that slip through to staging or production.</p>
-        </blockquote>
-        <blockquote>
-            <p><strong>Why no <code>ANTHROPIC_API_KEY</code> for CLI?</strong> Claude Code handles its own authentication. The API driver calls the Anthropic API directly, so it needs the key.</p>
-        </blockquote>
+        <blockquote><p><strong>Tip:</strong> If you want to test without actually calling the AI, enable dry run mode: <code>HEALING_FACTOR_DRY_RUN=true</code>. Healing-Factor will log what it would do without executing anything.</p></blockquote>
+
+        <!-- ============================================================ -->
+        <!-- CORE CONCEPTS                                                -->
+        <!-- ============================================================ -->
 
         <!-- How It Works -->
         <h2 id="how-it-works">How It Works</h2>
         <ol class="numbered-list">
             <li>An exception occurs in your Laravel app.</li>
-            <li>X-Factor captures it via a <strong>webhook</strong> (from Nightwatch or Bugsnag) or the built-in <strong>exception listener</strong>.</li>
-            <li>The exception is fingerprinted, debounced, and deduplicated.</li>
-            <li>A queued job creates an <strong>isolated git worktree</strong> on a new branch — your production working directory is never touched.</li>
-            <li>The CLI tool (Claude Code or OpenCode) runs inside the worktree with a prompt describing the issue.</li>
+            <li>Healing-Factor captures it via the built-in <strong>exception listener</strong> or a <strong>webhook</strong> from an error monitoring service (Nightwatch, Bugsnag).</li>
+            <li>The exception is <strong>fingerprinted</strong> (a unique hash is generated from the exception class, message, and file location so the same error is not processed twice) and <strong>debounced</strong> (if the same fingerprint was seen recently, it is skipped to avoid duplicate work).</li>
+            <li>A queued job creates an isolated <strong>git worktree</strong> (a separate copy of your repository on a new branch -- your production working directory is never touched) and runs the AI inside it.</li>
             <li>The AI analyzes the code, writes a fix, commits, pushes, and opens a <strong>draft pull request</strong>.</li>
-            <li>The worktree is automatically cleaned up (even if the CLI fails).</li>
+            <li>The worktree is automatically cleaned up, even if the AI fails.</li>
             <li>You review the PR and merge.</li>
         </ol>
 
-        <!-- Configuration -->
-        <h2 id="configuration">Configuration</h2>
-        <p>All configuration lives in <code>config/x-factor.php</code>. Every key can be overridden via environment variables.</p>
+        <blockquote><p><strong>Your production code is safe.</strong> The AI never modifies files in your production working directory. It works in an isolated git worktree on a separate branch, and the result is always a draft PR that requires your review before merging.</p></blockquote>
+
+        <!-- CLI vs API Driver -->
+        <h2 id="cli-vs-api">CLI vs API Driver</h2>
+        <p>Healing-Factor supports two drivers for running the AI. Choose one based on your environment.</p>
+
+        <table>
+            <thead><tr><th></th><th>CLI Driver</th><th>API Driver</th></tr></thead>
+            <tbody>
+                <tr><td><strong>Best for</strong></td><td>Servers with Claude Code or OpenCode installed</td><td>Staging/production servers without CLI tools (DigitalOcean, Laravel Cloud, AWS)</td></tr>
+                <tr><td><strong>Requires</strong></td><td><code>claude</code> or <code>opencode</code> CLI binary on the server</td><td>Only <code>ANTHROPIC_API_KEY</code> and <code>HEALING_FACTOR_GITHUB_PAT</code></td></tr>
+                <tr><td><strong>How it works</strong></td><td>Spawns a CLI subprocess</td><td>Calls the Anthropic Messages API with tool use</td></tr>
+                <tr><td><strong>Tool access</strong></td><td>Full CLI tool capabilities</td><td>6 curated tools (read, write, edit, search, list, run command)</td></tr>
+                <tr><td><strong>Command safety</strong></td><td>CLI tool's own safety model</td><td>Explicit command allowlist that you control</td></tr>
+            </tbody>
+        </table>
+
+        <blockquote><p><strong>If you are not sure, use the API driver.</strong> It works on any server, requires no extra installation, and gives you fine-grained control over what commands the AI can run. Set <code>HEALING_FACTOR_DRIVER=api</code> in your <code>.env</code>.</p></blockquote>
+
+        <h3>Minimal .env for each driver</h3>
+
+        <h4>API Driver</h4>
+        <pre><code>HEALING_FACTOR_DRIVER=api
+ANTHROPIC_API_KEY=sk-ant-...
+HEALING_FACTOR_GITHUB_PAT=github_pat_...</code></pre>
+
+        <h4>CLI Driver</h4>
+        <pre><code>HEALING_FACTOR_DRIVER=cli
+HEALING_FACTOR_CLI_TOOL=claude</code></pre>
+        <p>The CLI driver does not need <code>ANTHROPIC_API_KEY</code> in your <code>.env</code> because Claude Code handles its own authentication. However, you must have the CLI tool installed and authenticated on the server.</p>
+
+        <!-- Monitor Strategy -->
+        <h2 id="monitor-strategy">Monitor Strategy</h2>
+        <p>A <strong>monitor</strong> is how Healing-Factor learns about exceptions. It supports one active monitor at a time. There are three options:</p>
+
+        <h3>Exception Listener (recommended for getting started)</h3>
+        <pre><code>HEALING_FACTOR_MONITOR=exception_listener</code></pre>
+        <p>No setup needed beyond the env variable. Healing-Factor hooks into Laravel's error handling and captures unhandled exceptions directly. This is the simplest option and works without any external service.</p>
+        <p>The listener includes a recursion guard to prevent infinite loops if Healing-Factor's own code triggers an exception.</p>
+
+        <h3>Nightwatch</h3>
+        <pre><code>HEALING_FACTOR_MONITOR=nightwatch</code></pre>
+        <p>Receives webhooks from <a href="https://nightwatch.laravel.com/" target="_blank" rel="noopener">Laravel Nightwatch</a>. Configure your Nightwatch project to send webhooks to your Healing-Factor endpoint (<code>POST /healing-factor/webhook</code>). Healing-Factor processes <code>issue.opened</code> and <code>issue.reopened</code> events.</p>
+        <p>You must also set a webhook secret for signature verification:</p>
+        <pre><code>HEALING_FACTOR_WEBHOOK_SECRET=a-strong-random-secret</code></pre>
+
+        <h3>Bugsnag</h3>
+        <pre><code>HEALING_FACTOR_MONITOR=bugsnag</code></pre>
+        <p>Receives webhooks from <a href="https://docs.bugsnag.com/product/integrations/data-forwarding/webhook/" target="_blank" rel="noopener">Bugsnag</a>. Point a Bugsnag webhook at your Healing-Factor endpoint. It processes <code>exception</code> and <code>firstException</code> triggers.</p>
+        <pre><code>HEALING_FACTOR_WEBHOOK_SECRET=your-bugsnag-webhook-token</code></pre>
+
+        <blockquote><p><strong>If you are not sure, use the exception listener.</strong> It requires no external services, no webhook configuration, and works out of the box. You can switch to Nightwatch or Bugsnag later when you want centralized error management.</p></blockquote>
+
+        <!-- ============================================================ -->
+        <!-- CONFIGURATION                                                -->
+        <!-- ============================================================ -->
+
+        <!-- Essential Settings -->
+        <h2 id="essential-settings">Essential Settings</h2>
+        <p>All configuration lives in <code>config/healing-factor.php</code>. Every key can be overridden via environment variables. Most users only need to set a few values -- the rest have sensible defaults.</p>
 
         <h3>Master Switch</h3>
-        <pre><code>'enabled' => env('X_FACTOR_ENABLED', true),</code></pre>
-        <p>Set to <code>false</code> to disable all processing. Webhooks will still return 200 but won't create issues.</p>
+        <pre><code>'enabled' => env('HEALING_FACTOR_ENABLED', true),</code></pre>
+        <p>Set to <code>false</code> to disable all processing. Webhooks will still return <code>200</code> but will not create issues.</p>
 
         <h3>Environment Whitelist</h3>
         <pre><code>'environments' => ['production', 'staging'],</code></pre>
-        <p>X-Factor only processes exceptions in these environments. Set to an empty array <code>[]</code> to allow all environments.</p>
+        <p>Healing-Factor only processes exceptions in these environments. Set to an empty array <code>[]</code> to allow all environments.</p>
 
         <h3>Dry Run</h3>
-        <pre><code>'dry_run' => env('X_FACTOR_DRY_RUN', false),</code></pre>
-        <p>When enabled, X-Factor logs what it would do but never executes the CLI tool. Useful for testing your setup.</p>
+        <pre><code>'dry_run' => env('HEALING_FACTOR_DRY_RUN', false),</code></pre>
+        <p>When enabled, Healing-Factor logs what it would do but never runs the AI. Useful for testing your setup before going live.</p>
 
         <h3>Driver</h3>
-        <pre><code>'driver' => env('X_FACTOR_DRIVER', 'cli'),</code></pre>
-        <ul>
-            <li><code>cli</code> — Runs Claude Code or OpenCode as a subprocess. Requires the CLI tool installed on the server.</li>
-            <li><code>api</code> — Calls the Anthropic Messages API directly with <code>tool_use</code>. No CLI installation required — ideal for staging/production servers (DigitalOcean, Laravel Cloud, AWS).</li>
-        </ul>
+        <pre><code>'driver' => env('HEALING_FACTOR_DRIVER', 'cli'),</code></pre>
+        <p>Choose <code>cli</code> or <code>api</code>. See <a href="#cli-vs-api">CLI vs API Driver</a> for guidance.</p>
 
         <h3>CLI Tool</h3>
-        <pre><code>'cli_tool' => env('X_FACTOR_CLI_TOOL', 'claude'),</code></pre>
-        <ul>
-            <li><code>claude</code> — Uses <a href="https://docs.anthropic.com/en/docs/claude-code" target="_blank" rel="noopener">Claude Code</a> (<code>claude -p ...</code>).</li>
-            <li><code>opencode</code> — Uses <a href="https://github.com/opencode-ai/opencode" target="_blank" rel="noopener">OpenCode</a> (<code>opencode run ...</code>).</li>
-        </ul>
+        <pre><code>'cli_tool' => env('HEALING_FACTOR_CLI_TOOL', 'claude'),</code></pre>
+        <p>Only applies when using the CLI driver. Choose <code>claude</code> (<a href="https://docs.anthropic.com/en/docs/claude-code" target="_blank" rel="noopener">Claude Code</a>) or <code>opencode</code> (<a href="https://github.com/opencode-ai/opencode" target="_blank" rel="noopener">OpenCode</a>).</p>
 
         <h3>AI Model</h3>
-        <pre><code>'model' => env('X_FACTOR_MODEL', null),</code></pre>
-        <p>Override the default model. When <code>null</code>, the CLI tool picks its own default.</p>
-
-        <h3>Process Settings</h3>
-        <pre><code>'process' => [
-    'timeout' => (int) env('X_FACTOR_PROCESS_TIMEOUT', 3600),
-    'max_turns' => (int) env('X_FACTOR_MAX_TURNS', 25),
-    'working_directory' => null,
-],</code></pre>
-        <ul>
-            <li><code>timeout</code> — Maximum seconds the CLI process can run (default: 1 hour).</li>
-            <li><code>max_turns</code> — Maximum AI conversation turns (Claude Code only).</li>
-            <li><code>working_directory</code> — Base git repository path. <code>null</code> defaults to <code>base_path()</code>. The git worktree is created from this directory.</li>
-        </ul>
-        <blockquote>
-            <p><strong>Git Worktree Isolation:</strong> When resolving an issue, X-Factor creates a temporary git worktree on a dedicated branch. The CLI tool runs exclusively inside this worktree, so your production working directory is never modified. The worktree is automatically removed after the CLI finishes — even if the process fails.</p>
-        </blockquote>
-
-        <h3>Pull Request Settings</h3>
-        <pre><code>'pr' => [
-    'draft' => true,
-    'labels' => ['x-factor', 'auto-fix'],
-    'reviewers' => [],
-    'branch_prefix' => 'x-factor/fix',
-],</code></pre>
-        <ul>
-            <li><code>draft</code> — Create PRs as drafts (recommended for safety).</li>
-            <li><code>labels</code> — Labels applied to every PR.</li>
-            <li><code>reviewers</code> — GitHub usernames to request review from.</li>
-            <li><code>branch_prefix</code> — Branch names follow the pattern <code>{prefix}-{slug}-{random}</code>.</li>
-        </ul>
-
-        <h3>Queue</h3>
-        <pre><code>'queue' => [
-    'connection' => env('X_FACTOR_QUEUE_CONNECTION', null),
-    'name' => env('X_FACTOR_QUEUE_NAME', null),
-],</code></pre>
-        <p>Customize the queue connection and name. <code>null</code> uses your app defaults. Consider using a dedicated queue to avoid long-running resolution jobs from blocking other work.</p>
+        <pre><code>'model' => env('HEALING_FACTOR_MODEL', null),</code></pre>
+        <p>Override the default model. When <code>null</code>, the CLI tool or API uses its own default.</p>
 
         <h3>API Keys</h3>
         <pre><code>'api_keys' => [
     'anthropic' => env('ANTHROPIC_API_KEY'),
-    'github_pat' => env('X_FACTOR_GITHUB_PAT'),
+    'github_pat' => env('HEALING_FACTOR_GITHUB_PAT'),
 ],</code></pre>
         <ul>
-            <li><code>anthropic</code> — Passed to the CLI tool as <code>ANTHROPIC_API_KEY</code> environment variable.</li>
-            <li><code>github_pat</code> — Passed to the CLI tool as <code>GITHUB_TOKEN</code> so <code>gh pr create</code> works in environments without interactive <code>gh auth login</code>.</li>
+            <li><code>anthropic</code> -- Your Anthropic API key. Required for the API driver. Also passed to the CLI tool as an environment variable.</li>
+            <li><code>github_pat</code> -- A GitHub personal access token so Healing-Factor can push branches and create PRs in environments without interactive <code>gh auth login</code>.</li>
         </ul>
 
         <h4>Generating a GitHub PAT</h4>
-        <p>Go to <a href="https://github.com/settings/tokens?type=beta" target="_blank" rel="noopener">GitHub &rarr; Settings &rarr; Developer settings &rarr; Fine-grained tokens</a> and create a token with these permissions:</p>
+        <p>Go to <a href="https://github.com/settings/tokens?type=beta" target="_blank" rel="noopener">GitHub &rarr; Settings &rarr; Developer settings &rarr; Fine-grained tokens</a> and create a token scoped to your repository with these permissions:</p>
         <table>
             <thead><tr><th>Permission</th><th>Access</th></tr></thead>
             <tbody>
@@ -659,81 +745,229 @@ X_FACTOR_GITHUB_PAT=</code></pre>
                 <tr><td><strong>Metadata</strong></td><td>Read (auto-selected)</td></tr>
             </tbody>
         </table>
-        <blockquote><p><strong>Never commit API keys to version control.</strong></p></blockquote>
+        <blockquote><p><strong>Never commit API keys to version control.</strong> Always use environment variables.</p></blockquote>
 
-        <!-- Monitor Strategy -->
-        <h2 id="monitor-strategy">Monitor Strategy</h2>
-        <p>X-Factor supports one active monitor at a time.</p>
-        <pre><code>'monitor' => env('X_FACTOR_MONITOR', 'nightwatch'),</code></pre>
-
-        <h3>Nightwatch</h3>
-        <p>Set <code>X_FACTOR_MONITOR=nightwatch</code>.</p>
-        <p>Configure your <a href="https://nightwatch.laravel.com/" target="_blank" rel="noopener">Laravel Nightwatch</a> project to send webhooks to your X-Factor endpoint. X-Factor processes <code>issue.opened</code> and <code>issue.reopened</code> events.</p>
-        <h4>Expected webhook payload</h4>
-        <pre><code>{
-    "event": "issue.opened",
-    "payload": {
-        "organization_id": "org-123",
-        "application_id": "app-456",
-        "environment": { "id": "env-789" },
-        "issue": {
-            "title": "ErrorException: Undefined variable $foo",
-            "exception_class": "ErrorException",
-            "message": "Undefined variable $foo",
-            "stacktrace": "#0 /app/Http/Controllers/..."
-        }
-    }
-}</code></pre>
-        <p><strong>Signature verification:</strong> HMAC-SHA256 over the raw request body. The computed hash is compared against the <code>X-Nightwatch-Signature</code> or <code>X-Webhook-Signature</code> header.</p>
-
-        <h3>Bugsnag</h3>
-        <p>Set <code>X_FACTOR_MONITOR=bugsnag</code>.</p>
-        <p>Configure a <a href="https://docs.bugsnag.com/product/integrations/data-forwarding/webhook/" target="_blank" rel="noopener">Bugsnag webhook</a> pointing to your X-Factor endpoint. X-Factor processes <code>exception</code> and <code>firstException</code> triggers.</p>
-        <h4>Expected webhook payload</h4>
-        <pre><code>{
-    "trigger": "exception",
-    "error": {
-        "exceptionClass": "RuntimeException",
-        "message": "Something went wrong",
-        "stackTrace": "..."
-    }
-}</code></pre>
-        <p><strong>Signature verification:</strong> Bearer token in the <code>Authorization</code> header, compared against the configured secret.</p>
-
-        <h3>Exception Listener</h3>
-        <p>Set <code>X_FACTOR_MONITOR=exception_listener</code>.</p>
-        <p>No webhook needed. X-Factor listens to Laravel's <code>MessageLogged</code> (error/critical level) and <code>JobExceptionOccurred</code> events directly. Every unhandled exception is captured.</p>
-        <p>The exception listener includes a recursion guard to prevent infinite loops if X-Factor's own operations trigger exceptions.</p>
-
-        <!-- Webhook Setup -->
-        <h2 id="webhook-setup">Webhook Setup</h2>
-
-        <h3>Endpoint</h3>
-        <pre><code>POST /x-factor/webhook</code></pre>
-        <p>The path is configurable:</p>
-        <pre><code>'webhook' => [
-    'path' => env('X_FACTOR_WEBHOOK_PATH', 'x-factor/webhook'),
-    'secret' => env('X_FACTOR_WEBHOOK_SECRET'),
-    'middleware' => [],
+        <h3>Ignored Exceptions</h3>
+        <pre><code>'ignored_exceptions' => [
+    \OutOfMemoryError::class,
+    \Illuminate\Http\Exceptions\ThrottleRequestsException::class,
+    \Symfony\Component\HttpKernel\Exception\HttpException::class,
+    \Illuminate\Session\TokenMismatchException::class,
 ],</code></pre>
+        <p>Exceptions that should never be processed -- infrastructure issues, rate limits, and other errors that cannot be fixed by a code change. Add your own exception classes to this array.</p>
 
-        <h3>Signature Verification</h3>
-        <p>Set <code>X_FACTOR_WEBHOOK_SECRET</code> to a strong random string. Share this secret with your monitor service.</p>
+        <!-- Queue & Process -->
+        <h2 id="queue-process">Queue &amp; Process</h2>
+
+        <h3>Queue</h3>
+        <pre><code>'queue' => [
+    'connection' => env('HEALING_FACTOR_QUEUE_CONNECTION', null),
+    'name' => env('HEALING_FACTOR_QUEUE_NAME', null),
+],</code></pre>
+        <p><code>null</code> uses your app's default queue. Consider using a dedicated queue to keep long-running resolution jobs from blocking your other work.</p>
+
+        <h3>Process Settings</h3>
+        <pre><code>'process' => [
+    'timeout' => (int) env('HEALING_FACTOR_PROCESS_TIMEOUT', 3600),
+    'max_turns' => (int) env('HEALING_FACTOR_MAX_TURNS', 25),
+    'working_directory' => null,
+],</code></pre>
         <ul>
-            <li><strong>Nightwatch:</strong> HMAC-SHA256 of the request body compared against the <code>X-Nightwatch-Signature</code> header.</li>
-            <li><strong>Bugsnag:</strong> <code>Authorization: Bearer {token}</code> header compared against the secret.</li>
+            <li><code>timeout</code> -- Maximum seconds the AI process can run (default: 1 hour). This also controls API costs: a lower timeout means less time for the AI to work.</li>
+            <li><code>max_turns</code> -- Maximum AI conversation turns. Each turn is one request-response cycle. Lower values mean faster (and cheaper) resolutions, but the AI has less room to explore.</li>
+            <li><code>working_directory</code> -- Base git repository path. <code>null</code> defaults to <code>base_path()</code>.</li>
         </ul>
-        <p>If <code>X_FACTOR_WEBHOOK_SECRET</code> is not set, signature verification is skipped (a warning is logged).</p>
 
-        <h3>Additional Middleware</h3>
-        <pre><code>'webhook' => [
-    'middleware' => [\App\Http\Middleware\CustomMiddleware::class],
+        <h3>Debounce</h3>
+        <pre><code>'debounce_minutes' => (int) env('HEALING_FACTOR_DEBOUNCE_MINUTES', 5),</code></pre>
+        <p>After processing an exception, Healing-Factor ignores the same fingerprint for this many minutes. This prevents a flood of identical exceptions from creating duplicate work. See <a href="#deduplication">Deduplication Details</a> for the full deduplication strategy.</p>
+
+        <h3>Logging</h3>
+        <pre><code>'log_channel' => env('HEALING_FACTOR_LOG_CHANNEL', 'healing-factor'),</code></pre>
+        <p>If this channel does not exist in <code>config/logging.php</code>, Healing-Factor auto-configures a daily log at <code>storage/logs/healing-factor.log</code> with 14-day retention. You can override this by defining the channel yourself in your logging config.</p>
+
+        <!-- Pull Request Settings -->
+        <h2 id="pr-settings">Pull Request Settings</h2>
+        <pre><code>'pr' => [
+    'draft' => true,
+    'labels' => ['healing-factor', 'auto-fix'],
+    'reviewers' => [],
+    'branch_prefix' => 'healing-factor/fix',
 ],</code></pre>
-        <p>CSRF verification is automatically excluded from the webhook route.</p>
+        <ul>
+            <li><code>draft</code> -- Create PRs as drafts (recommended). This ensures a human reviews every fix before it reaches production.</li>
+            <li><code>labels</code> -- Labels applied to every PR. Useful for filtering in GitHub.</li>
+            <li><code>reviewers</code> -- GitHub usernames to automatically request review from.</li>
+            <li><code>branch_prefix</code> -- Branch names follow the pattern <code>{prefix}-{slug}-{random}</code>.</li>
+        </ul>
+
+        <!-- Dashboard -->
+        <h2 id="dashboard">Dashboard</h2>
+        <p>Healing-Factor includes a read-only web dashboard for browsing issues. Visit <code>/healing-factor</code> (or your custom path) to access it.</p>
+
+        <h3>Configuration</h3>
+        <pre><code>'dashboard' => [
+    'enabled' => env('HEALING_FACTOR_DASHBOARD_ENABLED', true),
+    'path' => env('HEALING_FACTOR_DASHBOARD_PATH', 'healing-factor'),
+    'middleware' => ['web', 'auth'],
+],</code></pre>
+
+        <h3>Authorization</h3>
+        <p>By default, the dashboard is only accessible when <code>APP_ENV=local</code>. Since Healing-Factor typically runs in <code>staging</code> or <code>production</code>, you will need to register an authorization gate in your <code>AppServiceProvider</code> to access the dashboard in those environments:</p>
+        <pre><code>use ArielMejiaDev\HealingFactor\Facades\HealingFactor;
+
+public function boot(): void
+{
+    HealingFactor::auth(function ($user) {
+        return in_array($user->email, [
+            'admin@yourcompany.com',
+        ]);
+    });
+}</code></pre>
+        <blockquote><p><strong>Important:</strong> If you skip this step, the dashboard will return a 403 in staging and production. This is intentional -- it prevents unauthorized access by default.</p></blockquote>
+
+        <h3>Features</h3>
+        <ul>
+            <li><strong>Search and filter</strong> -- filter issues by title, exception class, or status (Pending, Resolving, Resolved, Failed).</li>
+            <li><strong>Issue detail</strong> -- view full exception details, stacktrace, CLI output, and PR links.</li>
+            <li><strong>Retry failed issues</strong> -- pick a model and max turns, then re-queue with one click.</li>
+            <li><strong>Auto-refresh</strong> -- polling toggle reloads the page every 60 seconds.</li>
+            <li><strong>Dark/light theme</strong> -- toggle persisted in <code>localStorage</code>.</li>
+        </ul>
+        <p>The dashboard theme uses CSS custom properties compatible with Laravel's starter kits (shadcn/ui). You can customize it by publishing the views (<code>php artisan vendor:publish --tag=healing-factor-views</code>) and editing the CSS variables or replacing the stylesheet with your own. See <a href="#theme-customization">Theme Customization</a> in the Advanced section for details.</p>
+
+        <!-- ============================================================ -->
+        <!-- USAGE                                                        -->
+        <!-- ============================================================ -->
+
+        <!-- Artisan Commands -->
+        <h2 id="artisan-commands">Artisan Commands</h2>
+
+        <h3>Essential Commands</h3>
+        <p>These are the commands you will use regularly.</p>
+
+        <h4><code>healing-factor:install</code></h4>
+        <p>Publishes config and migration, runs migration, verifies setup. Run this once during installation.</p>
+        <pre><code>php artisan healing-factor:install</code></pre>
+
+        <h4><code>healing-factor:status</code></h4>
+        <p>Displays a table of issues with summary statistics. Your go-to command for checking what Healing-Factor is doing.</p>
+        <pre><code>php artisan healing-factor:status
+php artisan healing-factor:status --limit=50</code></pre>
+
+        <h4><code>healing-factor:test</code></h4>
+        <p>Creates a test issue and dispatches it for resolution. Use this to verify your setup works end-to-end.</p>
+        <pre><code>php artisan healing-factor:test
+php artisan healing-factor:test --exception=RuntimeException
+php artisan healing-factor:test --sync</code></pre>
+
+        <h4><code>healing-factor:retry {id}</code></h4>
+        <p>Retries a failed issue by resetting it to <code>pending</code> and dispatching it again.</p>
+        <pre><code>php artisan healing-factor:retry 42</code></pre>
+
+        <h3>Maintenance Commands</h3>
+        <p>These commands keep your issues table healthy. Schedule them and forget about them.</p>
+
+        <h4><code>healing-factor:recover-stale</code></h4>
+        <p>Finds issues stuck in <code>resolving</code> status beyond the configured process timeout and marks them as <code>failed</code>. This can happen if a queue worker crashes mid-resolution. Once marked as failed, you can retry them from the dashboard or via <code>healing-factor:retry</code>.</p>
+        <pre><code>php artisan healing-factor:recover-stale
+php artisan healing-factor:recover-stale --minutes=90</code></pre>
+
+        <h4><code>healing-factor:prune</code></h4>
+        <p>Deletes resolved and failed issues older than the retention period (default: 30 days). Keeps your database table from growing indefinitely.</p>
+        <pre><code>php artisan healing-factor:prune
+php artisan healing-factor:prune --days=7</code></pre>
+
+        <blockquote><p><strong>What is the difference between <code>recover-stale</code> and <code>prune</code>?</strong> <code>recover-stale</code> rescues stuck issues so they can be retried. <code>prune</code> deletes old finished issues to save database space. They serve different purposes and should both be scheduled.</p></blockquote>
+
+        <h4>Recommended Schedule</h4>
+        <p>Add both maintenance commands to your <code>routes/console.php</code>:</p>
+        <pre><code>use Illuminate\Support\Facades\Schedule;
+
+// Recover stuck issues every hour
+Schedule::command('healing-factor:recover-stale')->hourly();
+
+// Clean up old issues daily
+Schedule::command('healing-factor:prune')->daily();</code></pre>
+
+        <!-- Events -->
+        <h2 id="events">Events</h2>
+        <p>Healing-Factor fires events at each stage of the resolution lifecycle. Use these to send notifications, update dashboards, or trigger other workflows.</p>
+        <table>
+            <thead><tr><th>Event</th><th>Fired When</th><th>Properties</th></tr></thead>
+            <tbody>
+                <tr><td><code>IssueCreated</code></td><td>Issue is created from webhook or exception</td><td><code>Issue $issue</code></td></tr>
+                <tr><td><code>IssueResolving</code></td><td>Resolution starts (status changes to resolving)</td><td><code>Issue $issue</code></td></tr>
+                <tr><td><code>IssueResolved</code></td><td>Resolution succeeds (status changes to resolved)</td><td><code>Issue $issue</code></td></tr>
+                <tr><td><code>IssueResolutionFailed</code></td><td>Resolution fails (status changes to failed)</td><td><code>Issue $issue</code>, <code>string $reason</code></td></tr>
+            </tbody>
+        </table>
+
+        <h4>Example: Send a Slack notification when a fix is ready</h4>
+        <pre><code>use ArielMejiaDev\HealingFactor\Events\IssueResolved;
+
+Event::listen(IssueResolved::class, function (IssueResolved $event) {
+    Notification::route('slack', config('services.slack.webhook'))
+        ->notify(new IssueFixedNotification($event->issue));
+});</code></pre>
+
+        <!-- Issue Model -->
+        <h2 id="issue-model">Issue Model</h2>
+        <p>The <code>Issue</code> model (<code>ArielMejiaDev\HealingFactor\Models\Issue</code>) is stored in the <code>healing_factor_issues</code> table. Here are the fields you will interact with most often:</p>
+        <ul>
+            <li><code>status</code> -- <code>pending</code>, <code>resolving</code>, <code>resolved</code>, or <code>failed</code></li>
+            <li><code>title</code> -- human-readable issue title</li>
+            <li><code>exception_class</code> / <code>exception_message</code> -- the PHP exception details</li>
+            <li><code>pr_url</code> -- URL of the created pull request (once resolved)</li>
+            <li><code>failure_reason</code> -- why the resolution failed (if it did)</li>
+            <li><code>attempts</code> -- number of resolution attempts</li>
+        </ul>
+
+        <h3>Full Field Reference</h3>
+        <table>
+            <thead><tr><th>Field</th><th>Description</th></tr></thead>
+            <tbody>
+                <tr><td><code>fingerprint</code></td><td>SHA-256 hash uniquely identifying the exception</td></tr>
+                <tr><td><code>source</code></td><td>Origin: nightwatch, bugsnag, exception_listener, or test</td></tr>
+                <tr><td><code>title</code></td><td>Human-readable issue title</td></tr>
+                <tr><td><code>exception_class</code></td><td>PHP exception class name</td></tr>
+                <tr><td><code>exception_message</code></td><td>Exception message</td></tr>
+                <tr><td><code>stacktrace</code></td><td>Stack trace text</td></tr>
+                <tr><td><code>status</code></td><td>pending, resolving, resolved, or failed</td></tr>
+                <tr><td><code>category</code></td><td>Matched category name (e.g., quick_fixes)</td></tr>
+                <tr><td><code>cli_tool</code></td><td>CLI tool used (claude or opencode)</td></tr>
+                <tr><td><code>branch_name</code></td><td>Generated Git branch name</td></tr>
+                <tr><td><code>pr_url</code></td><td>URL of the created pull request</td></tr>
+                <tr><td><code>failure_reason</code></td><td>Reason for failure (if failed)</td></tr>
+                <tr><td><code>attempts</code></td><td>Number of resolution attempts</td></tr>
+                <tr><td><code>payload</code></td><td>Full webhook payload (JSON)</td></tr>
+            </tbody>
+        </table>
+
+        <h3>Query Scopes</h3>
+        <pre><code>use ArielMejiaDev\HealingFactor\Models\Issue;
+
+Issue::pending()->get();
+Issue::resolving()->get();
+Issue::resolved()->get();
+Issue::failed()->get();
+Issue::stale(30)->get(); // Resolved/failed older than 30 days</code></pre>
+
+        <!-- Facade -->
+        <h2 id="facade">Facade</h2>
+        <pre><code>use ArielMejiaDev\HealingFactor\Facades\HealingFactor;
+
+HealingFactor::isEnabled();  // bool
+HealingFactor::isDryRun();   // bool
+HealingFactor::manager();    // HealingFactorManager instance</code></pre>
+
+        <!-- ============================================================ -->
+        <!-- ADVANCED                                                     -->
+        <!-- ============================================================ -->
 
         <!-- Exception Categories -->
         <h2 id="exception-categories">Exception Categories</h2>
-        <p>Categories let you customize AI behavior per exception type:</p>
+        <p>Categories let you customize how the AI handles different exception types. For example, you might want simple errors to use a shorter timeout and fewer turns, while complex errors get more room to work.</p>
         <pre><code>'categories' => [
     'quick_fixes' => [
         'cli_tool' => 'claude',
@@ -759,8 +993,11 @@ X_FACTOR_GITHUB_PAT=</code></pre>
     ],
 ],</code></pre>
         <p>Each category can override: <code>cli_tool</code>, <code>model</code>, <code>timeout</code>, <code>max_turns</code>, and <code>prompt</code>. Exceptions not matching any category use the top-level defaults.</p>
+        <blockquote><p><strong>Most users do not need categories.</strong> The defaults work well for the majority of exceptions. Only configure categories if you want to fine-tune behavior for specific exception types or control costs more precisely.</p></blockquote>
 
-        <h3>Custom Prompts</h3>
+        <!-- Custom Prompts -->
+        <h2 id="custom-prompts">Custom Prompts</h2>
+        <p>You can customize the prompt sent to the AI, either globally or per category.</p>
         <pre><code>// Per category
 'categories' => [
     'quick_fixes' => [
@@ -771,7 +1008,7 @@ X_FACTOR_GITHUB_PAT=</code></pre>
 // Global fallback
 'prompt' => 'You are debugging a Laravel app. Fix: {title}',</code></pre>
 
-        <h4>Available placeholders</h4>
+        <h4>Available Placeholders</h4>
         <table>
             <thead><tr><th>Placeholder</th><th>Description</th></tr></thead>
             <tbody>
@@ -787,272 +1024,57 @@ X_FACTOR_GITHUB_PAT=</code></pre>
             </tbody>
         </table>
 
-        <!-- Ignored Exceptions -->
-        <h2 id="ignored-exceptions">Ignored Exceptions</h2>
-        <p>Exceptions that should never be processed (infrastructure issues, unfixable errors):</p>
-        <pre><code>'ignored_exceptions' => [
-    \OutOfMemoryError::class,
-    \Illuminate\Http\Exceptions\ThrottleRequestsException::class,
-    \Symfony\Component\HttpKernel\Exception\HttpException::class,
-    \Illuminate\Session\TokenMismatchException::class,
+        <!-- Webhook Payload Formats -->
+        <h2 id="webhook-payloads">Webhook Payload Formats</h2>
+        <p>This section is only relevant if you use the Nightwatch or Bugsnag monitor. If you use the exception listener, you can skip this entirely.</p>
+
+        <h3>Webhook Endpoint</h3>
+        <pre><code>POST /healing-factor/webhook</code></pre>
+        <p>The path is configurable:</p>
+        <pre><code>'webhook' => [
+    'path' => env('HEALING_FACTOR_WEBHOOK_PATH', 'healing-factor/webhook'),
+    'secret' => env('HEALING_FACTOR_WEBHOOK_SECRET'),
+    'middleware' => [],
 ],</code></pre>
-        <p>Add your own exception classes to this array.</p>
+        <p>CSRF verification is automatically excluded from the webhook route. You can add custom middleware via the <code>middleware</code> array.</p>
 
-        <!-- Deduplication -->
-        <h2 id="deduplication">Deduplication</h2>
-        <p>X-Factor uses three layers of deduplication to prevent processing the same exception multiple times:</p>
-        <ol>
-            <li><strong>Cache Debounce</strong> — Same fingerprint is rejected within the debounce window (default: 5 minutes).</li>
-            <li><strong>Database Check</strong> — If an issue with the same fingerprint is already <code>pending</code> or <code>resolving</code>, the new one is skipped.</li>
-            <li><strong>Unique Constraint</strong> — The <code>(fingerprint, status)</code> database constraint prevents duplicates at the DB level.</li>
-        </ol>
-        <pre><code>'debounce_minutes' => (int) env('X_FACTOR_DEBOUNCE_MINUTES', 5),</code></pre>
-
-        <!-- Artisan Commands -->
-        <h2 id="artisan-commands">Artisan Commands</h2>
-
-        <h3><code>x-factor:install</code></h3>
-        <p>Publishes config and migration, runs migration, verifies setup.</p>
-        <pre><code>php artisan x-factor:install</code></pre>
-
-        <h3><code>x-factor:status</code></h3>
-        <p>Displays a table of issues with summary statistics.</p>
-        <pre><code>php artisan x-factor:status
-php artisan x-factor:status --limit=50</code></pre>
-
-        <h3><code>x-factor:retry {id}</code></h3>
-        <p>Retries a failed issue by resetting it to <code>pending</code> and dispatching it again.</p>
-        <pre><code>php artisan x-factor:retry 42</code></pre>
-
-        <h3><code>x-factor:prune</code></h3>
-        <p>Deletes resolved and failed issues older than the retention period. Also recovers any issues stuck in <code>resolving</code> status beyond the process timeout.</p>
-        <pre><code>php artisan x-factor:prune
-php artisan x-factor:prune --days=7</code></pre>
-
-        <h3><code>x-factor:recover-stale</code></h3>
-        <p>Finds issues stuck in <code>resolving</code> status beyond the configured process timeout and marks them as <code>failed</code>. Failed issues can then be retried from the dashboard or via <code>x-factor:retry</code>.</p>
-        <pre><code>php artisan x-factor:recover-stale
-php artisan x-factor:recover-stale --minutes=90</code></pre>
-
-        <h3>Recommended Schedule</h3>
-        <p>Add both commands to your <code>routes/console.php</code> to keep the issues table healthy:</p>
-        <pre><code>use Illuminate\Support\Facades\Schedule;
-
-// Recover stuck resolving issues every hour
-Schedule::command('x-factor:recover-stale')->hourly();
-
-// Prune old resolved/failed issues daily
-Schedule::command('x-factor:prune')->daily();</code></pre>
-        <p><code>recover-stale</code> runs hourly to catch stuck issues quickly. <code>prune</code> runs daily for general cleanup. Both are idempotent and safe to run at any frequency.</p>
-
-        <h3><code>x-factor:test</code></h3>
-        <p>Creates a test issue and dispatches it for resolution. Useful for verifying your setup.</p>
-        <pre><code>php artisan x-factor:test
-php artisan x-factor:test --exception=RuntimeException
-php artisan x-factor:test --sync   # Run synchronously (no queue)</code></pre>
-
-        <!-- Events -->
-        <h2 id="events">Events</h2>
-        <p>X-Factor fires events at each stage of the resolution lifecycle:</p>
-        <table>
-            <thead><tr><th>Event</th><th>Fired When</th><th>Properties</th></tr></thead>
-            <tbody>
-                <tr><td><code>IssueCreated</code></td><td>Issue is created from webhook or exception</td><td><code>Issue $issue</code></td></tr>
-                <tr><td><code>IssueResolving</code></td><td>Resolution starts (status &rarr; resolving)</td><td><code>Issue $issue</code></td></tr>
-                <tr><td><code>IssueResolved</code></td><td>Resolution succeeds (status &rarr; resolved)</td><td><code>Issue $issue</code></td></tr>
-                <tr><td><code>IssueResolutionFailed</code></td><td>Resolution fails (status &rarr; failed)</td><td><code>Issue $issue</code>, <code>string $reason</code></td></tr>
-            </tbody>
-        </table>
-
-        <h4>Example: Send a Slack notification on resolution</h4>
-        <pre><code>use ArielMejiaDev\XFactor\Events\IssueResolved;
-
-Event::listen(IssueResolved::class, function (IssueResolved $event) {
-    Notification::route('slack', config('services.slack.webhook'))
-        ->notify(new IssueFixedNotification($event->issue));
-});</code></pre>
-
-        <!-- Issue Model -->
-        <h2 id="issue-model">Issue Model</h2>
-        <p>The <code>Issue</code> model (<code>ArielMejiaDev\XFactor\Models\Issue</code>) is stored in the <code>x_factor_issues</code> table.</p>
-
-        <h3>Key Fields</h3>
-        <table>
-            <thead><tr><th>Field</th><th>Description</th></tr></thead>
-            <tbody>
-                <tr><td><code>fingerprint</code></td><td>SHA-256 hash uniquely identifying the exception</td></tr>
-                <tr><td><code>source</code></td><td>Origin: nightwatch, bugsnag, exception_listener, or test</td></tr>
-                <tr><td><code>title</code></td><td>Human-readable issue title</td></tr>
-                <tr><td><code>exception_class</code></td><td>PHP exception class name</td></tr>
-                <tr><td><code>exception_message</code></td><td>Exception message</td></tr>
-                <tr><td><code>stacktrace</code></td><td>Stack trace text</td></tr>
-                <tr><td><code>status</code></td><td>pending, resolving, resolved, or failed</td></tr>
-                <tr><td><code>category</code></td><td>Matched category name (e.g., quick_fixes)</td></tr>
-                <tr><td><code>cli_tool</code></td><td>CLI tool used (claude or opencode)</td></tr>
-                <tr><td><code>branch_name</code></td><td>Generated Git branch name</td></tr>
-                <tr><td><code>pr_url</code></td><td>URL of the created pull request</td></tr>
-                <tr><td><code>failure_reason</code></td><td>Reason for failure (if failed)</td></tr>
-                <tr><td><code>attempts</code></td><td>Number of resolution attempts</td></tr>
-                <tr><td><code>payload</code></td><td>Full webhook payload (JSON)</td></tr>
-            </tbody>
-        </table>
-
-        <h3>Query Scopes</h3>
-        <pre><code>use ArielMejiaDev\XFactor\Models\Issue;
-
-Issue::pending()->get();
-Issue::resolving()->get();
-Issue::resolved()->get();
-Issue::failed()->get();
-Issue::stale(30)->get(); // Resolved/failed older than 30 days</code></pre>
-
-        <!-- Logging -->
-        <h2 id="logging">Logging</h2>
-        <pre><code>'log_channel' => env('X_FACTOR_LOG_CHANNEL', 'x-factor'),</code></pre>
-        <p>If the channel doesn't exist in <code>config/logging.php</code>, X-Factor auto-configures it:</p>
+        <h3>Signature Verification</h3>
+        <p>Set <code>HEALING_FACTOR_WEBHOOK_SECRET</code> to a strong random string and share this secret with your monitor service.</p>
         <ul>
-            <li><strong>Driver:</strong> <code>daily</code></li>
-            <li><strong>Path:</strong> <code>storage/logs/x-factor.log</code></li>
-            <li><strong>Retention:</strong> 14 days</li>
-            <li><strong>Level:</strong> <code>debug</code></li>
+            <li><strong>Nightwatch:</strong> Uses HMAC-SHA256 (a cryptographic hash that proves the webhook came from Nightwatch, not an attacker). The hash is sent in the <code>X-Nightwatch-Signature</code> or <code>X-Webhook-Signature</code> header.</li>
+            <li><strong>Bugsnag:</strong> Uses a Bearer token in the <code>Authorization</code> header, compared against your secret.</li>
         </ul>
-        <p>You can override by defining the channel in <code>config/logging.php</code>:</p>
-        <pre><code>'channels' => [
-    'x-factor' => [
-        'driver' => 'single',
-        'path' => storage_path('logs/x-factor.log'),
-        'level' => 'info',
-    ],
-],</code></pre>
+        <p>If <code>HEALING_FACTOR_WEBHOOK_SECRET</code> is not set, signature verification is skipped and a warning is logged. Always set this in production.</p>
 
-        <!-- Dashboard -->
-        <h2 id="dashboard">Dashboard</h2>
-        <p>X-Factor includes a read-only web dashboard to browse issues. Visit <code>/{dashboard_path}</code> (default: <code>/x-factor</code>) to access it.</p>
-
-        <h3>Configuration</h3>
-        <pre><code>'dashboard' => [
-    'enabled' => env('X_FACTOR_DASHBOARD_ENABLED', true),
-    'path' => env('X_FACTOR_DASHBOARD_PATH', 'x-factor'),
-    'middleware' => ['web', 'auth'],
-],</code></pre>
-        <ul>
-            <li><code>enabled</code> — Set to <code>false</code> to disable the dashboard entirely.</li>
-            <li><code>path</code> — URL prefix for the dashboard routes.</li>
-            <li><code>middleware</code> — Middleware applied to dashboard routes.</li>
-        </ul>
-
-        <h3>Authorization</h3>
-        <p>By default, the dashboard is only accessible when <code>APP_ENV=local</code>. To allow access in other environments, register an auth gate in your <code>AppServiceProvider</code>:</p>
-        <pre><code>use ArielMejiaDev\XFactor\Facades\XFactor;
-
-public function boot(): void
-{
-    XFactor::auth(function ($user) {
-        return in_array($user->email, [
-            'arielmejiadev@gmail.com',
-        ]);
-    });
+        <h3>Nightwatch Payload</h3>
+        <pre><code>{
+    "event": "issue.opened",
+    "payload": {
+        "organization_id": "org-123",
+        "application_id": "app-456",
+        "environment": { "id": "env-789" },
+        "issue": {
+            "title": "ErrorException: Undefined variable $foo",
+            "exception_class": "ErrorException",
+            "message": "Undefined variable $foo",
+            "stacktrace": "#0 /app/Http/Controllers/..."
+        }
+    }
 }</code></pre>
 
-        <h3>Features</h3>
-        <ul>
-            <li><strong>Search</strong> — Filter issues by title, exception class, or exception message.</li>
-            <li><strong>Status filters</strong> — Filter by status (Pending, Resolving, Resolved, Failed) with count badges.</li>
-            <li><strong>Issue detail</strong> — View full exception details, stacktrace, CLI output, and PR links.</li>
-            <li><strong>Retry failed issues</strong> — Pick a model and max turns, then re-queue with one click.</li>
-            <li><strong>Resolution progress</strong> — Blue callout with spinner for pending/resolving issues.</li>
-            <li><strong>Auto-refresh</strong> — Polling toggle reloads the page every 60 seconds.</li>
-            <li><strong>Dark/light theme</strong> — Toggle persisted in <code>localStorage</code>.</li>
-            <li><strong>No build step</strong> — Uses Tailwind CSS via CDN.</li>
-        </ul>
+        <h3>Bugsnag Payload</h3>
+        <pre><code>{
+    "trigger": "exception",
+    "error": {
+        "exceptionClass": "RuntimeException",
+        "message": "Something went wrong",
+        "stackTrace": "..."
+    }
+}</code></pre>
 
-        <h3>Customizing the Theme</h3>
-        <p>The dashboard uses the same CSS custom properties as Laravel's starter kits (React, Vue, Livewire with shadcn/ui).</p>
-
-        <h4>Option 1: Reuse Your App's Existing Theme</h4>
-        <pre><code>php artisan vendor:publish --tag=x-factor-views</code></pre>
-        <p>Edit <code>resources/views/vendor/x-factor/dashboard/layout.blade.php</code>: replace the <code>&lt;style&gt;</code> block with your app's compiled CSS:</p>
-        <pre><code>{{-- Remove the &lt;style&gt;...&lt;/style&gt; block --}}
-
-{{-- Add your app's compiled stylesheet --}}
-@vite(['resources/css/app.css'])</code></pre>
-
-        <h4>Option 2: Customize the Built-in Theme</h4>
-        <p>Publish the views and edit the CSS variables directly. Each variable takes three OKLCH values: <code>lightness chroma hue</code>.</p>
-
-        <h4>CSS Variable Reference</h4>
-        <table>
-            <thead><tr><th>Variable</th><th>Usage</th></tr></thead>
-            <tbody>
-                <tr><td><code>--background</code></td><td>Page body background</td></tr>
-                <tr><td><code>--foreground</code></td><td>Default text color</td></tr>
-                <tr><td><code>--card</code> / <code>--card-foreground</code></td><td>Card sections background and text</td></tr>
-                <tr><td><code>--primary</code> / <code>--primary-foreground</code></td><td>Primary buttons, active tabs</td></tr>
-                <tr><td><code>--secondary</code> / <code>--secondary-foreground</code></td><td>Secondary buttons</td></tr>
-                <tr><td><code>--accent</code> / <code>--accent-foreground</code></td><td>Hover state backgrounds</td></tr>
-                <tr><td><code>--muted</code> / <code>--muted-foreground</code></td><td>Table headers, code blocks, placeholders</td></tr>
-                <tr><td><code>--ring</code></td><td>Focus ring on inputs and buttons</td></tr>
-                <tr><td><code>--border</code></td><td>Table/card borders, dividers</td></tr>
-                <tr><td><code>--input</code></td><td>Input field borders</td></tr>
-            </tbody>
-        </table>
-
-        <!-- Security -->
-        <h2 id="security">Security Considerations</h2>
-        <ul>
-            <li><strong>HMAC Verification</strong> — Webhook payloads are verified using HMAC-SHA256 (Nightwatch) or Bearer tokens (Bugsnag). Always set <code>X_FACTOR_WEBHOOK_SECRET</code> in production.</li>
-            <li><strong>No Shell Injection</strong> — CLI commands are built as arrays and passed to Laravel's <code>Process</code> facade.</li>
-            <li><strong>Environment Whitelist</strong> — By default, X-Factor only runs in <code>production</code> and <code>staging</code>.</li>
-            <li><strong>Git Worktree Isolation</strong> — The AI never runs in your production working directory.</li>
-            <li><strong>Draft PRs</strong> — PRs are created as drafts by default, requiring human review before merge.</li>
-            <li><strong>API Keys</strong> — Never stored in config files. Always loaded from environment variables.</li>
-            <li><strong>Autonomous Permissions</strong> — Claude Code runs with <code>--dangerously-skip-permissions</code> for unattended operation. Always review generated PRs before merging.</li>
-            <li><strong>Recursion Guard</strong> — The exception listener prevents infinite loops if X-Factor's own operations trigger exceptions.</li>
-        </ul>
-
-        <!-- Facade -->
-        <h2 id="facade">Facade</h2>
-        <pre><code>use ArielMejiaDev\XFactor\Facades\XFactor;
-
-XFactor::isEnabled();  // bool
-XFactor::isDryRun();   // bool
-XFactor::manager();    // XFactorManager instance</code></pre>
-
-        <!-- API Driver -->
-        <h2 id="api-driver">API Driver</h2>
-        <p>The API driver calls the Anthropic Messages API directly, giving Claude a curated set of tools to read, edit, search files, and run git commands — all orchestrated from PHP. No CLI tool installation required on the server.</p>
-
-        <h3>When to Use API vs CLI</h3>
-        <table>
-            <thead><tr><th></th><th>CLI Driver</th><th>API Driver</th></tr></thead>
-            <tbody>
-                <tr><td><strong>Best for</strong></td><td>Local/dev, servers with Claude Code installed</td><td>Staging/production servers without CLI tools</td></tr>
-                <tr><td><strong>Requires</strong></td><td><code>claude</code> or <code>opencode</code> CLI binary</td><td>Only <code>ANTHROPIC_API_KEY</code></td></tr>
-                <tr><td><strong>How it works</strong></td><td>Spawns a CLI subprocess</td><td>Calls Anthropic Messages API with <code>tool_use</code></td></tr>
-                <tr><td><strong>Tool access</strong></td><td>Full CLI tool capabilities</td><td>6 curated tools</td></tr>
-                <tr><td><strong>Command safety</strong></td><td>CLI tool's own safety model</td><td>Explicit command allowlist</td></tr>
-            </tbody>
-        </table>
-
-        <h3>Configuration</h3>
-        <pre><code>X_FACTOR_DRIVER=api
-X_FACTOR_MONITOR=exception_listener
-ANTHROPIC_API_KEY=sk-ant-...
-X_FACTOR_GITHUB_PAT=github_pat_...</code></pre>
-
-        <h4>Optional settings</h4>
-        <pre><code>X_FACTOR_API_MODEL=claude-sonnet-4-6
-X_FACTOR_API_MAX_TOKENS=8192
-X_FACTOR_API_MAX_TURNS=25</code></pre>
-
-        <h3>Security Model</h3>
-        <ul>
-            <li><strong>Curated tools</strong> — Claude can only use 6 tools: <code>read_file</code>, <code>write_file</code>, <code>edit_file</code>, <code>list_directory</code>, <code>search_files</code>, and <code>run_command</code>.</li>
-            <li><strong>Path traversal protection</strong> — Every file operation validates that the resolved path stays within the git worktree.</li>
-            <li><strong>Command allowlist</strong> — The <code>run_command</code> tool only allows configured commands.</li>
-            <li><strong>Worktree isolation</strong> — Same as the CLI driver.</li>
-            <li><strong>Max turns</strong> — The agentic loop is bounded by <code>max_turns</code>.</li>
-        </ul>
+        <!-- API Driver Deep Dive -->
+        <h2 id="api-driver-deep-dive">API Driver Deep Dive</h2>
+        <p>The API driver calls the Anthropic Messages API directly, giving Claude a curated set of tools to read, edit, search files, and run git commands -- all orchestrated from PHP. No CLI tool installation required.</p>
 
         <h3>Available Tools</h3>
         <table>
@@ -1067,6 +1089,19 @@ X_FACTOR_API_MAX_TURNS=25</code></pre>
             </tbody>
         </table>
 
+        <h3>Security Model</h3>
+        <ul>
+            <li><strong>Path traversal protection</strong> -- Every file operation validates that the resolved path stays within the git worktree. The AI cannot read or write files outside the repository.</li>
+            <li><strong>Command allowlist</strong> -- The <code>run_command</code> tool only allows commands you have explicitly configured.</li>
+            <li><strong>Worktree isolation</strong> -- Same as the CLI driver: the AI works in an isolated git worktree, never your production directory.</li>
+            <li><strong>Bounded turns</strong> -- The agentic loop (the back-and-forth between your server and the API where Claude uses tools, observes results, and decides next steps) is bounded by <code>max_turns</code> to prevent runaway usage.</li>
+        </ul>
+
+        <h3>Optional Configuration</h3>
+        <pre><code>HEALING_FACTOR_API_MODEL=claude-sonnet-4-6
+HEALING_FACTOR_API_MAX_TOKENS=8192
+HEALING_FACTOR_API_MAX_TURNS=25</code></pre>
+
         <h3>Customizing Allowed Commands</h3>
         <pre><code>'api' => [
     'allowed_commands' => [
@@ -1076,101 +1111,128 @@ X_FACTOR_API_MAX_TURNS=25</code></pre>
         './vendor/bin/phpunit',
         'composer dump-autoload',
         'gh pr create',
-        'php artisan migrate:status',  // Add your own
     ],
 ],</code></pre>
-        <p>A command is allowed if it exactly matches an entry, or starts with an entry followed by a space (e.g., <code>git</code> allows <code>git status</code>, <code>git commit</code>, etc.).</p>
+        <p>A command is allowed if it exactly matches an entry, or starts with an entry followed by a space. For example, <code>git</code> allows <code>git status</code>, <code>git commit -m "fix"</code>, and so on. Add your own commands as needed.</p>
 
-        <!-- What It Can Fix -->
-        <h2 id="can-fix">What X-Factor Can and Cannot Fix</h2>
-        <p>X-Factor requires a <strong>healthy, running Laravel application</strong> to function. The queue worker must be alive, the database must be reachable, and Laravel must be able to boot.</p>
+        <!-- Security Considerations -->
+        <h2 id="security">Security Considerations</h2>
+        <p>Healing-Factor is designed with multiple layers of protection. Here is how each concern is addressed.</p>
 
-        <h3>What it CAN fix</h3>
-        <p>Any exception that occurs while the app is still running and the queue worker can process jobs:</p>
+        <h3>The AI never touches production directly</h3>
+        <p>Every fix happens inside an isolated git worktree on a separate branch. Your production working directory is never modified. The result is always a draft pull request that requires a human to review and merge.</p>
+
+        <h3>Webhook security</h3>
+        <p>Webhook payloads are verified using HMAC-SHA256 (Nightwatch) or Bearer tokens (Bugsnag). Always set <code>HEALING_FACTOR_WEBHOOK_SECRET</code> in production to prevent unauthorized webhook submissions.</p>
+
+        <h3>No shell injection</h3>
+        <p>CLI commands are built as arrays and passed to Laravel's <code>Process</code> facade, which prevents shell injection attacks. The API driver additionally enforces an explicit command allowlist.</p>
+
+        <h3>API keys are environment-only</h3>
+        <p>API keys are never stored in config files. They are always loaded from environment variables.</p>
+
+        <h3>About <code>--dangerously-skip-permissions</code></h3>
+        <p>When using the CLI driver, Claude Code runs with the <code>--dangerously-skip-permissions</code> flag. This sounds alarming, but here is the context: Claude Code normally asks for interactive permission before reading or editing files. Since Healing-Factor runs unattended (in a queue worker), it cannot prompt a human for permission on each file operation. The flag enables unattended operation.</p>
+        <p>This is safe in practice because:</p>
         <ul>
-            <li><strong>Undefined variables / properties</strong> — <code>ErrorException: Undefined variable $foo</code></li>
-            <li><strong>Type errors</strong> — <code>TypeError: Argument #1 must be of type string, null given</code></li>
-            <li><strong>Bad method calls</strong> — <code>BadMethodCallException: Method does not exist</code></li>
-            <li><strong>Missing models</strong> — <code>ModelNotFoundException: No query results for model</code></li>
-            <li><strong>Query errors</strong> — <code>QueryException: Column not found</code></li>
-            <li><strong>Validation logic errors</strong> — incorrect rules, missing fields</li>
-            <li><strong>Authorization / authentication bugs</strong> — misconfigured gates, policies, guards</li>
-            <li><strong>Route and controller errors</strong> — wrong HTTP methods, missing parameters</li>
-            <li><strong>Logic errors</strong> — <code>RuntimeException</code>, <code>DomainException</code>, off-by-one mistakes</li>
+            <li>The CLI runs inside an <strong>isolated git worktree</strong>, not your production directory.</li>
+            <li>All changes go to a <strong>draft pull request</strong> -- nothing is deployed without your review.</li>
+            <li>The process has a <strong>timeout limit</strong> that prevents it from running indefinitely.</li>
+            <li>If you prefer stricter control, use the <strong>API driver</strong> instead, which enforces an explicit command allowlist and path validation without needing this flag.</li>
         </ul>
 
-        <h3>What it CANNOT fix</h3>
-        <ul>
-            <li><strong>PHP syntax errors (<code>ParseError</code>)</strong> — Broken syntax prevents Laravel from booting.</li>
-            <li><strong>Fatal errors that kill the process</strong> — <code>OutOfMemoryError</code>, segmentation faults.</li>
-            <li><strong>Infrastructure failures</strong> — Database is down, Redis is unreachable, disk is full.</li>
-            <li><strong>Errors in X-Factor itself</strong> — The package cannot fix its own bugs.</li>
-            <li><strong>Environment / configuration issues</strong> — Missing <code>.env</code> values, wrong file permissions.</li>
-            <li><strong>Issues requiring human judgment</strong> — Business logic, UX decisions, performance tuning.</li>
-        </ul>
+        <h3>Recursion guard</h3>
+        <p>The exception listener includes a guard that prevents infinite loops if Healing-Factor's own operations trigger exceptions.</p>
 
-        <blockquote><p><strong>The key insight:</strong> X-Factor self-heals the same category of bugs a developer would fix after seeing an alert: a typo, a missing null check, a wrong query. The app is running, the error is logged, and the fix is a small code change. That's the sweet spot.</p></blockquote>
+        <!-- Deduplication Details -->
+        <h2 id="deduplication">Deduplication Details</h2>
+        <p>Healing-Factor uses three layers to prevent processing the same exception multiple times:</p>
+        <ol>
+            <li><strong>Cache debounce</strong> -- When an exception is fingerprinted, the fingerprint is stored in cache. If the same fingerprint appears within the debounce window (default: 5 minutes), it is silently skipped.</li>
+            <li><strong>Database check</strong> -- If an issue with the same fingerprint already exists in <code>pending</code> or <code>resolving</code> status, the new one is skipped.</li>
+            <li><strong>Unique constraint</strong> -- A <code>(fingerprint, status)</code> database constraint prevents duplicates at the DB level as a final safety net.</li>
+        </ol>
+        <pre><code>'debounce_minutes' => (int) env('HEALING_FACTOR_DEBOUNCE_MINUTES', 5),</code></pre>
+        <p>You can adjust the debounce window based on your error volume. A shorter window means Healing-Factor will retry the same error sooner if the first fix fails. A longer window reduces duplicate work but may delay retries.</p>
 
-        <!-- Setup Examples -->
-        <h2 id="setup-examples">Setup Examples</h2>
+        <!-- Theme Customization -->
+        <h3 id="theme-customization">Theme Customization</h3>
+        <p>The dashboard uses CSS custom properties compatible with Laravel's starter kits (React, Vue, Livewire with shadcn/ui).</p>
 
-        <h3>Local Development with Claude Code</h3>
-        <blockquote><p><strong>Why <code>APP_ENV=staging</code> instead of <code>local</code>?</strong> By default, X-Factor only processes exceptions in <code>production</code> and <code>staging</code> environments. Setting <code>APP_ENV=staging</code> lets you test the full pipeline locally.</p></blockquote>
-        <pre><code># Required
-APP_ENV=staging
-X_FACTOR_ENABLED=true
-X_FACTOR_DRIVER=cli
-X_FACTOR_CLI_TOOL=claude
-X_FACTOR_MONITOR=exception_listener
-X_FACTOR_DASHBOARD_ENABLED=true</code></pre>
-        <pre><code>php artisan queue:work --timeout=3700</code></pre>
+        <h4>Option 1: Use your app's existing theme</h4>
+        <pre><code>php artisan vendor:publish --tag=healing-factor-views</code></pre>
+        <p>Edit <code>resources/views/vendor/healing-factor/dashboard/layout.blade.php</code>: replace the <code>&lt;style&gt;</code> block with your app's compiled CSS:</p>
+        <pre><code>{{-- Remove the &lt;style&gt;...&lt;/style&gt; block --}}
 
-        <h3>Server Side: Nightwatch Webhook</h3>
-        <pre><code>APP_ENV=staging
-ANTHROPIC_API_KEY=sk-ant-...
-X_FACTOR_ENABLED=true
-X_FACTOR_DRIVER=cli
-X_FACTOR_CLI_TOOL=claude
-X_FACTOR_WEBHOOK_SECRET=a-strong-random-secret
-X_FACTOR_MONITOR=nightwatch
-X_FACTOR_DASHBOARD_ENABLED=true</code></pre>
+{{-- Add your app's compiled stylesheet --}}
+@vite(['resources/css/app.css'])</code></pre>
 
-        <h3>Server Side: Exception Listener</h3>
-        <pre><code>APP_ENV=staging
-ANTHROPIC_API_KEY=sk-ant-...
-X_FACTOR_ENABLED=true
-X_FACTOR_DRIVER=cli
-X_FACTOR_CLI_TOOL=claude
-X_FACTOR_MONITOR=exception_listener
-X_FACTOR_DASHBOARD_ENABLED=true</code></pre>
+        <h4>Option 2: Customize the built-in theme</h4>
+        <p>Publish the views and edit the CSS variables directly. Each variable takes three OKLCH values: <code>lightness chroma hue</code>.</p>
+        <table>
+            <thead><tr><th>Variable</th><th>Usage</th></tr></thead>
+            <tbody>
+                <tr><td><code>--background</code></td><td>Page body background</td></tr>
+                <tr><td><code>--foreground</code></td><td>Default text color</td></tr>
+                <tr><td><code>--card</code> / <code>--card-foreground</code></td><td>Card sections</td></tr>
+                <tr><td><code>--primary</code> / <code>--primary-foreground</code></td><td>Primary buttons, active tabs</td></tr>
+                <tr><td><code>--muted</code> / <code>--muted-foreground</code></td><td>Table headers, code blocks</td></tr>
+                <tr><td><code>--border</code></td><td>Table/card borders</td></tr>
+            </tbody>
+        </table>
+
+        <!-- Uninstalling -->
+        <h3>Uninstalling</h3>
+        <p>To remove Healing-Factor from your project:</p>
+        <ol>
+            <li>Remove the scheduled commands from <code>routes/console.php</code> if you added them.</li>
+            <li>Remove the auth gate from <code>AppServiceProvider</code> if you added one.</li>
+            <li>Roll back the migration: <code>php artisan migrate:rollback</code> (this drops the <code>healing_factor_issues</code> table).</li>
+            <li>Remove the config file: <code>rm config/healing-factor.php</code></li>
+            <li>Remove published views if any: <code>rm -rf resources/views/vendor/healing-factor</code></li>
+            <li>Uninstall the package: <code>composer remove arielmejiadev/healing-factor</code></li>
+            <li>Remove the <code>HEALING_FACTOR_*</code> environment variables from your <code>.env</code>.</li>
+        </ol>
 
         <!-- Troubleshooting -->
         <h2 id="troubleshooting">Troubleshooting</h2>
 
+        <h3>I installed it but nothing happens</h3>
+        <p>This is the most common issue. Work through this checklist:</p>
+        <ol>
+            <li><strong>Check <code>APP_ENV</code></strong> -- Healing-Factor only runs in <code>production</code> and <code>staging</code> by default. If you are in <code>local</code>, set <code>APP_ENV=staging</code> for testing.</li>
+            <li><strong>Check <code>HEALING_FACTOR_ENABLED</code></strong> -- Make sure it is not set to <code>false</code>.</li>
+            <li><strong>Check <code>HEALING_FACTOR_MONITOR</code></strong> -- If you are using <code>nightwatch</code> or <code>bugsnag</code>, exceptions are only captured via webhook. Try <code>exception_listener</code> for the simplest setup.</li>
+            <li><strong>Check your queue worker</strong> -- Is it running? Healing-Factor dispatches jobs to the queue. Run <code>php artisan queue:work --timeout=3700</code> and trigger an error.</li>
+            <li><strong>Check the logs</strong> -- Look at <code>storage/logs/healing-factor.log</code> for clues. If the file does not exist, the package may not be receiving exceptions.</li>
+            <li><strong>Run the test command</strong> -- <code>php artisan healing-factor:test --sync</code> bypasses the queue and runs immediately. If this works but real exceptions do not, the issue is likely with your monitor or queue.</li>
+        </ol>
+
         <h3>CLI tool not found</h3>
-        <p>Make sure <code>claude</code> or <code>opencode</code> is in the <code>PATH</code> of the user running the queue worker. Run <code>which claude</code> to verify.</p>
+        <p>Make sure <code>claude</code> or <code>opencode</code> is in the <code>PATH</code> of the user running the queue worker. Run <code>which claude</code> to verify. If you cannot install CLI tools on your server, switch to the API driver.</p>
 
         <h3>Jobs timing out</h3>
-        <p>Increase <code>X_FACTOR_PROCESS_TIMEOUT</code> and ensure your queue worker's <code>--timeout</code> flag is set higher than the process timeout.</p>
+        <p>Increase <code>HEALING_FACTOR_PROCESS_TIMEOUT</code> and ensure your queue worker's <code>--timeout</code> flag is higher than the process timeout. For example, if the process timeout is 3600, set <code>--timeout=3700</code>.</p>
 
         <h3>Duplicate PRs</h3>
-        <p>Check your debounce window (<code>X_FACTOR_DEBOUNCE_MINUTES</code>) and verify the fingerprint constraint is working. Run <code>php artisan x-factor:status</code> to see active issues.</p>
+        <p>Check your debounce window (<code>HEALING_FACTOR_DEBOUNCE_MINUTES</code>) and run <code>php artisan healing-factor:status</code> to see active issues. See <a href="#deduplication">Deduplication Details</a> for more information.</p>
 
         <h3>Webhook returning 403</h3>
-        <p>Your webhook secret doesn't match. Verify <code>X_FACTOR_WEBHOOK_SECRET</code> matches the secret configured in your monitor service.</p>
+        <p>Your webhook secret does not match. Verify that <code>HEALING_FACTOR_WEBHOOK_SECRET</code> in your <code>.env</code> matches the secret configured in your monitor service (Nightwatch or Bugsnag).</p>
 
-        <h3>Dry run mode</h3>
-        <p>Enable dry run to test without executing the AI:</p>
-        <pre><code>X_FACTOR_DRY_RUN=true</code></pre>
-        <p>Check <code>storage/logs/x-factor.log</code> for output.</p>
+        <h3>Dashboard returning 403</h3>
+        <p>The dashboard is restricted to <code>APP_ENV=local</code> by default. To access it in staging or production, register an auth gate. See <a href="#dashboard">Dashboard Authorization</a>.</p>
 
         <h3>Issues stuck in "resolving" status</h3>
-        <p>Run <code>x-factor:recover-stale</code> to mark them as failed, then retry from the dashboard:</p>
-        <pre><code>php artisan x-factor:recover-stale</code></pre>
-        <p>Schedule the command hourly to prevent build-up (see <a href="#artisan-commands">Recommended Schedule</a>).</p>
+        <p>Run <code>php artisan healing-factor:recover-stale</code> to mark them as failed, then retry from the dashboard or via <code>php artisan healing-factor:retry {id}</code>. Schedule the command hourly to prevent build-up.</p>
+
+        <h3>Dry run mode</h3>
+        <p>Enable dry run to test your setup without calling the AI:</p>
+        <pre><code>HEALING_FACTOR_DRY_RUN=true</code></pre>
+        <p>Check <code>storage/logs/healing-factor.log</code> for output.</p>
 
         <h3>Infinite loop with exception listener</h3>
-        <p>The recursion guard should prevent this. Check that you're not running X-Factor in an environment where database operations consistently fail. Run <code>php artisan x-factor:status</code> to inspect the state.</p>
+        <p>The recursion guard should prevent this. If you see repeated exceptions, check that your database is reachable and the queue worker is not itself failing. Run <code>php artisan healing-factor:status</code> to inspect the state.</p>
 
     </main>
 </div>
@@ -1183,8 +1245,8 @@ X_FACTOR_DASHBOARD_ENABLED=true</code></pre>
         </div>
         <div class="footer-links">
             <a href="index.html">Home</a>
-            <a href="https://github.com/ArielMejiaDev/x-factor" target="_blank" rel="noopener">GitHub</a>
-            <a href="https://github.com/ArielMejiaDev/x-factor/issues" target="_blank" rel="noopener">Issues</a>
+            <a href="https://github.com/ArielMejiaDev/healing-factor" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://github.com/ArielMejiaDev/healing-factor/issues" target="_blank" rel="noopener">Issues</a>
         </div>
     </div>
 </footer>

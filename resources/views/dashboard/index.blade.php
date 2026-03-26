@@ -1,4 +1,4 @@
-@extends('x-factor::dashboard.layout')
+@extends('healing-factor::dashboard.layout')
 
 @section('content')
     <div class="space-y-6">
@@ -22,7 +22,7 @@
         @endif
 
         {{-- Search --}}
-        <form method="GET" action="{{ route('x-factor.dashboard.index') }}" class="flex gap-3">
+        <form method="GET" action="{{ route('healing-factor.dashboard.index') }}" class="flex gap-3">
             <input
                 type="text"
                 name="search"
@@ -34,7 +34,7 @@
                 Search
             </button>
             @if (request('search'))
-                <a href="{{ route('x-factor.dashboard.index', array_filter(['status' => request('status')])) }}" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] bg-secondary text-secondary-foreground hover:bg-secondary/80 h-9 px-4 py-2 shrink-0">
+                <a href="{{ route('healing-factor.dashboard.index', array_filter(['status' => request('status')])) }}" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] bg-secondary text-secondary-foreground hover:bg-secondary/80 h-9 px-4 py-2 shrink-0">
                     Clear
                 </a>
             @endif
@@ -55,7 +55,7 @@
         <nav class="flex gap-1 flex-wrap" aria-label="Status filters">
             @foreach ($tabs as $status => $tab)
                 <a
-                    href="{{ route('x-factor.dashboard.index', array_filter(['status' => $status, 'search' => request('search')])) }}"
+                    href="{{ route('healing-factor.dashboard.index', array_filter(['status' => $status, 'search' => request('search')])) }}"
                     class="inline-flex items-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 h-9 px-4 py-2
                         {{ $currentStatus === ($status ?: null) ? 'bg-muted' : '' }}"
                 >
@@ -72,7 +72,7 @@
             <svg class="mt-0.5 h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
-            <p>Duplicate exceptions are debounced — the same issue won't appear twice within <strong class="text-foreground">{{ config('x-factor.debounce_minutes', 5) }} {{ Str::plural('minute', config('x-factor.debounce_minutes', 5)) }}</strong>, even if triggered by multiple environments simultaneously.</p>
+            <p>Duplicate exceptions are debounced — the same issue won't appear twice within <strong class="text-foreground">{{ config('healing-factor.debounce_minutes', 5) }} {{ Str::plural('minute', config('healing-factor.debounce_minutes', 5)) }}</strong>, even if triggered by multiple environments simultaneously.</p>
         </div>
 
         {{-- Issues table --}}
@@ -96,13 +96,13 @@
                         <tr class="hover:bg-muted/50 transition-colors">
                             <td class="px-4 py-3 tabular-nums {{ $isActiveResolving ? 'animate-pulse' : '' }}">{{ $issue->id }}</td>
                             <td class="px-4 py-3 {{ $isActiveResolving ? 'animate-pulse' : '' }}">
-                                <a href="{{ route('x-factor.dashboard.show', $issue) }}" class="hover:underline">
+                                <a href="{{ route('healing-factor.dashboard.show', $issue) }}" class="hover:underline">
                                     <div class="font-medium">{{ $issue->exception_class }}</div>
                                     <div class="text-sm text-muted-foreground truncate max-w-xs">{{ $issue->exception_message }}</div>
                                 </a>
                             </td>
                             <td class="px-4 py-3 {{ $isActiveResolving ? 'animate-pulse' : '' }}">
-                                @include('x-factor::dashboard.partials.status-badge', ['issue' => $issue])
+                                @include('healing-factor::dashboard.partials.status-badge', ['issue' => $issue])
                             </td>
                             <td class="px-4 py-3 text-sm text-muted-foreground {{ $isActiveResolving ? 'animate-pulse' : '' }}">{{ $issue->source }}</td>
                             <td class="px-4 py-3 tabular-nums {{ $isActiveResolving ? 'animate-pulse' : '' }}">{{ $issue->attempts }}</td>
@@ -132,21 +132,21 @@
                                     </button>
                                     <div role="menu" class="hidden absolute right-0 z-10 mt-1 w-44 origin-top-right rounded-md border border-border bg-background shadow-lg">
                                         <div class="py-1">
-                                            <a href="{{ route('x-factor.dashboard.show', $issue) }}" role="menuitem" class="block px-4 py-2 text-sm text-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
+                                            <a href="{{ route('healing-factor.dashboard.show', $issue) }}" role="menuitem" class="block px-4 py-2 text-sm text-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
                                                 View details
                                             </a>
                                             @if ($issue->status->value === 'failed')
-                                                <form method="POST" action="{{ route('x-factor.dashboard.retry', $issue) }}">
+                                                <form method="POST" action="{{ route('healing-factor.dashboard.retry', $issue) }}">
                                                     @csrf
-                                                    <input type="hidden" name="model" value="{{ config('x-factor.api.model', 'claude-sonnet-4-6') }}">
-                                                    <input type="hidden" name="max_turns" value="{{ config('x-factor.api.max_turns', 25) }}">
+                                                    <input type="hidden" name="model" value="{{ config('healing-factor.api.model', 'claude-sonnet-4-6') }}">
+                                                    <input type="hidden" name="max_turns" value="{{ config('healing-factor.api.max_turns', 25) }}">
                                                     <button type="submit" role="menuitem" class="w-full text-left px-4 py-2 text-sm text-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
                                                         Retry
                                                     </button>
                                                 </form>
                                             @endif
                                             @if ($issue->status->value === 'resolving')
-                                                <form method="POST" action="{{ route('x-factor.dashboard.mark-failed', $issue) }}">
+                                                <form method="POST" action="{{ route('healing-factor.dashboard.mark-failed', $issue) }}">
                                                     @csrf
                                                     <button type="submit" role="menuitem" class="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-accent hover:text-red-700 dark:hover:text-red-300 transition-colors">
                                                         Mark as failed

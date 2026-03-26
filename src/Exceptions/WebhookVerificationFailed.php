@@ -1,10 +1,10 @@
 <?php
 
-namespace ArielMejiaDev\XFactor\Exceptions;
+namespace ArielMejiaDev\HealingFactor\Exceptions;
 
 use Illuminate\Http\JsonResponse;
 
-class WebhookVerificationFailed extends XFactorException
+class WebhookVerificationFailed extends HealingFactorException
 {
     public function render(): JsonResponse
     {

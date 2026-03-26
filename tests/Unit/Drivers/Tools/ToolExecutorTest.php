@@ -1,11 +1,11 @@
 <?php
 
-use ArielMejiaDev\XFactor\Drivers\Tools\ToolExecutor;
-use ArielMejiaDev\XFactor\Drivers\Tools\ToolRegistry;
+use ArielMejiaDev\HealingFactor\Drivers\Tools\ToolExecutor;
+use ArielMejiaDev\HealingFactor\Drivers\Tools\ToolRegistry;
 use Illuminate\Support\Facades\Process;
 
 beforeEach(function () {
-    $this->worktreePath = sys_get_temp_dir().'/x-factor-test-'.uniqid();
+    $this->worktreePath = sys_get_temp_dir().'/healing-factor-test-'.uniqid();
     mkdir($this->worktreePath, 0755, true);
 
     // Create some test files

@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>X-Factor Dashboard</title>
+    <title>Healing-Factor Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         (function () {
-            var theme = localStorage.getItem('x-factor-theme');
+            var theme = localStorage.getItem('healing-factor-theme');
             if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark');
             }
@@ -89,7 +89,7 @@
 <body class="bg-background text-foreground min-h-screen">
     <header class="border-b border-border">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <a href="{{ route('x-factor.dashboard.index') }}" class="text-xl font-semibold tracking-tight">X-Factor</a>
+            <a href="{{ route('healing-factor.dashboard.index') }}" class="text-xl font-semibold tracking-tight">Healing-Factor</a>
             <div class="flex items-center gap-2">
             <button
                 id="poll-toggle"
@@ -127,10 +127,10 @@
             var html = document.documentElement;
             if (html.classList.contains('dark')) {
                 html.classList.remove('dark');
-                localStorage.setItem('x-factor-theme', 'light');
+                localStorage.setItem('healing-factor-theme', 'light');
             } else {
                 html.classList.add('dark');
-                localStorage.setItem('x-factor-theme', 'dark');
+                localStorage.setItem('healing-factor-theme', 'dark');
             }
         }
 
@@ -156,14 +156,14 @@
 
             function startPolling() {
                 pollInterval = setInterval(function () { location.reload(); }, 60000);
-                localStorage.setItem('x-factor-poll', '1');
+                localStorage.setItem('healing-factor-poll', '1');
                 applyActiveStyles();
             }
 
             function stopPolling() {
                 clearInterval(pollInterval);
                 pollInterval = null;
-                localStorage.removeItem('x-factor-poll');
+                localStorage.removeItem('healing-factor-poll');
                 applyInactiveStyles();
             }
 
@@ -176,7 +176,7 @@
             };
 
             // Restore polling state across page loads
-            if (localStorage.getItem('x-factor-poll') === '1') {
+            if (localStorage.getItem('healing-factor-poll') === '1') {
                 startPolling();
             }
         })();

@@ -1,6 +1,6 @@
 <?php
 
-use ArielMejiaDev\XFactor\Enums\IssueStatus;
+use ArielMejiaDev\HealingFactor\Enums\IssueStatus;
 
 it('has the correct cases', function () {
     expect(IssueStatus::cases())->toHaveCount(4);
