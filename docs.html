@@ -550,7 +550,7 @@
             <a href="#what-is-healing-factor">What Is Healing-Factor?</a>
             <a href="#installation">Installation</a>
             <a href="#requirements">Requirements</a>
-
+            <a href="#server-setup">Prepare Your Server</a>
         </div>
         <div class="sidebar-group">
             <span class="sidebar-label">Core Concepts</span>
@@ -588,14 +588,13 @@
     <main class="doc-content">
 
         <h1>Healing-Factor Documentation</h1>
-        <p class="subtitle">A self-healing Laravel package that catches exceptions in staging and production, then automatically opens pull requests with fixes using AI.</p>
 
         <!-- ============================================================ -->
         <!-- GETTING STARTED                                              -->
         <!-- ============================================================ -->
 
         <!-- What Is Healing-Factor? -->
-        <h2 id="what-is-healing-factor">What Is Healing-Factor?</h2>
+        <!-- <h2 id="what-is-healing-factor">What Is Healing-Factor?</h2> -->
         <p>Healing-Factor watches your Laravel application for unhandled exceptions and uses AI to write a fix and open a draft pull request -- automatically. You review the PR and merge it if the fix looks good. No AI-generated code reaches production without your approval.</p>
 
         <h3>What it can fix</h3>
@@ -618,7 +617,7 @@
             <li><strong>Issues requiring human judgment</strong> -- business logic decisions, UX choices, performance tuning.</li>
         </ul>
 
-        <blockquote><p><strong>The sweet spot:</strong> a typo, a missing null check, a wrong query column. The app is running, the error is logged, and the fix is a small code change. That is where Healing-Factor shines.</p></blockquote>
+        <blockquote><p><strong>The sweet spot:</strong> a typo, a missing null check, a wrong query column, a bad method call. The app is running, the error is logged, and the fix is a small code change. That is where Healing-Factor shines.</p></blockquote>
 
         <h3>A note about costs</h3>
         <p><strong>CLI driver:</strong> If you use the CLI driver with a <a href="https://www.anthropic.com/pricing" target="_blank" rel="noopener">Claude Pro or Max plan</a>, resolutions are covered by your subscription at no additional cost -- Claude Code handles its own authentication and billing.</p>
@@ -659,7 +658,20 @@ HEALING_FACTOR_GITHUB_PAT=github_pat_...</code></pre>
 
         <h3>4. Start the queue worker</h3>
         <pre><code>php artisan queue:work</code></pre>
-        <p>If resolution jobs are being killed before they finish, increase the worker timeout with the <code>--timeout</code> flag (e.g., <code>php artisan queue:work --timeout=3700</code>). It should exceed the configured process timeout (default 3600 seconds).</p>
+
+        <h3>5. Enable the dashboard</h3>
+        <p>The dashboard is restricted to <code>APP_ENV=local</code> by default. Since you are running in <code>staging</code>, register an auth gate in your <code>AppServiceProvider</code>:</p>
+        <pre><code>use ArielMejiaDev\HealingFactor\Facades\HealingFactor;
+
+public function boot(): void
+{
+    HealingFactor::auth(function ($user) {
+        return in_array($user->email, [
+            'admin@yourcompany.com',
+        ]);
+    });
+}</code></pre>
+        <p>Then visit <code>/healing-factor</code> to see issues in real time. See <a href="#dashboard">Dashboard</a> for more options.</p>
 
         <blockquote><p><strong>Why <code>APP_ENV=staging</code>?</strong> Healing-Factor only processes exceptions in <code>production</code> and <code>staging</code> by default. Errors in <code>local</code> are expected during development. To test locally, set <code>APP_ENV=staging</code>.</p></blockquote>
 
@@ -677,6 +689,45 @@ HEALING_FACTOR_GITHUB_PAT=github_pat_...</code></pre>
             <li><strong>API driver:</strong> Only an <code>ANTHROPIC_API_KEY</code> -- no CLI installation needed</li>
         </ul>
         <blockquote><p><strong>Not sure which driver to pick?</strong> Read the <a href="#cli-vs-api">CLI vs API Driver</a> section first. If you just want to get started quickly, the API driver is the easiest -- it only needs an API key.</p></blockquote>
+
+        <!-- Prepare Your Server -->
+        <h2 id="server-setup">Prepare Your Server</h2>
+        <p>Instructions for Ubuntu-based servers (Laravel Forge, Laravel Cloud, DigitalOcean, AWS). Both drivers require the GitHub CLI for pull request creation.</p>
+
+        <h3>Install and authenticate the GitHub CLI</h3>
+        <pre><code>sudo mkdir -p -m 755 /etc/apt/keyrings
+wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+sudo apt update && sudo apt install gh -y</code></pre>
+        <p>Authenticate using your GitHub personal access token:</p>
+        <pre><code>echo "github_pat_..." | gh auth login --with-token</code></pre>
+
+        <h3>Install the AI driver</h3>
+        <div class="tabs" data-tabs>
+            <div class="tab-buttons">
+                <button class="tab-btn active" data-tab="server-cli">CLI Driver</button>
+                <button class="tab-btn" data-tab="server-api">API Driver</button>
+            </div>
+            <div class="tab-panel active" id="server-cli">
+                <pre><code># Install Node.js LTS (if not already present)
+curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+# Install Claude Code
+npm install -g @anthropic-ai/claude-code</code></pre>
+                <p>Claude Code authenticates via the <code>ANTHROPIC_API_KEY</code> environment variable -- no interactive login needed. <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">Generate one here</a>, set it in your <code>.env</code>, and Healing-Factor passes it to the CLI automatically. No expiration, no re-authentication.</p>
+                <p>To use OpenCode instead, follow its <a href="https://github.com/opencode-ai/opencode?tab=readme-ov-file#installation" target="_blank" rel="noopener">installation guide</a> and set <code>HEALING_FACTOR_CLI_TOOL=opencode</code>.</p>
+            </div>
+            <div class="tab-panel" id="server-api">
+                <pre><code># No additional installation needed.
+# Just set these in your .env:
+ANTHROPIC_API_KEY=sk-ant-...
+HEALING_FACTOR_GITHUB_PAT=github_pat_...</code></pre>
+                <p>The API driver calls the Anthropic API directly from PHP -- no CLI tools required beyond <code>gh</code>.</p>
+            </div>
+        </div>
+
+        <blockquote><p><strong>Verify:</strong> Run <code>gh auth status</code> as the same user that runs your queue worker to confirm authentication is working.</p></blockquote>
 
         <!-- ============================================================ -->
         <!-- CORE CONCEPTS                                                -->
