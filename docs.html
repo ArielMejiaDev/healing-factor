@@ -798,6 +798,17 @@ HEALING_FACTOR_GITHUB_PAT=github_pat_...</code></pre>
 ],</code></pre>
         <p>Exceptions that should never be processed -- infrastructure issues, rate limits, and other errors that cannot be fixed by a code change. Add your own exception classes to this array.</p>
 
+        <h3>Ignored Message Patterns</h3>
+        <pre><code>'ignored_message_patterns' => [
+    '/^__VSCODE_LARAVEL_STARTUP_ERROR__:/i',
+],</code></pre>
+        <p>Regex patterns matched against the exception message. If any pattern matches, the error is silently discarded. This is useful for filtering out duplicate errors injected by IDE plugins -- for example, the VSCode Laravel extension prefixes server errors with <code>__VSCODE_LARAVEL_STARTUP_ERROR__:</code>, which produces a duplicate of every real exception.</p>
+        <p>Add your own patterns for any IDE or tooling prefix that duplicates server-side errors:</p>
+        <pre><code>'ignored_message_patterns' => [
+    '/^__VSCODE_LARAVEL_STARTUP_ERROR__:/i',
+    '/^__PHPSTORM_HELPER__:/i',
+],</code></pre>
+
         <!-- Queue & Process -->
         <h2 id="queue-process">Queue &amp; Process</h2>
 

@@ -76,7 +76,7 @@
         </div>
 
         {{-- Issues table --}}
-        <div class="overflow-x-auto rounded-lg border border-border">
+        <div class="rounded-lg border border-border">
             <table class="w-full text-sm">
                 <thead class="bg-muted text-left">
                     <tr>
@@ -130,7 +130,7 @@
                                             <circle cx="12" cy="19" r="1.5"/>
                                         </svg>
                                     </button>
-                                    <div role="menu" class="hidden absolute right-0 z-10 mt-1 w-44 origin-top-right rounded-md border border-border bg-background shadow-lg">
+                                    <div role="menu" class="hidden absolute right-0 z-50 mt-1 w-44 origin-top-right rounded-md border border-border bg-background shadow-lg">
                                         <div class="py-1">
                                             <a href="{{ route('healing-factor.dashboard.show', $issue) }}" role="menuitem" class="block px-4 py-2 text-sm text-foreground hover:bg-accent hover:text-accent-foreground transition-colors">
                                                 View details
@@ -145,7 +145,7 @@
                                                     </button>
                                                 </form>
                                             @endif
-                                            @if ($issue->status->value === 'resolving')
+                                            @if (in_array($issue->status->value, ['pending', 'resolving']))
                                                 <form method="POST" action="{{ route('healing-factor.dashboard.mark-failed', $issue) }}">
                                                     @csrf
                                                     <button type="submit" role="menuitem" class="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-accent hover:text-red-700 dark:hover:text-red-300 transition-colors">

@@ -80,10 +80,13 @@ it('cannot mark resolved from pending', function () {
     expect($issue->markResolved())->toBeFalse();
 });
 
-it('cannot mark failed from pending', function () {
+it('can mark failed from pending', function () {
     $issue = Issue::factory()->pending()->create();
 
-    expect($issue->markFailed('some reason'))->toBeFalse();
+    expect($issue->markFailed('some reason'))->toBeTrue();
+    $issue->refresh();
+    expect($issue->status)->toBe(IssueStatus::Failed);
+    expect($issue->failure_reason)->toBe('some reason');
 });
 
 it('increments attempts', function () {

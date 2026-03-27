@@ -7,7 +7,6 @@ use ArielMejiaDev\HealingFactor\Enums\IssueStatus;
 use ArielMejiaDev\HealingFactor\Events\IssueResolutionFailed;
 use ArielMejiaDev\HealingFactor\Events\IssueResolved;
 use ArielMejiaDev\HealingFactor\Events\IssueResolving;
-use ArielMejiaDev\HealingFactor\Facades\HealingFactor;
 use ArielMejiaDev\HealingFactor\HealingFactorManager;
 use ArielMejiaDev\HealingFactor\Models\Issue;
 use ArielMejiaDev\HealingFactor\Prompts\PromptBuilder;
@@ -32,16 +31,19 @@ class IssueResolver
             config()->set('healing-factor.process.max_turns', (int) $overrides['max_turns']);
         }
 
-        // 1. Guard: check if Healing-Factor is enabled and in an allowed environment
-        if (! HealingFactor::isEnabled()) {
-            HealingFactorLogger::info('Issue resolution skipped: Healing-Factor is disabled or not in an allowed environment.', [
+        // 1. Guard: check if Healing-Factor is explicitly disabled (master switch only).
+        //    Environment checks are NOT repeated here because the issue was already
+        //    validated at creation time (listener/webhook), and the queue worker may
+        //    run in a different APP_ENV than the web process.
+        if (! config('healing-factor.enabled', true)) {
+            HealingFactorLogger::info('Issue resolution skipped: Healing-Factor is disabled.', [
                 'issue_id' => $issue->id,
             ]);
 
             return false;
         }
 
-        // 1. Atomic status transition: pending -> resolving
+        // 2. Atomic status transition: pending -> resolving
         if (! $issue->markResolving()) {
             HealingFactorLogger::info('Issue resolution skipped: already being processed or resolved.', [
                 'issue_id' => $issue->id,
@@ -58,7 +60,7 @@ class IssueResolver
         event(new IssueResolving($issue));
         $issue->incrementAttempts();
 
-        // 2. Determine category
+        // 3. Determine category
         $category = $this->detectCategory($issue);
         $issue->update(['category' => $category]);
 
@@ -66,7 +68,7 @@ class IssueResolver
             'issue_id' => $issue->id,
         ]);
 
-        // 3. Check dry-run mode
+        // 4. Check dry-run mode
         if (config('healing-factor.dry_run')) {
             HealingFactorLogger::info('[DRY RUN] Would resolve issue. Resetting to pending.', ['issue_id' => $issue->id]);
             Issue::query()
@@ -77,14 +79,14 @@ class IssueResolver
             return true;
         }
 
-        // 4. Build prompt
+        // 5. Build prompt
         $prompt = $this->promptBuilder->build($issue);
 
         HealingFactorLogger::info("Prompt built, branch created: {$issue->branch_name}", [
             'issue_id' => $issue->id,
         ]);
 
-        // 5. Get driver (possibly category-specific)
+        // 6. Get driver (possibly category-specific)
         $driverName = config('healing-factor.driver', 'cli');
         $driver = $this->manager->driverForCategory($category);
         $issue->update(['cli_tool' => $driverName === 'api' ? 'api' : config('healing-factor.cli_tool', 'claude')]);
@@ -94,10 +96,10 @@ class IssueResolver
             'timeout' => config('healing-factor.process.timeout', 3600),
         ]);
 
-        // 6. Execute
+        // 7. Execute
         $result = $driver->resolve($issue, $prompt);
 
-        // 7. Handle result
+        // 8. Handle result
         if ($result->success) {
             return $this->handleSuccess($issue, $result);
         }

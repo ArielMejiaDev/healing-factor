@@ -63,7 +63,7 @@ class Issue extends Model
     {
         return static::query()
             ->whereKey($this->id)
-            ->where('status', IssueStatus::Resolving)
+            ->whereIn('status', [IssueStatus::Pending, IssueStatus::Resolving])
             ->update([
                 'status' => IssueStatus::Failed,
                 'failure_reason' => $reason,

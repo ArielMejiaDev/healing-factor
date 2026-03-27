@@ -64,7 +64,7 @@ class DashboardController extends Controller
     public function markFailed(Issue $issue)
     {
         if (! $issue->markFailed('Manually marked as failed from the dashboard.')) {
-            return back()->with('error', 'Issue is not in a resolving state.');
+            return back()->with('error', 'Issue cannot be marked as failed (already resolved or failed).');
         }
 
         return back()->with('success', 'Issue marked as failed.');

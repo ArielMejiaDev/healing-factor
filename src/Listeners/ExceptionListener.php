@@ -9,6 +9,7 @@ use ArielMejiaDev\HealingFactor\Models\Issue;
 use ArielMejiaDev\HealingFactor\Services\Debouncer;
 use ArielMejiaDev\HealingFactor\Services\FingerprintGenerator;
 use ArielMejiaDev\HealingFactor\Support\HealingFactorLogger;
+use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Log\Events\MessageLogged;
 use Illuminate\Queue\Events\JobExceptionOccurred;
 
@@ -59,6 +60,8 @@ class ExceptionListener
     protected function doProcessException(\Throwable $exception): void
     {
         if (! HealingFactor::isEnabled()) {
+            HealingFactorLogger::debug('Listener skipped: disabled or environment not allowed.');
+
             return;
         }
 
@@ -68,6 +71,18 @@ class ExceptionListener
         $ignored = config('healing-factor.ignored_exceptions', []);
         foreach ($ignored as $ignoredClass) {
             if ($exceptionClass === $ignoredClass || $exception instanceof $ignoredClass) {
+                HealingFactorLogger::debug("Listener skipped: ignored exception {$exceptionClass} (matched {$ignoredClass}).");
+
+                return;
+            }
+        }
+
+        // Check ignored message patterns (e.g. IDE plugin duplicates)
+        $message = $exception->getMessage();
+        foreach (config('healing-factor.ignored_message_patterns', []) as $pattern) {
+            if (preg_match($pattern, $message)) {
+                HealingFactorLogger::debug("Listener skipped: message matched ignored pattern {$pattern}.");
+
                 return;
             }
         }
@@ -80,11 +95,15 @@ class ExceptionListener
 
         // Debounce
         if (! $this->debouncer->shouldProcess($fingerprint)) {
+            HealingFactorLogger::debug("Listener skipped: debounced ({$exceptionClass}).");
+
             return;
         }
 
         // Deduplicate
         if (Issue::where('fingerprint', $fingerprint)->whereIn('status', ['pending', 'resolving'])->exists()) {
+            HealingFactorLogger::debug("Listener skipped: duplicate pending/resolving issue for {$exceptionClass}.");
+
             return;
         }
 
@@ -100,10 +119,21 @@ class ExceptionListener
         ]);
 
         event(new IssueCreated($issue));
-        ResolveIssue::dispatch($issue);
 
-        HealingFactorLogger::info("Issue #{$issue->id} created (status: pending). Job dispatched.", [
-            'exception' => $exceptionClass,
-        ]);
+        try {
+            // Use Bus::dispatch() directly instead of the static dispatch() helper.
+            // The static helper returns a PendingDispatch whose __destruct() pushes
+            // the job — that destructor can be silently skipped when PHP is shutting
+            // down during fatal-error handling, causing the job to never enter the queue.
+            app(Dispatcher::class)->dispatch(new ResolveIssue($issue));
+
+            HealingFactorLogger::info("Issue #{$issue->id} created (status: pending). Job dispatched.", [
+                'exception' => $exceptionClass,
+            ]);
+        } catch (\Throwable $e) {
+            HealingFactorLogger::error("Issue #{$issue->id} created but job dispatch failed: {$e->getMessage()}", [
+                'exception' => $exceptionClass,
+            ]);
+        }
     }
 }

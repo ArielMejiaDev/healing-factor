@@ -96,6 +96,18 @@ it('truncates the title to 255 characters for long exception messages', function
     expect(mb_strlen(Issue::first()->title))->toBeLessThanOrEqual(255);
 });
 
+it('skips exceptions matching ignored message patterns', function () {
+    $listener = app(ExceptionListener::class);
+
+    $exception = new ErrorException('__VSCODE_LARAVEL_STARTUP_ERROR__: Undefined variable $user');
+
+    $event = new MessageLogged('error', $exception->getMessage(), ['exception' => $exception]);
+
+    $listener->handleMessageLogged($event);
+
+    expect(Issue::count())->toBe(0);
+});
+
 it('does not process when healing-factor is disabled', function () {
     config()->set('healing-factor.enabled', false);
 

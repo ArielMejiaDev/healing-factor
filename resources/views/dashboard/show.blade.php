@@ -149,6 +149,16 @@
             </div>
         @endif
 
+        {{-- Mark as failed --}}
+        @if (in_array($issue->status->value, ['pending', 'resolving']))
+            <form method="POST" action="{{ route('healing-factor.dashboard.mark-failed', $issue) }}">
+                @csrf
+                <button type="submit" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] border border-red-300 dark:border-red-700 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 h-9 px-4 py-2">
+                    Mark as failed
+                </button>
+            </form>
+        @endif
+
         {{-- Retry --}}
         @if ($issue->status->value === 'failed')
             <div class="rounded-lg border border-border p-6 space-y-4">

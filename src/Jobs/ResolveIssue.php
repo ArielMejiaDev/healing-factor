@@ -43,6 +43,11 @@ class ResolveIssue implements ShouldBeUnique, ShouldQueue
 
     public function handle(IssueResolver $resolver): void
     {
+        HealingFactorLogger::info("ResolveIssue job started for issue #{$this->issue->id}", [
+            'issue_id' => $this->issue->id,
+            'status' => $this->issue->getRawOriginal('status'),
+        ]);
+
         $resolver->resolve($this->issue, $this->overrides);
     }
 

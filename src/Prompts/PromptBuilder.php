@@ -63,7 +63,8 @@ class PromptBuilder implements PromptBuilderContract
         - Write or update relevant tests if applicable.
         - Commit all changes with a concise message describing the fix.
         - Push the branch with "git push -u origin {$branchName}".
-        - Create a pull request using "gh pr create{$draftFlag} --title \"[Healing-Factor] Fix: {$titleShort}\" --body \"Auto-generated fix by Healing-Factor\" --label \"{$labels}\"".
+        - Create a pull request using "gh pr create{$draftFlag} --title \"[Healing-Factor] Fix: {$titleShort}\" --body \"<description>\" --label \"{$labels}\"".
+          The PR body must include: a summary of the root cause, the fix applied, and the files changed. Use markdown formatting.
         - Print a short summary of what changed and why.
         PROMPT;
     }
@@ -121,7 +122,8 @@ class PromptBuilder implements PromptBuilderContract
         After applying the fix you MUST:
         - Commit all changes with a concise message describing the fix.
         - Push the branch with "git push -u origin {$branchName}".
-        - Create a pull request using "gh pr create{$draftFlag} --title \"[Healing-Factor] Fix: {$titleShort}\" --body \"Auto-generated fix by Healing-Factor\" --label \"{$labels}\"".
+        - Create a pull request using "gh pr create{$draftFlag} --title \"[Healing-Factor] Fix: {$titleShort}\" --body \"<description>\" --label \"{$labels}\"".
+          The PR body must include: a summary of the root cause, the fix applied, and the files changed. Use markdown formatting.
         PROMPT;
     }
 }

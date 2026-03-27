@@ -10,6 +10,7 @@ use ArielMejiaDev\HealingFactor\Models\Issue;
 use ArielMejiaDev\HealingFactor\Services\Debouncer;
 use ArielMejiaDev\HealingFactor\Services\FingerprintGenerator;
 use ArielMejiaDev\HealingFactor\Support\HealingFactorLogger;
+use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -50,6 +51,14 @@ class WebhookController extends Controller
             return response()->json(['message' => 'Exception ignored.'], 200);
         }
 
+        // Check ignored message patterns (e.g. IDE plugin duplicates)
+        $message = $data['exception_message'] ?? $data['title'] ?? '';
+        foreach (config('healing-factor.ignored_message_patterns', []) as $pattern) {
+            if (preg_match($pattern, $message)) {
+                return response()->json(['message' => 'Message pattern ignored.'], 200);
+            }
+        }
+
         // Deduplicate: check if issue with same fingerprint is pending/resolving
         $existing = Issue::query()
             ->where('fingerprint', $fingerprint)
@@ -67,7 +76,7 @@ class WebhookController extends Controller
         ]));
 
         event(new IssueCreated($issue));
-        ResolveIssue::dispatch($issue);
+        app(Dispatcher::class)->dispatch(new ResolveIssue($issue));
 
         HealingFactorLogger::info("Issue #{$issue->id} created (status: pending). Job dispatched.", [
             'title' => $data['title'] ?? 'unknown',

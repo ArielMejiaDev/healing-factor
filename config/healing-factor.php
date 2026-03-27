@@ -251,6 +251,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Ignored Message Patterns
+    |--------------------------------------------------------------------------
+    | Regex patterns matched against the exception message. If ANY pattern
+    | matches, the error is silently discarded. Useful for filtering out
+    | duplicate errors injected by IDE plugins (e.g. VSCode Laravel extension).
+    */
+    'ignored_message_patterns' => [
+        '/^__VSCODE_LARAVEL_STARTUP_ERROR__:/i',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Custom Prompt (Fallback / Failover)
     |--------------------------------------------------------------------------
     | Used when no category matches. Set to null for the built-in default.

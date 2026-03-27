@@ -115,6 +115,27 @@ it('ignores configured exception classes', function () {
         ->assertJson(['message' => 'Exception ignored.']);
 });
 
+it('ignores exceptions matching ignored message patterns', function () {
+    $payload = [
+        'event' => 'issue.opened',
+        'payload' => [
+            'issue' => [
+                'title' => 'ErrorException: __VSCODE_LARAVEL_STARTUP_ERROR__: Undefined variable $user',
+                'details' => [
+                    'class' => 'ErrorException',
+                    'message' => '__VSCODE_LARAVEL_STARTUP_ERROR__: Undefined variable $user',
+                ],
+            ],
+        ],
+    ];
+
+    $this->postJson('/healing-factor/webhook', $payload)
+        ->assertStatus(200)
+        ->assertJson(['message' => 'Message pattern ignored.']);
+
+    expect(Issue::count())->toBe(0);
+});
+
 it('debounces duplicate requests', function () {
     $payload = [
         'event' => 'issue.opened',
