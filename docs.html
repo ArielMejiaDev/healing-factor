@@ -275,6 +275,7 @@
         }
 
         .doc-content pre {
+            position: relative;
             background: var(--bg-card);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
@@ -291,6 +292,32 @@
             color: var(--text-muted);
             font-size: 0.8125rem;
         }
+        .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--bg-card-hover);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 5px 7px;
+            cursor: pointer;
+            color: var(--text-muted);
+            opacity: 0.7;
+            transition: opacity 0.2s, color 0.2s, border-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .copy-btn:hover {
+            opacity: 1;
+            color: var(--text);
+            border-color: var(--border-hover);
+        }
+        .copy-btn.copied {
+            color: var(--cta);
+            opacity: 1;
+        }
+        .copy-btn svg { width: 14px; height: 14px; }
 
         .doc-content blockquote {
             border-left: 3px solid var(--primary);
@@ -332,6 +359,47 @@
             border: none;
             border-top: 1px solid var(--border);
             margin: 48px 0;
+        }
+
+        /* ---------- TABS ---------- */
+        .tabs {
+            margin-bottom: 20px;
+        }
+        .tab-buttons {
+            display: flex;
+            gap: 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 0;
+        }
+        .tab-btn {
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            padding: 8px 20px;
+            font-family: var(--font-mono);
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.2s, border-color 0.2s;
+        }
+        .tab-btn:hover {
+            color: var(--text);
+        }
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+        .tab-panel {
+            display: none;
+        }
+        .tab-panel.active {
+            display: block;
+        }
+        .tab-panel pre {
+            border-radius: 0 0 10px 10px;
+            margin-bottom: 0;
+            border-top: none;
         }
 
         .numbered-list {
@@ -553,13 +621,14 @@
         <blockquote><p><strong>The sweet spot:</strong> a typo, a missing null check, a wrong query column. The app is running, the error is logged, and the fix is a small code change. That is where Healing-Factor shines.</p></blockquote>
 
         <h3>A note about costs</h3>
-        <p>Healing-Factor uses the Anthropic API (Claude) to analyze exceptions and write fixes. Each resolution typically costs a few cents to a few dollars in API usage, depending on the complexity of the exception, the number of conversation turns, and the model you choose. You can control costs by setting <code>max_turns</code> and <code>timeout</code> limits. Check the <a href="https://www.anthropic.com/pricing" target="_blank" rel="noopener">Anthropic pricing page</a> for current rates.</p>
+        <p><strong>CLI driver:</strong> If you use the CLI driver with a <a href="https://www.anthropic.com/pricing" target="_blank" rel="noopener">Claude Pro or Max plan</a>, resolutions are covered by your subscription at no additional cost -- Claude Code handles its own authentication and billing.</p>
+        <p><strong>API driver:</strong> Each resolution typically costs a few cents to a few dollars in API usage, depending on the complexity of the exception, the number of conversation turns, and the model you choose. You can control costs by setting <code>max_turns</code> and <code>timeout</code> limits. Check the <a href="https://www.anthropic.com/pricing" target="_blank" rel="noopener">Anthropic pricing page</a> for current rates.</p>
 
         <!-- Requirements -->
         <h2 id="requirements">Requirements</h2>
         <ul>
             <li>PHP 8.4+</li>
-            <li>Laravel 11 or 12</li>
+            <li>Laravel 11, 12, or 13</li>
             <li><a href="https://cli.github.com/" target="_blank" rel="noopener">GitHub CLI (<code>gh</code>)</a> installed and authenticated (for PR creation)</li>
             <li>A queue worker running (recommended for production)</li>
         </ul>
@@ -578,17 +647,34 @@
 
         <h3>2. Run the install command</h3>
         <pre><code>php artisan healing-factor:install</code></pre>
-        <p>This publishes the config file and migration, runs the migration (with confirmation), and verifies your setup.</p>
+        <p>This publishes the config file and migration, runs the migration (with confirmation), and runs driver-specific checks: for the <strong>CLI driver</strong> it verifies the CLI tool is installed, for the <strong>API driver</strong> it checks that <code>ANTHROPIC_API_KEY</code> is set.</p>
 
-        <h3>3. Add your API key to <code>.env</code></h3>
-        <pre><code>ANTHROPIC_API_KEY=sk-ant-...</code></pre>
-        <p>This is the only required environment variable. Everything else has sensible defaults.</p>
-
-        <blockquote><p><strong>Using the API driver?</strong> You will also need a GitHub personal access token: <code>HEALING_FACTOR_GITHUB_PAT=github_pat_...</code>. See <a href="#essential-settings">Essential Settings</a> for details.</p></blockquote>
+        <h3>3. Add environment variables to <code>.env</code></h3>
+        <p>The required variables depend on your driver. Pick one -- the default is <code>cli</code>, which does not need an API key because Claude Code handles its own authentication.</p>
+        <div class="tabs" data-tabs>
+            <div class="tab-buttons">
+                <button class="tab-btn active" data-tab="cli-driver">CLI Driver (default)</button>
+                <button class="tab-btn" data-tab="api-driver">API Driver</button>
+            </div>
+            <div class="tab-panel active" id="cli-driver">
+                <pre><code>APP_ENV=staging
+HEALING_FACTOR_MONITOR=exception_listener
+HEALING_FACTOR_DRIVER=cli</code></pre>
+                <p>The CLI tool defaults to <code>claude</code> (Claude Code). To use <a href="https://github.com/opencode-ai/opencode" target="_blank" rel="noopener">OpenCode</a> instead, add <code>HEALING_FACTOR_CLI_TOOL=opencode</code>.</p>
+            </div>
+            <div class="tab-panel" id="api-driver">
+                <pre><code>APP_ENV=staging
+HEALING_FACTOR_MONITOR=exception_listener
+HEALING_FACTOR_DRIVER=api
+ANTHROPIC_API_KEY=sk-ant-...
+HEALING_FACTOR_GITHUB_PAT=github_pat_...</code></pre>
+            </div>
+        </div>
+        <p>Everything else has sensible defaults. See <a href="#essential-settings">Essential Settings</a> for the full list.</p>
 
         <h3>4. Start the queue worker</h3>
-        <pre><code>php artisan queue:work --timeout=3700</code></pre>
-        <p>The <code>--timeout</code> flag should exceed the configured process timeout (default 3600 seconds) so the worker does not kill resolution jobs prematurely.</p>
+        <pre><code>php artisan queue:work</code></pre>
+        <p>If resolution jobs are being killed before they finish, increase the worker timeout with the <code>--timeout</code> flag (e.g., <code>php artisan queue:work --timeout=3700</code>). It should exceed the configured process timeout (default 3600 seconds).</p>
 
         <blockquote><p><strong>Why <code>APP_ENV=staging</code>?</strong> Healing-Factor only processes exceptions in <code>production</code> and <code>staging</code> by default. Errors in <code>local</code> are expected during development. To test locally, set <code>APP_ENV=staging</code>.</p></blockquote>
 
@@ -598,17 +684,11 @@
 
         <ol class="numbered-list">
             <li>
-                <strong>Install and configure.</strong> Follow the <a href="#installation">Installation</a> steps above. Make sure your <code>.env</code> has:
-                <pre><code>APP_ENV=staging
-ANTHROPIC_API_KEY=sk-ant-...
-HEALING_FACTOR_MONITOR=exception_listener</code></pre>
-                <p>If you are using the API driver, also add:</p>
-                <pre><code>HEALING_FACTOR_DRIVER=api
-HEALING_FACTOR_GITHUB_PAT=github_pat_...</code></pre>
+                <strong>Follow the <a href="#installation">Installation</a> steps above.</strong>
             </li>
             <li>
                 <strong>Start the queue worker</strong> in a separate terminal:
-                <pre><code>php artisan queue:work --timeout=3700</code></pre>
+                <pre><code>php artisan queue:work</code></pre>
             </li>
             <li>
                 <strong>Run the test command.</strong> This creates a fake exception and dispatches it for resolution:
@@ -619,6 +699,9 @@ HEALING_FACTOR_GITHUB_PAT=github_pat_...</code></pre>
                 <strong>Check the result.</strong> Run the status command to see your test issue:
                 <pre><code>php artisan healing-factor:status</code></pre>
                 <p>If it succeeded, the status will show <code>resolved</code> with a link to the draft PR.</p>
+            </li>
+            <li>
+                <strong>Check the dashboard.</strong> Visit <code>/healing-factor</code> in your browser to see the issue in the tracking dashboard, including its status, exception details, and PR link.
             </li>
         </ol>
 
@@ -667,9 +750,8 @@ ANTHROPIC_API_KEY=sk-ant-...
 HEALING_FACTOR_GITHUB_PAT=github_pat_...</code></pre>
 
         <h4>CLI Driver</h4>
-        <pre><code>HEALING_FACTOR_DRIVER=cli
-HEALING_FACTOR_CLI_TOOL=claude</code></pre>
-        <p>The CLI driver does not need <code>ANTHROPIC_API_KEY</code> in your <code>.env</code> because Claude Code handles its own authentication. However, you must have the CLI tool installed and authenticated on the server.</p>
+        <pre><code>HEALING_FACTOR_DRIVER=cli</code></pre>
+        <p>The CLI driver does not need <code>ANTHROPIC_API_KEY</code> in your <code>.env</code> because Claude Code handles its own authentication. The CLI tool defaults to <code>claude</code> -- to use OpenCode instead, add <code>HEALING_FACTOR_CLI_TOOL=opencode</code>. You must have the CLI tool installed and authenticated on the server.</p>
 
         <!-- Monitor Strategy -->
         <h2 id="monitor-strategy">Monitor Strategy</h2>
@@ -847,7 +929,7 @@ public function boot(): void
         <p>These are the commands you will use regularly.</p>
 
         <h4><code>healing-factor:install</code></h4>
-        <p>Publishes config and migration, runs migration, verifies setup. Run this once during installation.</p>
+        <p>Publishes config and migration, runs migration, and runs driver-specific checks (CLI tool availability for the CLI driver, <code>ANTHROPIC_API_KEY</code> for the API driver). Run this once during installation.</p>
         <pre><code>php artisan healing-factor:install</code></pre>
 
         <h4><code>healing-factor:status</code></h4>
@@ -1289,6 +1371,42 @@ HEALING_FACTOR_API_MAX_TURNS=25</code></pre>
     }, { rootMargin: '-88px 0px -60% 0px', threshold: 0 });
 
     sections.forEach(function(section) { observer.observe(section); });
+
+    // Tabs
+    document.querySelectorAll('[data-tabs]').forEach(function(tabGroup) {
+        tabGroup.querySelectorAll('.tab-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                tabGroup.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+                tabGroup.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+                btn.classList.add('active');
+                document.getElementById(btn.getAttribute('data-tab')).classList.add('active');
+            });
+        });
+    });
+
+    // Copy buttons on all <pre> blocks
+    var copyIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+    var checkIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+
+    document.querySelectorAll('.doc-content pre').forEach(function(pre) {
+        var btn = document.createElement('button');
+        btn.className = 'copy-btn';
+        btn.setAttribute('aria-label', 'Copy to clipboard');
+        btn.innerHTML = copyIcon;
+        btn.addEventListener('click', function() {
+            var code = pre.querySelector('code');
+            var text = code ? code.textContent : pre.textContent;
+            navigator.clipboard.writeText(text).then(function() {
+                btn.innerHTML = checkIcon;
+                btn.classList.add('copied');
+                setTimeout(function() {
+                    btn.innerHTML = copyIcon;
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        });
+        pre.appendChild(btn);
+    });
 </script>
 </body>
 </html>

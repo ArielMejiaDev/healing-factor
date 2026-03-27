@@ -41,24 +41,30 @@ class HealingFactorInstallCommand extends Command
             $this->info('Migration completed.');
         }
 
-        // 4. Check CLI tool availability
+        // 4. Driver-specific checks
         $this->newLine();
         $this->info('Checking setup...');
 
-        $cliTool = config('healing-factor.cli_tool', 'claude');
-        $result = Process::run(['which', $cliTool]);
+        $driver = config('healing-factor.driver', 'cli');
+        $this->info("  Driver: {$driver}");
 
-        if ($result->successful()) {
-            $this->info("  [OK] CLI tool '{$cliTool}' found at: ".trim($result->output()));
-        } else {
-            $this->warn("  [WARN] CLI tool '{$cliTool}' not found. Install it before using Healing-Factor.");
+        if ($driver === 'cli') {
+            $cliTool = config('healing-factor.cli_tool', 'claude');
+            $result = Process::run(['which', $cliTool]);
+
+            if ($result->successful()) {
+                $this->info("  [OK] CLI tool '{$cliTool}' found at: ".trim($result->output()));
+            } else {
+                $this->warn("  [WARN] CLI tool '{$cliTool}' not found. Install it before using Healing-Factor.");
+            }
         }
 
-        // 5. Check ANTHROPIC_API_KEY
-        if (config('healing-factor.api_keys.anthropic')) {
-            $this->info('  [OK] ANTHROPIC_API_KEY is set.');
-        } else {
-            $this->warn('  [WARN] ANTHROPIC_API_KEY is not set. Add it to your .env file.');
+        if ($driver === 'api') {
+            if (config('healing-factor.api_keys.anthropic')) {
+                $this->info('  [OK] ANTHROPIC_API_KEY is set.');
+            } else {
+                $this->warn('  [WARN] ANTHROPIC_API_KEY is not set. The API driver requires it. Add it to your .env file.');
+            }
         }
 
         $this->newLine();
