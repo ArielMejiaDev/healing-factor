@@ -525,7 +525,7 @@
 <!-- Nav -->
 <nav>
     <div class="nav-inner">
-        <a href="index.html" class="nav-brand"><span>Healing</span>-Factor</a>
+        <a href="index.html" class="nav-brand"><span>Healing</span> Factor</a>
         <div class="nav-links" id="navLinks">
             <a href="index.html">Home</a>
             <a href="index.html#features">Features</a>
@@ -548,9 +548,9 @@
         <div class="sidebar-group">
             <span class="sidebar-label">Getting Started</span>
             <a href="#what-is-healing-factor">What Is Healing-Factor?</a>
-            <a href="#requirements">Requirements</a>
             <a href="#installation">Installation</a>
-            <a href="#try-it">Try It in 5 Minutes</a>
+            <a href="#requirements">Requirements</a>
+
         </div>
         <div class="sidebar-group">
             <span class="sidebar-label">Core Concepts</span>
@@ -624,21 +624,6 @@
         <p><strong>CLI driver:</strong> If you use the CLI driver with a <a href="https://www.anthropic.com/pricing" target="_blank" rel="noopener">Claude Pro or Max plan</a>, resolutions are covered by your subscription at no additional cost -- Claude Code handles its own authentication and billing.</p>
         <p><strong>API driver:</strong> Each resolution typically costs a few cents to a few dollars in API usage, depending on the complexity of the exception, the number of conversation turns, and the model you choose. You can control costs by setting <code>max_turns</code> and <code>timeout</code> limits. Check the <a href="https://www.anthropic.com/pricing" target="_blank" rel="noopener">Anthropic pricing page</a> for current rates.</p>
 
-        <!-- Requirements -->
-        <h2 id="requirements">Requirements</h2>
-        <ul>
-            <li>PHP 8.4+</li>
-            <li>Laravel 11, 12, or 13</li>
-            <li><a href="https://cli.github.com/" target="_blank" rel="noopener">GitHub CLI (<code>gh</code>)</a> installed and authenticated (for PR creation)</li>
-            <li>A queue worker running (recommended for production)</li>
-        </ul>
-        <p>Depending on which driver you choose (explained in <a href="#cli-vs-api">CLI vs API Driver</a>):</p>
-        <ul>
-            <li><strong>CLI driver:</strong> <a href="https://docs.anthropic.com/en/docs/claude-code" target="_blank" rel="noopener">Claude Code</a> or <a href="https://github.com/opencode-ai/opencode" target="_blank" rel="noopener">OpenCode</a> CLI installed on the server</li>
-            <li><strong>API driver:</strong> Only an <code>ANTHROPIC_API_KEY</code> -- no CLI installation needed</li>
-        </ul>
-        <blockquote><p><strong>Not sure which driver to pick?</strong> Read the <a href="#cli-vs-api">CLI vs API Driver</a> section first. If you just want to get started quickly, the API driver is the easiest -- it only needs an API key.</p></blockquote>
-
         <!-- Installation -->
         <h2 id="installation">Installation</h2>
 
@@ -678,34 +663,20 @@ HEALING_FACTOR_GITHUB_PAT=github_pat_...</code></pre>
 
         <blockquote><p><strong>Why <code>APP_ENV=staging</code>?</strong> Healing-Factor only processes exceptions in <code>production</code> and <code>staging</code> by default. Errors in <code>local</code> are expected during development. To test locally, set <code>APP_ENV=staging</code>.</p></blockquote>
 
-        <!-- Try It in 5 Minutes -->
-        <h2 id="try-it">Try It in 5 Minutes</h2>
-        <p>This walkthrough lets you see Healing-Factor in action on your local machine. You will install the package, trigger a test exception, and watch it open a draft PR with a fix.</p>
-
-        <ol class="numbered-list">
-            <li>
-                <strong>Follow the <a href="#installation">Installation</a> steps above.</strong>
-            </li>
-            <li>
-                <strong>Start the queue worker</strong> in a separate terminal:
-                <pre><code>php artisan queue:work</code></pre>
-            </li>
-            <li>
-                <strong>Run the test command.</strong> This creates a fake exception and dispatches it for resolution:
-                <pre><code>php artisan healing-factor:test --sync</code></pre>
-                <p>The <code>--sync</code> flag runs it immediately (no queue needed for this test). You will see output as the AI analyzes the exception, writes a fix, and opens a draft PR.</p>
-            </li>
-            <li>
-                <strong>Check the result.</strong> Run the status command to see your test issue:
-                <pre><code>php artisan healing-factor:status</code></pre>
-                <p>If it succeeded, the status will show <code>resolved</code> with a link to the draft PR.</p>
-            </li>
-            <li>
-                <strong>Check the dashboard.</strong> Visit <code>/healing-factor</code> in your browser to see the issue in the tracking dashboard, including its status, exception details, and PR link.
-            </li>
-        </ol>
-
-        <blockquote><p><strong>Tip:</strong> If you want to test without actually calling the AI, enable dry run mode: <code>HEALING_FACTOR_DRY_RUN=true</code>. Healing-Factor will log what it would do without executing anything.</p></blockquote>
+        <!-- Requirements -->
+        <h2 id="requirements">Requirements</h2>
+        <ul>
+            <li>PHP 8.4+</li>
+            <li>Laravel 11, 12, or 13</li>
+            <li><a href="https://cli.github.com/" target="_blank" rel="noopener">GitHub CLI (<code>gh</code>)</a> installed and authenticated (for PR creation)</li>
+            <li>A queue worker running (recommended for production)</li>
+        </ul>
+        <p>Depending on which driver you choose (explained in <a href="#cli-vs-api">CLI vs API Driver</a>):</p>
+        <ul>
+            <li><strong>CLI driver:</strong> <a href="https://docs.anthropic.com/en/docs/claude-code" target="_blank" rel="noopener">Claude Code</a> or <a href="https://github.com/opencode-ai/opencode" target="_blank" rel="noopener">OpenCode</a> CLI installed on the server</li>
+            <li><strong>API driver:</strong> Only an <code>ANTHROPIC_API_KEY</code> -- no CLI installation needed</li>
+        </ul>
+        <blockquote><p><strong>Not sure which driver to pick?</strong> Read the <a href="#cli-vs-api">CLI vs API Driver</a> section first. If you just want to get started quickly, the API driver is the easiest -- it only needs an API key.</p></blockquote>
 
         <!-- ============================================================ -->
         <!-- CORE CONCEPTS                                                -->
@@ -741,17 +712,6 @@ HEALING_FACTOR_GITHUB_PAT=github_pat_...</code></pre>
         </table>
 
         <blockquote><p><strong>If you are not sure, use the API driver.</strong> It works on any server, requires no extra installation, and gives you fine-grained control over what commands the AI can run. Set <code>HEALING_FACTOR_DRIVER=api</code> in your <code>.env</code>.</p></blockquote>
-
-        <h3>Minimal .env for each driver</h3>
-
-        <h4>API Driver</h4>
-        <pre><code>HEALING_FACTOR_DRIVER=api
-ANTHROPIC_API_KEY=sk-ant-...
-HEALING_FACTOR_GITHUB_PAT=github_pat_...</code></pre>
-
-        <h4>CLI Driver</h4>
-        <pre><code>HEALING_FACTOR_DRIVER=cli</code></pre>
-        <p>The CLI driver does not need <code>ANTHROPIC_API_KEY</code> in your <code>.env</code> because Claude Code handles its own authentication. The CLI tool defaults to <code>claude</code> -- to use OpenCode instead, add <code>HEALING_FACTOR_CLI_TOOL=opencode</code>. You must have the CLI tool installed and authenticated on the server.</p>
 
         <!-- Monitor Strategy -->
         <h2 id="monitor-strategy">Monitor Strategy</h2>
@@ -813,7 +773,7 @@ HEALING_FACTOR_GITHUB_PAT=github_pat_...</code></pre>
     'github_pat' => env('HEALING_FACTOR_GITHUB_PAT'),
 ],</code></pre>
         <ul>
-            <li><code>anthropic</code> -- Your Anthropic API key. Required for the API driver. Also passed to the CLI tool as an environment variable.</li>
+            <li><code>anthropic</code> -- Your Anthropic API key. Required for the API driver. Also passed to the CLI tool as an environment variable. Generate one at <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a>.</li>
             <li><code>github_pat</code> -- A GitHub personal access token so Healing-Factor can push branches and create PRs in environments without interactive <code>gh auth login</code>.</li>
         </ul>
 
@@ -1269,7 +1229,7 @@ HEALING_FACTOR_API_MAX_TURNS=25</code></pre>
         <ol>
             <li>Remove the scheduled commands from <code>routes/console.php</code> if you added them.</li>
             <li>Remove the auth gate from <code>AppServiceProvider</code> if you added one.</li>
-            <li>Roll back the migration: <code>php artisan migrate:rollback</code> (this drops the <code>healing_factor_issues</code> table).</li>
+            <li>Drop the table: <code>php artisan tinker --execute="Schema::dropIfExists('healing_factor_issues')"</code></li>
             <li>Remove the config file: <code>rm config/healing-factor.php</code></li>
             <li>Remove published views if any: <code>rm -rf resources/views/vendor/healing-factor</code></li>
             <li>Uninstall the package: <code>composer remove arielmejiadev/healing-factor</code></li>
