@@ -168,13 +168,15 @@
                                                     </button>
                                                 </form>
                                             @endif
-                                            <form method="POST" action="{{ route('healing-factor.dashboard.destroy', $issue) }}" onsubmit="return confirm('Are you sure you want to delete this issue?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" role="menuitem" class="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-accent hover:text-red-700 dark:hover:text-red-300 transition-colors">
-                                                    Delete
-                                                </button>
-                                            </form>
+                                            @if ($issue->status->value === 'failed')
+                                                <form method="POST" action="{{ route('healing-factor.dashboard.destroy', $issue) }}" onsubmit="return confirm('Are you sure you want to delete this issue?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" role="menuitem" class="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-accent hover:text-red-700 dark:hover:text-red-300 transition-colors">
+                                                        Delete
+                                                    </button>
+                                                </form>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
