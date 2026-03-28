@@ -36,7 +36,9 @@ class DashboardController extends Controller
 
         $issues = $query->paginate(25)->appends($request->query());
 
-        return view('healing-factor::dashboard.index', compact('issues', 'statusCounts'));
+        $hasStaleIssues = Issue::stale()->exists();
+
+        return view('healing-factor::dashboard.index', compact('issues', 'statusCounts', 'hasStaleIssues'));
     }
 
     public function show(Issue $issue)
@@ -68,5 +70,20 @@ class DashboardController extends Controller
         }
 
         return back()->with('success', 'Issue marked as failed.');
+    }
+
+    public function destroy(Issue $issue)
+    {
+        $issue->delete();
+
+        return redirect()->route('healing-factor.dashboard.index')
+            ->with('success', 'Issue deleted.');
+    }
+
+    public function destroyStale()
+    {
+        $count = Issue::stale()->delete();
+
+        return back()->with('success', "{$count} stale issue(s) deleted.");
     }
 }

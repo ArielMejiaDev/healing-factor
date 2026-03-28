@@ -67,6 +67,21 @@
             @endforeach
         </nav>
 
+        {{-- Delete stale issues --}}
+        @if ($hasStaleIssues)
+            <form method="POST" action="{{ route('healing-factor.dashboard.destroy-stale') }}" onsubmit="return confirm('Delete all resolved/failed issues older than 30 days?')" class="flex items-center gap-3 rounded-lg border border-border bg-muted/50 px-4 py-3">
+                @csrf
+                @method('DELETE')
+                <svg class="h-4 w-4 shrink-0 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span class="flex-1 text-sm text-muted-foreground">There are stale issues (resolved/failed, older than 30 days) that can be cleaned up.</span>
+                <button type="submit" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] border border-red-300 dark:border-red-700 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 h-9 px-4 py-2 shrink-0">
+                    Delete stale issues
+                </button>
+            </form>
+        @endif
+
         {{-- Debounce callout --}}
         <div class="flex items-start gap-3 rounded-lg border border-border bg-muted/50 px-4 py-3 text-sm text-muted-foreground">
             <svg class="mt-0.5 h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -153,6 +168,13 @@
                                                     </button>
                                                 </form>
                                             @endif
+                                            <form method="POST" action="{{ route('healing-factor.dashboard.destroy', $issue) }}" onsubmit="return confirm('Are you sure you want to delete this issue?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" role="menuitem" class="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-accent hover:text-red-700 dark:hover:text-red-300 transition-colors">
+                                                    Delete
+                                                </button>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>

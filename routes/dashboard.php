@@ -12,7 +12,9 @@ Route::middleware(array_merge(
     ->name('healing-factor.dashboard.')
     ->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('index');
+        Route::delete('/stale', [DashboardController::class, 'destroyStale'])->name('destroy-stale');
         Route::get('/{issue}', [DashboardController::class, 'show'])->name('show');
         Route::post('/{issue}/retry', [DashboardController::class, 'retry'])->name('retry');
         Route::post('/{issue}/mark-failed', [DashboardController::class, 'markFailed'])->name('mark-failed');
+        Route::delete('/{issue}', [DashboardController::class, 'destroy'])->name('destroy');
     });

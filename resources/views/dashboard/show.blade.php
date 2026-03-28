@@ -149,15 +149,24 @@
             </div>
         @endif
 
-        {{-- Mark as failed --}}
-        @if (in_array($issue->status->value, ['pending', 'resolving']))
-            <form method="POST" action="{{ route('healing-factor.dashboard.mark-failed', $issue) }}">
+        {{-- Mark as failed / Delete --}}
+        <div class="flex gap-3">
+            @if (in_array($issue->status->value, ['pending', 'resolving']))
+                <form method="POST" action="{{ route('healing-factor.dashboard.mark-failed', $issue) }}">
+                    @csrf
+                    <button type="submit" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] border border-red-300 dark:border-red-700 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 h-9 px-4 py-2">
+                        Mark as failed
+                    </button>
+                </form>
+            @endif
+            <form method="POST" action="{{ route('healing-factor.dashboard.destroy', $issue) }}" onsubmit="return confirm('Are you sure you want to delete this issue?')">
                 @csrf
+                @method('DELETE')
                 <button type="submit" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] border border-red-300 dark:border-red-700 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 h-9 px-4 py-2">
-                    Mark as failed
+                    Delete issue
                 </button>
             </form>
-        @endif
+        </div>
 
         {{-- Retry --}}
         @if ($issue->status->value === 'failed')
