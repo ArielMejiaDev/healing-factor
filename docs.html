@@ -842,6 +842,7 @@ HEALING_FACTOR_GITHUB_PAT=github_pat_...</code></pre>
 
         <h3>Ignored Exceptions</h3>
         <pre><code>'ignored_exceptions' => [
+    \Symfony\Component\ErrorHandler\Error\FatalError::class,
     \OutOfMemoryError::class,
     \Illuminate\Http\Exceptions\ThrottleRequestsException::class,
     \Symfony\Component\HttpKernel\Exception\HttpException::class,
@@ -1317,6 +1318,8 @@ HEALING_FACTOR_API_MAX_TURNS=25</code></pre>
 
         <h3>Jobs timing out</h3>
         <p>Increase <code>HEALING_FACTOR_PROCESS_TIMEOUT</code> and ensure your queue worker's <code>--timeout</code> flag is higher than the process timeout. For example, if the process timeout is 3600, set <code>--timeout=3700</code>.</p>
+        <p>If you use <code>queue:listen</code> (common in development for fresh code on each job), you must also pass the timeout flag -- its default is only 60 seconds:</p>
+        <pre><code>php artisan queue:listen --timeout=3700</code></pre>
 
         <h3>Duplicate PRs</h3>
         <p>Check your debounce window (<code>HEALING_FACTOR_DEBOUNCE_MINUTES</code>) and run <code>php artisan healing-factor:status</code> to see active issues. See <a href="#deduplication">Deduplication Details</a> for more information.</p>
