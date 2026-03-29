@@ -1,3 +1,5 @@
+![Healing Factor Dashboard](images/preview.png)
+
 # Healing-Factor
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/ariel-mejia-dev/healing-factor.svg?style=flat-square)](https://packagist.org/packages/ariel-mejia-dev/healing-factor)
@@ -5,6 +7,8 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/ariel-mejia-dev/healing-factor.svg?style=flat-square)](https://packagist.org/packages/ariel-mejia-dev/healing-factor)
 
 A self-healing Laravel package that catches exceptions and automatically creates pull requests with fixes using AI. When an error occurs in your app, Healing-Factor captures it, spins up an AI agent in an isolated git worktree, and opens a draft PR with the fix — all without touching your production code.
+
+[To learn all about it, head over to the extensive documentation.](!https://healing-factor.com/index.html)
 
 ## How It Works
 
@@ -26,10 +30,10 @@ A self-healing Laravel package that catches exceptions and automatically creates
 
 **Plus one of:**
 
-| Driver | Requires |
-|--------|----------|
+| Driver | Requires                                                                                                                                     |
+| ------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
 | `cli`  | [Claude Code](https://docs.anthropic.com/en/docs/claude-code) or [OpenCode](https://github.com/opencode-ai/opencode) installed on the server |
-| `api`  | Only an `ANTHROPIC_API_KEY` (no CLI installation needed) |
+| `api`  | Only an `ANTHROPIC_API_KEY` (no CLI installation needed)                                                                                     |
 
 ## Installation
 
@@ -119,14 +123,14 @@ public function boot(): void
 
 ## Artisan Commands
 
-| Command | Description |
-|---------|-------------|
-| `healing-factor:install` | Publish config, run migration, verify setup |
-| `healing-factor:test` | Create a test issue to verify the pipeline |
-| `healing-factor:status` | Show all issues with summary statistics |
-| `healing-factor:retry {id}` | Retry a failed issue |
-| `healing-factor:prune` | Delete old resolved/failed issues |
-| `healing-factor:recover-stale` | Mark stuck `resolving` issues as `failed` |
+| Command                        | Description                                 |
+| ------------------------------ | ------------------------------------------- |
+| `healing-factor:install`       | Publish config, run migration, verify setup |
+| `healing-factor:test`          | Create a test issue to verify the pipeline  |
+| `healing-factor:status`        | Show all issues with summary statistics     |
+| `healing-factor:retry {id}`    | Retry a failed issue                        |
+| `healing-factor:prune`         | Delete old resolved/failed issues           |
+| `healing-factor:recover-stale` | Mark stuck `resolving` issues as `failed`   |
 
 ### Recommended Schedule
 
@@ -142,15 +146,15 @@ Schedule::command('healing-factor:prune')->daily();
 
 All config lives in `config/healing-factor.php`. Key options:
 
-| Option | Env Variable | Default | Description |
-|--------|-------------|---------|-------------|
-| Master switch | `HEALING_FACTOR_ENABLED` | `true` | Disable all processing |
-| Dry run | `HEALING_FACTOR_DRY_RUN` | `false` | Log actions without executing |
-| Driver | `HEALING_FACTOR_DRIVER` | `cli` | `cli` or `api` |
-| CLI tool | `HEALING_FACTOR_CLI_TOOL` | `claude` | `claude` or `opencode` |
-| Monitor | `HEALING_FACTOR_MONITOR` | `nightwatch` | `nightwatch`, `bugsnag`, or `exception_listener` |
-| Timeout | `HEALING_FACTOR_PROCESS_TIMEOUT` | `3600` | Max seconds for CLI process |
-| Debounce | `HEALING_FACTOR_DEBOUNCE_MINUTES` | `5` | Min minutes between same exception |
+| Option        | Env Variable                      | Default      | Description                                      |
+| ------------- | --------------------------------- | ------------ | ------------------------------------------------ |
+| Master switch | `HEALING_FACTOR_ENABLED`          | `true`       | Disable all processing                           |
+| Dry run       | `HEALING_FACTOR_DRY_RUN`          | `false`      | Log actions without executing                    |
+| Driver        | `HEALING_FACTOR_DRIVER`           | `cli`        | `cli` or `api`                                   |
+| CLI tool      | `HEALING_FACTOR_CLI_TOOL`         | `claude`     | `claude` or `opencode`                           |
+| Monitor       | `HEALING_FACTOR_MONITOR`          | `nightwatch` | `nightwatch`, `bugsnag`, or `exception_listener` |
+| Timeout       | `HEALING_FACTOR_PROCESS_TIMEOUT`  | `3600`       | Max seconds for CLI process                      |
+| Debounce      | `HEALING_FACTOR_DEBOUNCE_MINUTES` | `5`          | Min minutes between same exception               |
 
 ### Exception Categories
 
@@ -186,12 +190,12 @@ Exceptions that should never be processed (infrastructure issues, unfixable erro
 
 ## Events
 
-| Event | Fired When |
-|-------|-----------|
-| `IssueCreated` | Issue created from webhook or exception |
-| `IssueResolving` | Resolution starts |
-| `IssueResolved` | Resolution succeeds |
-| `IssueResolutionFailed` | Resolution fails |
+| Event                   | Fired When                              |
+| ----------------------- | --------------------------------------- |
+| `IssueCreated`          | Issue created from webhook or exception |
+| `IssueResolving`        | Resolution starts                       |
+| `IssueResolved`         | Resolution succeeds                     |
+| `IssueResolutionFailed` | Resolution fails                        |
 
 ```php
 use ArielMejiaDev\HealingFactor\Events\IssueResolved;
