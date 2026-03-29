@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @property IssueStatus $status
+ */
 class Issue extends Model
 {
     use HasFactory;
